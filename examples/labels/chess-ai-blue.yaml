@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: chess-ai-blue-labeled
+  labels:
+    env: development
+    owner:djkormo
+    type:game
+spec:
+  containers:
+  - name: sise
+    image: djkormo/chess-ai:blue
+    ports:
+- containerPort: 80

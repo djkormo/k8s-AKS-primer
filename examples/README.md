@@ -11,7 +11,7 @@ kubectl create namespace examples
 > namespace/examples created
 
 
-# switching to examples namespace
+### switching to examples namespace
 
 ```console
 kubectl config set-context --current  --namespace=examples
