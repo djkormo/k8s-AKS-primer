@@ -17,6 +17,7 @@ spec:
       containers:
       - name: chess-ai
         image: djkormo/chess-ai:blue
+        imagePullPolicy: Always #Always #IfNotPresent
         ports:
         - containerPort: 80
         env:
