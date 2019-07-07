@@ -91,7 +91,8 @@ kubectl get pod --selector env=development  --show-labels
 
 ```console
  kubectl apply -f https://raw.githubusercontent.com/djkormo/k8s-AKS-primer/master/examples/labels/chess-ai-green.yaml
-`` 
+```
+
 #### or
 
 ```console
@@ -131,6 +132,48 @@ kubectl get pods -l 'env in (production, development)'
 > chess-ai-blue-labeled    1/1     Running   0          11m
 
 > chess-ai-green-labeled   1/1     Running   0          4m7s
+
+
+
+### Now we can forward ports for two pods to localhost
+```console
+kubectl port-forward chess-ai-blue-labeled 30001:80
+```
+
+> Forwarding from 127.0.0.1:30001 -> 80
+>
+> Forwarding from [::1]:30001 -> 80
+>
+> Handling connection for 30001
+>
+> Handling connection for 30001
+
+### in second console
+
+```console
+kubectl port-forward chess-ai-green-labeled 30002:80
+```
+
+> Forwarding from 127.0.0.1:30002 -> 80
+>
+> Forwarding from [::1]:30002 -> 80
+>
+> Handling connection for 30002
+>
+> Handling connection for 30002
+
+
+### Instead of deleting whole namespace delete pods by label filter
+
+```console
+kubectl delete pods -l 'env in (production, development)'
+```
+
+> pod "chess-ai-blue-labeled" deleted
+
+> pod "chess-ai-green-labeled" deleted
+
+
 
 ### After all delete namespace examples 
  
