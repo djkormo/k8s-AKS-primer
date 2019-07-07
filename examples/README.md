@@ -175,6 +175,19 @@ Forwarding from [::1]:9876 -> 9876
 
 ### Use brower -> http://localhost:9876/health
 
+
+### You can do the sam in a simpler way
+
+```console
+kubectl port-forward deployment/simple-service 9876:6379 
+```console 
+
+### or
+ 
+```console
+kubectl port-forward rs/simple-service 9876:9876 
+```
+
 ### After all delete namespace examples 
  
 ```console
