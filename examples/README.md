@@ -34,9 +34,11 @@ kubectl run simple-service --image=mhausenblas/simpleservice:0.5.0 --port=9876
 ### show  pod
 
 > NAME                              READY   STATUS              RESTARTS   AGE
+
 > simple-service-754cdf9949-qjsdg   0/1     ContainerCreating   0          46s
 
 > NAME                              READY   STATUS    RESTARTS   AGE
+
 > simple-service-754cdf9949-qjsdg   1/1     Running   0          70s
 
 ### show deployment
@@ -46,7 +48,8 @@ kubectl get deployment
 
 ```
 
-NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+> NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+
 > simple-service   1/1     1            1           2m11s 
 
 ### show replicaset 
@@ -195,5 +198,10 @@ kubectl delete namespace examples
 
 > namespace "examples" deleted
 
+#### Next -> using labels 
+[labels](LABELS.md)
+
 
 ### based on http://kubernetesbyexample.com/
+
+
