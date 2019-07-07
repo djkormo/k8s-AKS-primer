@@ -1,4 +1,4 @@
-Examples
+## Examples
 
 
 
@@ -8,7 +8,7 @@ Examples
 kubectl create namespace examples
 ```
 
-namespace/examples created
+> namespace/examples created
 
 
 # switching to examples namespace
@@ -16,7 +16,8 @@ namespace/examples created
 ```console
 kubectl config set-context --current  --namespace=examples
 ```
-Context "***" modified.
+
+> Context "***" modified.
 
 
 
@@ -26,17 +27,17 @@ Context "***" modified.
 kubectl run simple-service --image=mhausenblas/simpleservice:0.5.0 --port=9876
 ```
 
-deployment.apps/simple-service created
+> deployment.apps/simple-service created
 
 
 
 ### show  pod
 
-NAME                              READY   STATUS              RESTARTS   AGE
-simple-service-754cdf9949-qjsdg   0/1     ContainerCreating   0          46s
+> NAME                              READY   STATUS              RESTARTS   AGE
+> simple-service-754cdf9949-qjsdg   0/1     ContainerCreating   0          46s
 
-NAME                              READY   STATUS    RESTARTS   AGE
-simple-service-754cdf9949-qjsdg   1/1     Running   0          70s
+> NAME                              READY   STATUS    RESTARTS   AGE
+> simple-service-754cdf9949-qjsdg   1/1     Running   0          70s
 
 ### show deployment
 
@@ -44,8 +45,9 @@ simple-service-754cdf9949-qjsdg   1/1     Running   0          70s
 kubectl get deployment
 
 ```
+
 NAME             READY   UP-TO-DATE   AVAILABLE   AGE
-simple-service   1/1     1            1           2m11s 
+> simple-service   1/1     1            1           2m11s 
 
 ### show replicaset 
 
@@ -53,8 +55,9 @@ simple-service   1/1     1            1           2m11s
 kubectl get replicaset
 ```
 
-NAME                        DESIRED   CURRENT   READY   AGE
-simple-service-754cdf9949   1         1         1       3m
+> NAME                        DESIRED   CURRENT   READY   AGE
+
+> simple-service-754cdf9949   1         1         1       3m
 
 ### show port and IP of simpleservice pod
 
@@ -62,14 +65,14 @@ simple-service-754cdf9949   1         1         1       3m
 kubectl describe po |grep IP
 ```
 
-IP:             10.244.1.43
+> IP:             10.244.1.43
 
 ```console
 kubectl describe po |grep Port
 ```
 
-Port:           10000/TCP
-Host Port:      0/TCP
+> Port:           9876/TCP
+> Host Port:      0/TCP
 
 
 
@@ -77,8 +80,9 @@ Host Port:      0/TCP
 
 kubectl get pod --namespace examples
 
-NAME                              READY   STATUS    RESTARTS   AGE
-simple-service-754cdf9949-qjsdg   1/1     Running   0          7m5s
+> NAME                              READY   STATUS    RESTARTS   AGE
+
+> simple-service-754cdf9949-qjsdg   1/1     Running   0          7m5s
 
 ### the same information in json format 
 
@@ -162,7 +166,7 @@ kubectl get pod --namespace examples -o template --template "{{(index .items 0).
 
 ```
 
-simple-service-754cdf9949-qjsdg
+> simple-service-754cdf9949-qjsdg
 
 ### forwarding port 
 
@@ -170,8 +174,8 @@ simple-service-754cdf9949-qjsdg
 kubectl port-forward $(kubectl get pod --namespace examples -o template --template "{{(index .items 0).metadata.name}}") 9876:9876
 
 ```
-Forwarding from 127.0.0.1:9876 -> 9876
-Forwarding from [::1]:9876 -> 9876
+> Forwarding from 127.0.0.1:9876 -> 9876
+> Forwarding from [::1]:9876 -> 9876
 
 ### Use brower -> http://localhost:9876/health
 
@@ -179,14 +183,9 @@ Forwarding from [::1]:9876 -> 9876
 ### You can do the sam in a simpler way
 
 ```console
-kubectl port-forward deployment/simple-service 9876:6379 
-```console 
+kubectl port-forward deployment/simple-service 9876:9876 
+``` 
 
-### or
- 
-```console
-kubectl port-forward rs/simple-service 9876:9876 
-```
 
 ### After all delete namespace examples 
  
@@ -194,7 +193,7 @@ kubectl port-forward rs/simple-service 9876:9876
 kubectl delete namespace examples 
 ```
 
-namespace "examples" deleted
+> namespace "examples" deleted
 
 
 ### based on http://kubernetesbyexample.com/
