@@ -1,4 +1,6 @@
-FROM  alpine:3.7
+#FROM  alpine:3.7
+
+FROM stevenliebregt/alpine-apache-php
 
 RUN apk update && apk upgrade
 RUN apk add --no-cache apache2 bash git
