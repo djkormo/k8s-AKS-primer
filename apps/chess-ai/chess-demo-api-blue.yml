@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chess-api
+  labels:
+    app: chess-api
+spec:
+  replicas: 5
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: chess-api
+  template:
+    metadata:
+      labels:
+        app: chess-api
+    spec:
+      containers:
+      - name: app
+        image: djkormo/chess-ai:blue
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+
+          # Intial delay is set to a high value to have a better
+          # visibility of the ramped deployment
+          initialDelaySeconds: 5
+          periodSeconds: 3
