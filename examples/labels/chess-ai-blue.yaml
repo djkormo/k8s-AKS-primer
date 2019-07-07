@@ -4,8 +4,8 @@ metadata:
   name: chess-ai-blue-labeled
   labels:
     env: development
-    owner:djkormo
-    type:game
+    owner: djkormo
+    type: game
 spec:
   containers:
   - name: sise
