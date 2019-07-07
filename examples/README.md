@@ -198,7 +198,7 @@ kubectl delete namespace examples
 
 > namespace "examples" deleted
 
-#### Next -> using labels 
+## Next -> using labels 
 [labels](LABELS.md)
 
 

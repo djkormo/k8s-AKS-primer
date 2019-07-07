@@ -184,3 +184,9 @@ kubectl delete namespace examples
 > namespace "examples" deleted
 
 
+## Next -> using deployments 
+[deployments](DEPLOYMENTS.md)
+
+
+
+
