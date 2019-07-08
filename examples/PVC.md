@@ -88,7 +88,7 @@ kubectl get deployment,rs,po
 > pod/pod-pvc-deploy-f59598774-tftjs   1/1     Running   0          2m26s
 
 
-```console`
+```console
 kubectl exec -it pod-pvc-deploy-f59598774-tftjs -- bash
 
 [root@pod-pvc-deploy-f59598774-tftjs /]# cd /tmp/persistent
@@ -98,7 +98,8 @@ from container to pvc
 [root@pod-pvc-deploy-f59598774-tftjs persistent]# exit
 exit
 ```
-```console`
+
+```console
 kubectl delete deployment/pod-pvc-deploy
 ```
 
