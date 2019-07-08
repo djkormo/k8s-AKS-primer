@@ -1,0 +1,25 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: pod-pvc-deploy
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pod-pvc
+    spec:
+      containers:
+      - name: shell
+        image: centos:7
+        command:
+        - "bin/bash"
+        - "-c"
+        - "sleep 10000"
+        volumeMounts:
+        - name: pod-pvc-vol
+          mountPath: "/tmp/persistent"
+      volumes:
+      - name: pod-pvc-vol
+        persistentVolumeClaim:
+          claimName: my-pvc-claim
