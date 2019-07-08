@@ -46,9 +46,9 @@ kubectl get deployment,rs,po
 > NAME                                 READY   STATUS    RESTARTS   AGE
 > pod/pod-pvc-deploy-f59598774-f79g8   1/1     Running   0          90s
 
-```console`
+```console
 kubectl exec -it pod-pvc-deploy-f59598774-f79g8 -- bash
-```
+
 
 [root@pod-pvc-deploy-f59598774-f79g8 /]# ls -la /tmp/persistent/
 total 24
@@ -63,6 +63,8 @@ drwxrwxrwt 1 root root  4096 Jul  8 08:25 ..
 drwx------ 2 root root 16384 Jul  8 08:25 lost+found
 [root@pod-pvc-deploy-f59598774-f79g8 /]#
 [root@pod-pvc-deploy-f59598774-f79g8 /]# exit
+exit
+```
 
 ### Delete pod but not deployment 
 
@@ -79,10 +81,10 @@ kubectl get deployment,rs,po
 > NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE
 > deployment.extensions/pod-pvc-deploy   1/1     1            1           11m
 >
->NAME                                             DESIRED   CURRENT   READY   AGE
->replicaset.extensions/pod-pvc-deploy-f59598774   1         1         1       11m
+> NAME                                             DESIRED   CURRENT   READY   AGE
+> replicaset.extensions/pod-pvc-deploy-f59598774   1         1         1       11m
 >
->NAME                                 READY   STATUS    RESTARTS   AGE
+> NAME                                 READY   STATUS    RESTARTS   AGE
 > pod/pod-pvc-deploy-f59598774-tftjs   1/1     Running   0          2m26s
 
 
@@ -93,8 +95,14 @@ kubectl exec -it pod-pvc-deploy-f59598774-tftjs -- bash
 [root@pod-pvc-deploy-f59598774-tftjs persistent]# cat container.dat
 from container to pvc
 [root@pod-pvc-deploy-f59598774-tftjs persistent]#
+[root@pod-pvc-deploy-f59598774-tftjs persistent]# exit
+exit
+```
+```console`
+kubectl delete deployment/pod-pvc-deploy
 ```
 
+> deployment.extensions "pod-pvc-deploy" deleted
 
 ### After all delete namespace examples 
  
