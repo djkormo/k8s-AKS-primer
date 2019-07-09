@@ -37,3 +37,10 @@ provided by the bot. You will only need to do this once across all repos using o
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+Example of running 
+ 
+```console
+docker run -e ENDPOINT=http://ip172-18-0-8-bki3i1ht0o8g00fktnlg-33000.direct.labs.play-with-docker.com/prediction -e METHOD=POST  -e PAYLOAD='{"EmailAddress": "email@domain.com", "Product": "prod-1", "Total": 100}' loadtest
+
+```

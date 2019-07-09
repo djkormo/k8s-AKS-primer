@@ -4,6 +4,9 @@ echo "**************************************************************************
 echo "*---------------------------------BEGIN LOAD TEST-------------------------------------*"
 echo "***************************************************************************************"
 
+export CONTENT_TYPE="Content-Type: application/json"
+#export PAYLOAD='{"EmailAddress": "email@domain.com", "Product": "prod-1", "Total": 100}'
+
 if [ -z "$1" ]
 then
   echo "ENDPOINT was passed as a parameter, assuming it is passed as environment variable"
@@ -28,9 +31,8 @@ else
   export PAYLOAD=$3
 fi
 
-export CONTENT_TYPE="Content-Type: application/json"
-export PAYLOAD='{"EmailAddress": "email@domain.com", "Product": "prod-1", "Total": 100}'
-#export ENDPOINT=http://$SERVICE_IP/
+
+
 
 echo "ENDPOINT: $ENDPOINT"
 echo "METHOD: $METHOD"
