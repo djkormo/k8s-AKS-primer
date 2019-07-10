@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # set your name and resource group 
-AKS_NAME=aks-simple18337
+AKS_NAME=aks-simple
 AKS_RG=rg-aks-simple
 # get the resource group for VMs 
 RG_VM_POOL=$(az aks show -g $AKS_RG -n $AKS_NAME --query nodeResourceGroup -o tsv)
