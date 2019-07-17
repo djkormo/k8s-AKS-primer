@@ -7,7 +7,7 @@ kubectl apply -f helm-rbac.yaml
 ```
 
 #### What is inside of helm-rbac.yaml
-
+```yaml 
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -27,7 +27,7 @@ subjects:
     name: tiller
     namespace: kube-system
 	
-
+```
 
 #### Install Helm on AKS
 
