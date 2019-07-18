@@ -16,15 +16,24 @@ az aks create --resource-group myAKSCluster --name myAKSCluster --node-count 1 -
 ```console
 az aks install-cli
 ```
-### getting credentials from k8s server
+### getting credentials from k8s server. Use --overwrite-existing if you have a new cluster with the same name and resource group as an old one.
 ```console
-az aks get-credentials --resource-group myAKSCluster --name myAKSCluster
+az aks get-credentials --resource-group myAKSCluster --name myAKSCluster #--overwrite-existing
 ```
 
 ### checking context
 ```console
 kubectl config current-context
 ```
+
+### changing default namespace
+```console
+
+kubectl config set-context myAKSCluster --namespace=default
+
+```
+
+
 ##### myAKSCluster
 
 ### see all nodes
@@ -37,17 +46,20 @@ kubectl get nodes
 
 
 ### opening dashboard
+
 ```console
 az aks browse --resource-group myAKSCluster --name myAKSCluster
 ```
 
 #### In case of troubles with seeing objects from dashboard
+
 ```console
 kubectl create -f https://raw.githubusercontent.com/djkormo/ContainersSamples/master/Kubernetes/AKS/kube-dashboard-access.yaml
 ```
 
 
 ### running  first sample app
+
 ```console
 kubectl apply -f https://raw.githubusercontent.com/Azure-Samples/azure-voting-app-redis/master/azure-vote-all-in-one-redis.yaml
 ```
@@ -57,6 +69,7 @@ kubectl apply -f https://raw.githubusercontent.com/Azure-Samples/azure-voting-ap
 ##### service/azure-vote-front created
 
 ### see all pods
+
 ```console
 kubectl get pods
 ```
@@ -66,15 +79,18 @@ kubectl get pods
 
 
 ### see all deployments
+
 ```console
 kubectl get deployments
 ```
+
 ##### NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 ##### azure-vote-back    1         1         1            1           3m59s
 ##### azure-vote-front   1         1         1            0           3m59s
 
 
 ### see all services 
+
 ```console
 kubectl get services 
 ```
