@@ -35,3 +35,29 @@ subjects:
 helm init --service-account tiller --node-selectors "beta.kubernetes.io/os"="linux"
 ```
 
+
+#### Install sample application
+
+```console
+kubectl create namespace wordpress
+```
+
+```console
+helm install --namespace wordpress --name wordpress stable/wordpress
+```
+
+####  Get IP of Wordpress site
+```console
+kubectl get svc --namespace wordpress wordpress-wordpress
+echo http://$(kubectl get svc --namespace wordpress wordpress-wordpress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+```
+
+#### Get password of user (Wordpress admin role)
+```console
+
+```
+
+
+
+
+
