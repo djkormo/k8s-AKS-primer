@@ -49,12 +49,14 @@ helm install --namespace wordpress --name wordpress stable/wordpress
 ####  Get IP of Wordpress site
 ```console
 kubectl get svc --namespace wordpress wordpress-wordpress
+kubectl describe svc --namespace wordpress wordpress-wordpress |grep Ingress
 echo http://$(kubectl get svc --namespace wordpress wordpress-wordpress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 ```
 
 #### Get password of user (Wordpress admin role)
-```console
 
+```console
+echo Password: $(kubectl get secret --namespace wordpress wordpress-wordpress -o jsonpath="{.data.wordpress-password}" | base64 --decode)
 ```
 
 
