@@ -1,3 +1,8 @@
+#### downlod binary from
+
+https://github.com/kubernetes/helm/releases
+
+
 #### Create a service account
 
 ```console
