@@ -92,8 +92,11 @@ kubectl run myubuntu --image ubuntu:16.04 --rm -ti --generator=run-pod/v1 \
   --requests "cpu=50m,memory=50Mi" --limits="cpu=100m,memory=100Mi"
 ```
 > apt-get update
+>
 > apt-get install curl
+>
 > service=http://my-app-bg:80
+>
 > while sleep 0.1; do curl "$service"; done
 
 ### If everything is working as expected, you can then delete the v1.0.0
