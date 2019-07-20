@@ -40,5 +40,5 @@ kubectl delete deployment/my-app-re --namespace=my-app
 #### Filter in Grafana
 
 ```console
-sum(kube_pod_labels{label_app="my-app-re"}) by (label_app,label_version)
+sum(kube_pod_labels{label_app="my-app-re",namespace="my-app"}) by (label_app,label_version)
 ```

@@ -44,10 +44,10 @@ spec:
         resources:
           limits:
             cpu: "0.2"
-            memory: "200Mi"
+            memory: "100Mi"
           requests:
             cpu: "0.1"
-            memory: "100Mi"
+            memory: "50Mi"
         ports:
         - name: http
           containerPort: 8080
@@ -60,7 +60,7 @@ spec:
           httpGet:
             path: /live
             port: probe
-          initialDelaySeconds: 30
+          initialDelaySeconds: 120
           periodSeconds: 10
         readinessProbe:
           httpGet:

@@ -91,5 +91,5 @@ kubectl delete all -l app=my-app-ram
 #### Filter in Grafana
 
 ```console
-sum(kube_pod_labels{label_app="my-app-ram"}) by (label_app,label_version)
+sum(kube_pod_labels{label_app="my-app-ram",namespace="my-app"}) by (label_app,label_version)
 ```
