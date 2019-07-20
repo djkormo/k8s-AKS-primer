@@ -35,15 +35,26 @@ kubectl --namespace monitoring port-forward $(kubectl get pod --namespace monito
 
 ```console
 helm install \
-    --namespace=default \
+    --namespace=monitoring \
     --name=mygrafana \
     --version=1.12.0 \
     --set=adminUser=admin \
     --set=adminPassword=admin \
-    #--set=service.type=LoadBalancer \   # if IP should by outside 
-	--set=service.type=NodePort \
+	  --set=service.type=NodePort \
     stable/grafana 
 ```
+
+```console
+helm install \
+    --namespace=grafana \
+    --name=mygrafana \
+    --version=1.12.0 \
+    --set=adminUser=admin \
+    --set=adminPassword=admin \
+    --set=service.type=LoadBalancer \   # if IP should by outside 
+	    stable/grafana 
+```
+
 ### grafana pod	
 ```console
 kubectl get pod --namespace monitoring  -l release=mygrafana -l app=grafana
@@ -62,6 +73,13 @@ kubectl --namespace monitoring port-forward $(kubectl get pod --namespace monito
 kubectl get svc --namespace monitoring  mygrafana
 ```
 to get EXTERNAL-IP and PORT
+
+
+
+### Connect grafana to Prometheus
+
+
+![Connect Grafana to Prometheus](grafana-connect.png)
 
 
 ## Create namespace for application
