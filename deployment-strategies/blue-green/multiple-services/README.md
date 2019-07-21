@@ -64,15 +64,13 @@ kubectl run myubuntu --generator=run-pod/v1 \
 >nslookup traefik
 >
 >ping traefik
+>
+>curl traefik -H 'Host: a.domain.com'
+>
+>curl traefik -H 'Host: b.domain.com'
 
 
 Error from server (Forbidden): pods "myubuntu" is forbidden: failed quota: compute-resources: must specify limits.cpu,limits.memory,requests.cpu,requests.memory
-
-```console
-ingress=$(kubectl describe svc traefik --namespace=my-app | grep Ingress | awk '{print $3}')
-curl $ingress -H 'Host: a.domain.com'
-curl $ingress -H 'Host: b.domain.com'
-```
 
 
 ### To see the deployment in action, open a new terminal and run the following
@@ -108,9 +106,13 @@ kubectl apply -f ingress-v2.yaml --namespace=my-app
 ### Test if the deployment was successful
 
 ```console
-curl $ingress -H 'Host: a.domain.com'
-
-curl $ingress -H 'Host: b.domain.com'
+>nslookup traefik
+>
+>ping traefik
+>
+>curl traefik -H 'Host: a.domain.com'
+>
+>curl traefik -H 'Host: b.domain.com'
 ```
 
 ### In case you need to rollback to the previous version
