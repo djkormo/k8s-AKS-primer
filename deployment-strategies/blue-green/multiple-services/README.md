@@ -24,25 +24,56 @@ Install the latest version of
 # Deploy Traefik with Helm
 $ helm install \
     --name=traefik \
+    --namespace=my-app \
     --version=1.60.0 \
     --set rbac.enabled=true \
+    --set dashboard.enabled=true,dashboard.domain=dashboard.traefik \
     stable/traefik
 ```
 
+```console
+kubectl get svc traefik-dashboard --namespace=my-app
+kubectl describe svc traefik --namespace=my-app | grep Ingress | awk '{print $3}'
+```
+
+```console 
+kubectl port-forward service/traefik-dashboard --namespace=my-app 9999:80
+```
 #### Deploy version 1 of application a and b and the ingress
+
 
 ```console
 kubectl apply -f app-a-v1.yaml -f app-b-v1.yaml -f ingress-v1.yaml  --namespace=my-app
+
 ```
+
 
 
 ### Test if the deployment was successful
 
 ```console
-ingress=$(minikube service traefik --url | head -n1)
+kubectl run myubuntu --generator=run-pod/v1 \
+  --limits="cpu=200m,memory=100Mi" \
+  --requests="cpu=100m,memory=50Mi" \
+  --rm -i --tty --image ubuntu:16.04 -- bash
+```
+>apt-get update
+>
+>apt-get install curl iputils-ping dnsutils -y
+>
+>nslookup traefik
+>
+>ping traefik
+
+
+Error from server (Forbidden): pods "myubuntu" is forbidden: failed quota: compute-resources: must specify limits.cpu,limits.memory,requests.cpu,requests.memory
+
+```console
+ingress=$(kubectl describe svc traefik --namespace=my-app | grep Ingress | awk '{print $3}')
 curl $ingress -H 'Host: a.domain.com'
 curl $ingress -H 'Host: b.domain.com'
 ```
+
 
 ### To see the deployment in action, open a new terminal and run the following
 ### command
@@ -98,6 +129,6 @@ kubectl delete -f ./app-a-v1.yaml -f ./app-b-v1.yaml
 ### Cleanup
 
 ```console
-kubectl delete all -l app=my-app
+kubectl delete all -l app=my-app --namespace=my-app
 helm del --purge traefik
 ```
