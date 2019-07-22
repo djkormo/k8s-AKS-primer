@@ -88,3 +88,10 @@ replicaset.apps/kuard-health-deployment-68d9766d56   2         2         2      
 ![kuard memory allocation](kuard_memory.png)
 
 ![kuard liveness](kuard_liveness.png)
+
+
+
+Based on 
+https://cloud.google.com/blog/products/gcp/kubernetes-best-practices-setting-up-health-checks-with-readiness-and-liveness-probes
+
+https://github.com/kubernetes-up-and-running
