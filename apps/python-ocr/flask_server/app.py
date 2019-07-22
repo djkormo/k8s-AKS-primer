@@ -17,10 +17,9 @@ def main():
     return render_template('index.html')
 
 @app.route('/health')  #  Create a URL route to this resource
-class HelloWorld(Resource):            #  Create a RESTful resource
-  def get(self):                     #  Create GET endpoint
-    #return {'hello': 'world'}
-    return '', 200
+def get(self):                     #  Create GET endpoint
+#return {'hello': 'world'}
+  return '', 200
 
 @app.route('/v{}/ocr'.format(_VERSION), methods=["POST"])
 def ocr():
