@@ -91,7 +91,35 @@ replicaset.apps/kuard-health-deployment-68d9766d56   2         2         2      
 
 
 
+## Resources reqests and limits
+
+
+**requests.cpu** is the maximum combined CPU requests in millicores for all the containers in the Namespace. In the above example, you can have 50 containers with 10m requests, five containers with 100m requests, or even one container with a 500m request. As long as the total requested CPU in the Namespace is less than 500m!
+
+**requests.memory** is the maximum combined Memory requests for all the containers in the Namespace. In the above example, you can have 50 containers with 2MiB requests, five containers with 20MiB CPU requests, or even a single container with a 100MiB request. As long as the total requested Memory in the Namespace is less than 100MiB!
+
+**limits.cpu** is the maximum combined CPU limits for all the containers in the Namespace. It’s just like requests.cpu but for the limit.
+
+**limits.memory** is the maximum combined Memory limits for all containers in the Namespace. It’s just like requests.memory but for the limit.
+
+```console
+kubectl describe nodes |grep "Allocated resources:" -A7
+```
+<pre>
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource                       Requests      Limits
+  --------                       --------      ------
+  cpu                            1155m (59%)   900m (46%)
+  memory                         1296Mi (60%)  2170Mi (101%)
+  ephemeral-storage              0 (0%)        0 (0%)
+  attachable-volumes-azure-disk  0             0
+</pre>
+
+
 Based on 
 https://cloud.google.com/blog/products/gcp/kubernetes-best-practices-setting-up-health-checks-with-readiness-and-liveness-probes
+
+https://cloud.google.com/blog/products/gcp/kubernetes-best-practices-resource-requests-and-limits
 
 https://github.com/kubernetes-up-and-running
