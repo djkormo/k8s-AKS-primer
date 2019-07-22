@@ -52,3 +52,10 @@ deployment.apps/kuard-health-deployment   2/2     2            2           13m
 
 NAME                                                 DESIRED   CURRENT   READY   AGE
 replicaset.apps/kuard-health-deployment-68d9766d56   2         2         2       13m
+
+
+
+
+![kuard memory allocation](kuard_memory.png)
+
+![kuard liveness](kuard_liveness.png)
