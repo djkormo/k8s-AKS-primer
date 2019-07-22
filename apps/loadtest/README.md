@@ -44,3 +44,36 @@ Example of running
 docker run -e ENDPOINT=http://ip172-18-0-8-bki3i1ht0o8g00fktnlg-33000.direct.labs.play-with-docker.com/prediction -e METHOD=POST  -e PAYLOAD='{"EmailAddress": "email@domain.com", "Product": "prod-1", "Total": 100}' loadtest
 
 ```
+
+docker run -e ENDPOINT=http://ip172-18-0-21-bki7aqd35dvg00d10b70-8888.direct.labs.play-with-docker.com/api/liveness -e METHOD=GET  -e PAYLOAD='{"EmailAddress": "email@domain.com", "Product": "prod-1", "Total": 100}' djkormo/loadtest
+
+
+docker run -e ENDPOINT=http://ip172-18-0-21-bki7aqd35dvg00d10b70-8888.direct.labs.play-with-docker.com/api/model/predict -e METHOD=POST  -e PAYLOAD='{"int_param": 10,"string_param": "foobar","float_param": 0.1,"bool_param": true,"datetime_param": "2019-07-09T12:21:37.567880","date_param": "2019-07-09"}' djkormo/loadtest
+
+
+kubectl run --image=djkormo/loadtest loadtest-app --env ENDPOINT=http://ip172-18-0-21-bki7aqd35dvg00d10b70-8888.direct.labs.play-with-docker.com/api/liveness --env METHOD=GET  --env PAYLOAD='{"EmailAddress": "email@domain.com", "Product": "prod-1", "Total": 100}'
+
+kubectl run --image=djkormo/loadtest loadtest-app --env ENDPOINT=http://ip172-18-0-21-bki7aqd35dvg00d10b70-8888.direct.labs.play-with-docker.com/api/model/predict --env METHOD=POST  --env PAYLOAD='
+{
+
+"int_param": 10,
+"string_param": "foobar",
+"float_param": 0.1,
+"bool_param": true,
+"datetime_param": "2019-07-09T12:21:37.567880",
+"date_param": "2019-07-09"
+}'
+
+
+
+curl -X POST "http://ip172-18-0-21-bki7aqd35dvg00d10b70-8889.direct.labs.play-with-docker.com/api/model/predict" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"int_param\": 10,\"string_param\": \"foobar\",\"float_param\": 0.1,\"bool_param\": true,\"datetime_param\": \"2019-07-09T12:21:37.567880\",\"date_param\": \"2019-07-09\"}"
+'
+{
+
+"int_param": 10,
+"string_param": "foobar",
+"float_param": 0.1,
+"bool_param": true,
+"datetime_param": "2019-07-09T12:21:37.567880",
+"date_param": "2019-07-09"
+}'
