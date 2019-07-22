@@ -29,10 +29,7 @@ You can read more about TCP probes here.
 
 
 ```console
-
 kubectl apply -f kuard-deploy-heath-check.yaml
-
-
 ```
 
 ```console
@@ -116,6 +113,32 @@ Allocated resources:
   ephemeral-storage              0 (0%)        0 (0%)
   attachable-volumes-azure-disk  0             0
 </pre>
+
+### Creating new namespace
+```console
+kubectl create namespace my-app
+```
+<pre>
+cat <<EOF > quotas.yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-resources
+spec:
+  hard:
+    pods: "20"
+    requests.cpu: "2"
+    requests.memory: 2Gi
+    limits.cpu: "4"
+    limits.memory: 4Gi
+    requests.nvidia.com/gpu: 4
+EOF
+</pre>
+
+### Applying quotas to namespace
+```console
+kubectl apply -f ./quotas.yaml --namespace=my-app
+```
 
 
 Based on 
