@@ -1,7 +1,8 @@
 pytesseract>=0.2.4
 requests>=2.5.1
-Flask>=0.10.1
+Flask>=0.12.3
 Pillow>=2.7.0
-
+flask-restplus==0.12.1
+flask_cors
 # Other dependencies are already handled by
 # the tesseract4re Docker container.
