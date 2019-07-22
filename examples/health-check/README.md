@@ -61,34 +61,6 @@ Handling connection for 8080
 </pre>
 
 
-#### Trying to allocate memory and putting liveness to status 500
-```console
-kubectl get all --namespace=default
-```
-<pre>
-NAME                                           READY   STATUS    RESTARTS   AGE
-pod/kuard-health-deployment-68d9766d56-hd6xp   1/1     Running   2          13m
-pod/kuard-health-deployment-68d9766d56-kqhjh   1/1     Running   3          13m
-
-NAME                   TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
-service/kuard-health   NodePort    10.0.53.91    <none>        8080:31324/TCP   13m
-
-
-NAME                                      READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/kuard-health-deployment   2/2     2            2           13m
-
-NAME                                                 DESIRED   CURRENT   READY   AGE
-replicaset.apps/kuard-health-deployment-68d9766d56   2         2         2       13m
-
-</pre>
-
-
-![kuard memory allocation](kuard_memory.png)
-
-![kuard liveness](kuard_liveness.png)
-
-
-
 ## Resources reqests and limits
 
 
@@ -139,6 +111,39 @@ EOF
 ```console
 kubectl apply -f ./quotas.yaml --namespace=my-app
 ```
+
+#### Trying to allocate memory and putting liveness to status 500
+```console
+kubectl get all --namespace=default
+```
+<pre>
+NAME                                           READY   STATUS    RESTARTS   AGE
+pod/kuard-health-deployment-68d9766d56-hd6xp   1/1     Running   2          13m
+pod/kuard-health-deployment-68d9766d56-kqhjh   1/1     Running   3          13m
+
+NAME                   TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
+service/kuard-health   NodePort    10.0.53.91    <none>        8080:31324/TCP   13m
+
+
+NAME                                      READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/kuard-health-deployment   2/2     2            2           13m
+
+NAME                                                 DESIRED   CURRENT   READY   AGE
+replicaset.apps/kuard-health-deployment-68d9766d56   2         2         2       13m
+
+</pre>
+
+
+
+
+
+![kuard memory allocation](kuard_memory.png)
+
+![kuard liveness](kuard_liveness.png)
+
+
+
+
 
 
 Based on 
