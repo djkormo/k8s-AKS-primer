@@ -17,12 +17,40 @@ spec:
         image: your-registry.azurecr.io/demoapp:latest
         volumeMounts:
         - name: azurefileshare
-          mountPath: /myawesomefileshare
+          mountPath: /apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-azurestorage-test
+  namespace: blogdemodeployments
+spec:  
+  selector:
+      matchLabels:
+        app: azuretest
+  template:
+    metadata:
+      labels:
+        app: azuretest
+    spec:
+      containers:
+      - name: azuretest
+        image: djkormo/chess-ai:blue
+        volumeMounts:
+        - name: azurefileshare
+          mountPath: /myshareforpods
       imagePullSecrets:
       - name: your-pull-secret-if-you-have-one       
       volumes:
       - name: azurefileshare
         azureFile:
           secretName: storage-secret
-          shareName: myawesomefileshare
+          shareName: myshareforpods
+          readOnly: false
+
+      imagePullSecrets:
+      - name: your-pull-secret-if-you-have-one       
+      volumes:
+      - name: azurefileshare
+        azureFile:
+          secretName: azure-storage-secret
+          shareName: myshareforpods
           readOnly: false
