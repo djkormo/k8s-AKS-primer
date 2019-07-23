@@ -16,6 +16,9 @@ kubectl scale --replicas=5 deployment/apache-php-api
 ### Autoscaling pods
 
 
+![Horizontal Pod AutoScaler](hpa.jpg)
+
+
 #### desiredReplicas = ceil[currentReplicas * ( currentMetricValue / desiredMetricValue )]
 
 
@@ -60,11 +63,16 @@ kubectl run --image=djkormo/loadtest loadtest-app \
 
 ### using pod inside
 ```console
-kubectl run -i --tty load-generator --image=busybox /bin/sh
+
+kubectl run load-generator --generator=run-pod/v1 \
+  --limits="cpu=200m,memory=100Mi" \
+  --requests="cpu=100m,memory=50Mi" \
+  --rm -i --tty --image busybox -- sh
+
 ```
 
 <pre>
-while true; do wget -q -O- http://php-apache.default.svc.cluster.local; done
+while true; do wget -q -O- http://apache-php-api.default.svc.cluster.local; done
 </pre>
 
 #### Based on  https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
