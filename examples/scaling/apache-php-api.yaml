@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-php-api
+  labels:
+    app: apache-php-api
+spec:
+  replicas: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: apache-php-api
+  template:
+    metadata:
+      labels:
+        app: apache-php-api
+    spec:
+      containers:
+      - name: app
+        image: k8s.gcr.io/hpa-example
+        resources:
+          limits:
+            cpu: "0.2"
+            memory: "100Mi"
+          requests:
+            cpu: "0.1"
+            memory: "50Mi"
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+
+          # Intial delay is set to a high value to have a better
+          # visibility of the ramped deployment
+          initialDelaySeconds: 5
+          periodSeconds: 3
