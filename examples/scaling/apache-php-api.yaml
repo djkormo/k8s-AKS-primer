@@ -41,5 +41,5 @@ spec:
 
           # Intial delay is set to a high value to have a better
           # visibility of the ramped deployment
-          initialDelaySeconds: 5
+          initialDelaySeconds: 10
           periodSeconds: 3

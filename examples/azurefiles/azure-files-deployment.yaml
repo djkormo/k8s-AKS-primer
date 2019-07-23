@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-azurestorage-test
+  namespace: blogdemodeployments
+spec:  
+  selector:
+      matchLabels:
+        app: azuretest
+  template:
+    metadata:
+      labels:
+        app: azuretest
+    spec:
+      containers:
+      - name: azuretest
+        image: your-registry.azurecr.io/demoapp:latest
+        volumeMounts:
+        - name: azurefileshare
+          mountPath: /myawesomefileshare
+      imagePullSecrets:
+      - name: your-pull-secret-if-you-have-one       
+      volumes:
+      - name: azurefileshare
+        azureFile:
+          secretName: storage-secret
+          shareName: myawesomefileshare
+          readOnly: false
