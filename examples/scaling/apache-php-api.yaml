@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: k8s.gcr.io/hpa-example
+        image: djkormo/chess-ai
         resources:
           limits:
             cpu: "0.1"
@@ -32,7 +32,7 @@ spec:
           httpGet:
             path: /
             port: 80
-          initialDelaySeconds: 3
+          initialDelaySeconds: 60
           periodSeconds: 3
         readinessProbe:
           httpGet:
@@ -41,5 +41,5 @@ spec:
 
           # Intial delay is set to a high value to have a better
           # visibility of the ramped deployment
-          initialDelaySeconds: 10
+          initialDelaySeconds: 60
           periodSeconds: 3

@@ -54,7 +54,7 @@ service=13.79.164.182
 curl -s "http://$service/?[1-1000]"
 
 ### using dedicated  load test 
-service=13.79.164.182
+service=13.79.149.180
 
 kubectl run --image=djkormo/loadtest loadtest-app \
 --generator=run-pod/v1 --env ENDPOINT=http://$service \
