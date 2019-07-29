@@ -1,5 +1,5 @@
 
-VM vs container
+### VM vs container
 
 Traditional applications are run on native hardware. A single application does not typically use the full resources of a single machine. We try to run multiple applications on a single machine to avoid wasting resources. We could run multiple copies of the same application, but to provide isolation we use VMs to run multiple application instances (VMs) on the same hardware. These VMs have full operating system stacks which make them relatively large and inefficient due to duplication both at runtime and on disk.
 
@@ -10,7 +10,7 @@ Containers allow you to share the host OS. This reduces duplication while still 
 ![VM vs container](VMvsContainer.png)
 
 
-Kubernetes architecture
+### Kubernetes architecture
 
 At its core, Kubernetes is a data store (etcd). The declarative model is stored in the data store as objects, that means when you say I want 5 instances of a container then that request is stored into the data store. This information change is watched and delegated to Controllers to take action. Controllers then react to the model and attempt to take action to achieve the desired state. The power of Kubernetes is in its simplistic model.
 
@@ -18,7 +18,7 @@ As shown, API server is a simple HTTP server handling create/read/update/delete(
 
 ![Kubernetes architecture](kubernetes_arch.png)
 
-Kubernetes resource model
+### Kubernetes resource model
 
 Kubernetes Infrastructure defines a resource for every purpose. Each resource is monitored and processed by a controller. When you define your application, it contains a collection of these resources. This collection will then be read by Controllers to build your applications actual backing instances. Some of resources that you may work with are listed below for your reference, for a full list you should go to https://kubernetes.io/docs/concepts/. In this class we will only use a few of them, like Pod, Deployment, etc.
 
@@ -45,9 +45,9 @@ Kubernetes Infrastructure defines a resource for every purpose. Each resource is
 ![Kubernetes resource model](container-pod-node-master-relationship.jpg)
 
 
-Kubernetes application deployment workflow
+### Kubernetes application deployment workflow
 
-deployment workflow
+#### Deployment workflow:
 
     User via "kubectl" deploys a new application. Kubectl sends the request to the API Server.
     API server receives the request and stores it in the data store (etcd). Once the request is written to data store, the API server is done with the request.

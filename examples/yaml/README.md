@@ -32,6 +32,7 @@ metadata:
 Quick note: NEVER use tabs in a YAML file.
 
 the same in JSON
+
 ```json
 {
   "apiVersion": "v1",
@@ -48,7 +49,7 @@ the same in JSON
 
 ##### YAML lists
 
-######YAML lists are literally a sequence of objects
+###### YAML lists are literally a sequence of objects
 
 ```yaml
 args:
@@ -59,6 +60,7 @@ args:
 ```
 
 the same in JSON 
+
 ```json
 {
    "args": ["sleep", "1000", "message", "Bring back Firefly!"]
@@ -91,6 +93,7 @@ spec:
 
 
 the same in JSON
+
 ```json
 {
    "apiVersion": "v1",
@@ -161,7 +164,7 @@ kubectl describe pod rss-site
 
 #### Creating deployment in YAML
 
-```
+```yaml
 ---
  apiVersion: extensions/v1beta1
  kind: Deployment
@@ -171,7 +174,7 @@ kubectl describe pod rss-site
    replicas: 2
 ```
 
-```console
+```yaml
 ---
  apiVersion: extensions/v1beta1
  kind: Deployment
