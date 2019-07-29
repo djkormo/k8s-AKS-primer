@@ -224,3 +224,8 @@ rss-site   2         2         2            1           7s
 NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 rss-site   2         2         2            2           1m
 </pre>
+
+
+##### Based on 
+
+##### https://www.mirantis.com/blog/introduction-to-yaml-creating-a-kubernetes-deployment/
