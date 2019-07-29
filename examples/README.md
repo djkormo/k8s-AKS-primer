@@ -189,6 +189,22 @@ kubectl port-forward $(kubectl get pod --namespace examples -o template --templa
 kubectl port-forward deployment/simple-service 9876:9876 
 ``` 
 
+##### ImagePullPolicy
+
+<pre>
+By default Kubernetes will only pull the image on first use. 
+This can be confusing during development when you expect changes to show up.
+
+You should be aware of the three ImagePullPolicys:
+
+    IfNotPresent - the default, only request the image if not present.
+    Always - always request the image.
+    Never
+
+More details on image management may be found here  
+  https://kubernetes.io/docs/concepts/containers/images/ .
+</pre>
+
 
 ### After all delete namespace examples 
  

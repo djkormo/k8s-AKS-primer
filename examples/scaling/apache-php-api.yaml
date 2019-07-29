@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: djkormo/chess-ai
+        image: djkormo/chess-ai:blue
         resources:
           limits:
             cpu: "0.1"
@@ -30,16 +30,16 @@ spec:
         - containerPort: 80
         livenessProbe:
           httpGet:
-            path: /
+            path: /health
             port: 80
           initialDelaySeconds: 60
-          periodSeconds: 3
+          periodSeconds: 20
         readinessProbe:
           httpGet:
-            path: /
+            path: /health
             port: 80
 
           # Intial delay is set to a high value to have a better
           # visibility of the ramped deployment
           initialDelaySeconds: 60
-          periodSeconds: 3
+          periodSeconds: 20
