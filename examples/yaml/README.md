@@ -1,17 +1,17 @@
 ### YAML for k8s users
 
 
-####Fortunately, there are only two types of structures you need to know about in YAML:
+#### Fortunately, there are only two types of structures you need to know about in YAML:
 
 ##### Lists
 ##### Maps
 
-#####YAML Maps
+##### YAML Maps
 ---
 apiVersion: v1
 kind: Pod
 
-the same in JSON`
+the same in JSON
 ```json
 {
    "apiVersion": "v1",
@@ -19,6 +19,8 @@ the same in JSON`
 }
 ```
 
+
+```yaml
 ---
 apiVersion: v1
 kind: Pod
@@ -26,8 +28,9 @@ metadata:
   name: rss-site
   labels:
     app: web
-	
-	
+```
+
+
 
 Quick note: NEVER use tabs in a YAML file.
 
@@ -69,7 +72,7 @@ the same in JSON
 
 
 
-Samply YAML content for k8s 
+Simple YAML content for k8s 
 
 ```yaml
 ---
