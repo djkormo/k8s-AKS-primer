@@ -7,9 +7,11 @@
 ##### Maps
 
 ##### YAML Maps
+```yaml
 ---
 apiVersion: v1
 kind: Pod
+```
 
 the same in JSON
 ```json
@@ -58,7 +60,7 @@ the same in JSON
 args:
   - sleep
   - "1000"
-  - message
+  - "message"
   - "Bring back Firefly!"
 ```
 
@@ -129,12 +131,14 @@ the same in JSON
 ```console
 kubectl create -f pod.yaml
 ```
-
+<pre>
 pod "rss-site" created
+</pre>
 
 ```console
 kubectl get pods
 ```
+
 <pre>
  NAME       READY     STATUS              RESTARTS   AGE
  rss-site   0/2       ContainerCreating   0          6s
@@ -143,6 +147,7 @@ kubectl get pods
  ```console
 kubectl get pods
 ```
+
 <pre>
 NAME       READY     STATUS    RESTARTS   AGE
 rss-site   2/2       Running   0          14s
@@ -152,6 +157,7 @@ rss-site   2/2       Running   0          14s
 ```console
 kubectl get pods
 ```
+
 <pre>
 NAME       READY     STATUS         RESTARTS   AGE
 rss-site   1/2       ErrImagePull   0          9s
@@ -160,6 +166,7 @@ rss-site   1/2       ErrImagePull   0          9s
 ```console
 kubectl describe pod rss-site
 ```
+
 <pre>
 42s           26s             2       {kubelet 10.0.10.7}                    Warning          FailedSync              Error syncing pod, skipping: failed to "StartContainer" for "rss-reader" with ErrImagePull: "Tag latest not found in repository docker.io/nickchase/rss-php-nginx
 </pre>
