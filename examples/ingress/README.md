@@ -207,5 +207,8 @@ banana
 
 ##### Based on 
 https://matthewpalmer.net/kubernetes-app-developer/articles/kubernetes-ingress-guide-nginx-example.html
+
 https://docs.microsoft.com/en-us/azure/aks/ingress-basic
+
 https://docs.microsoft.com/en-us/azure/aks/ingress-own-tls
+

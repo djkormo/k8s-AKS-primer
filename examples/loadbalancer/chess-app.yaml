@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: djkormo/chess-ai
+        image: djkormo/chess-ai:blue
         ports:
         - containerPort: 80
         livenessProbe:

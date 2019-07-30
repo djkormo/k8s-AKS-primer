@@ -34,6 +34,8 @@ metadata:
 
 
 
+https://matthewpalmer.net/kubernetes-app-developer/articles/kubernetes-apiversion-definition-guide.html
+
 Quick note: NEVER use tabs in a YAML file.
 
 the same in JSON
