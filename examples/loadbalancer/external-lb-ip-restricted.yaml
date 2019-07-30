@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-app
+spec:
+  type: LoadBalancer
+  loadBalancerSourceRanges:
+  - 8.8.4.4/32
+  - 8.8.8.8/32
+  - 1.1.1.1/32
+  ports:
+  - port: 80
+  selector:
+    app: chess-app

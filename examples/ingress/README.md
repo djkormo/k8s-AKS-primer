@@ -156,6 +156,56 @@ kubectl apply -f ingress.yaml --namespace=ingress-basic
 ```
 
 
+#### Adding TLS to ingress
+
+##### Generate cert
+```console
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -out aks-ingress-tls.crt \
+    -keyout aks-ingress-tls.key \
+    -subj "//CN=demo.azure.com\O=aks-ingress-tls"
+```
+##### Create K8s secret to store cert
+
+```console
+kubectl create secret tls aks-ingress-tls \
+    --namespace ingress-basic \
+    --key aks-ingress-tls.key \
+    --cert aks-ingress-tls.crt
+    --namespace=ingress-basic
+```
+
+##### Deploy new version of ingress
+```console
+kubectl apply -f ingress-tls.yaml  --namespace=ingress-basic
+```
+##### Testing out service
+```console
+service=40.68.156.192
+curl -v -k --resolve demo.azure.com:443:$service https://demo.azure.com/
+curl -v -k --resolve demo.azure.com:443:$service https://demo.azure.com/apple
+curl -v -k --resolve demo.azure.com:443:$service https://demo.azure.com/banana
+```
+
+<pre>
+server: nginx/1.15.10
+date: Tue, 30 Jul 2019 14:06:30 GMT
+content-type: text/plain; charset=utf-8
+content-length: 21
+strict-transport-security: max-age=15724800; includeSubDomains
+default backend - 404* Connection #0 to host demo.azure.com left intact
+
+apple
+* Connection #0 to host demo.azure.com left intact
+
+banana
+* Connection #0 to host demo.azure.com left intact
+
+</pre>
+
+
+
 ##### Based on 
 https://matthewpalmer.net/kubernetes-app-developer/articles/kubernetes-ingress-guide-nginx-example.html
 https://docs.microsoft.com/en-us/azure/aks/ingress-basic
+https://docs.microsoft.com/en-us/azure/aks/ingress-own-tls
