@@ -238,3 +238,29 @@ rss-site   2         2         2            2           1m
 ##### Based on 
 
 ##### https://www.mirantis.com/blog/introduction-to-yaml-creating-a-kubernetes-deployment/
+
+
+You can also specify more complex properties, such as a command to run when the container starts, arguments it should use, a working directory, 
+or whether to pull a new copy of the image every time it’s instantiated.  
+You can also specify even deeper information, such as the location of the container’s exit log.  
+Here are the properties you can set for a Container:
+
+name
+image
+command
+args
+workingDir
+ports
+env
+resources
+volumeMounts
+livenessProbe
+readinessProbe
+lifecycle
+terminationMessagePath
+imagePullPolicy
+securityContext
+stdin
+stdinOnce
+tty
+
