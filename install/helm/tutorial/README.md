@@ -189,4 +189,58 @@ helm delete my-ghost  --purge
 release "my-ghost" deleted
 </pre>
 
-### Based on https://www.linode.com/docs/applications/containers/kubernetes/how-to-install-apps-on-kubernetes-with-helm/
+```console
+helm create mychart
+```
+<pre>
+mychart
+|-- Chart.yaml
+|-- charts
+|-- templates
+|   |-- NOTES.txt
+|   |-- _helpers.tpl
+|   |-- deployment.yaml
+|   |-- ingress.yaml
+|   `-- service.yaml
+`-- values.yaml
+</pre>
+
+```console
+helm install --dry-run --debug ./mychart
+```
+```console
+helm install --dry-run --debug ./mychart --set service.internalPort=8080
+```
+
+```console
+helm install --name example ./mychart --set service.type=NodePort
+```
+
+<pre>
+NOTES:
+1. Get the application URL by running these commands:
+  export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services example-mychart)
+  export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+
+</pre>
+
+```console
+kubectl port-forward service/example-mychart 9999:80
+```
+
+#### Look at
+http://localhost:9999/
+
+<pre>
+Welcome to nginx!
+If you see this page, the nginx web server is successfully installed and working. Further configuration is required.
+For online documentation and support please refer to nginx.org.
+Commercial support is available at nginx.com.
+
+Thank you for using nginx.
+</pre>
+
+##### Based on https://www.linode.com/docs/applications/containers/kubernetes/how-to-install-apps-on-kubernetes-with-helm/
+
+##### https://docs.bitnami.com/kubernetes/how-to/create-your-first-helm-chart/
