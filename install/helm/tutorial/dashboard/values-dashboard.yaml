@@ -1,0 +1,10 @@
+image:
+  repository: kubernetesdashboarddev/kubernetes-dashboard-amd64
+  tag: 7fa1563213bdcc3deaff42183511a243d4c04268
+
+extraArgs:
+  - --system-banner="Test Cluster"
+  - --namespace=default
+
+rbac:
+  clusterAdminRole: false
