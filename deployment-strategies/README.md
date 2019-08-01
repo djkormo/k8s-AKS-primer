@@ -138,7 +138,7 @@ You download and run Prometheus with its components; it's that simple.
 Prometheus is fully Docker compatible, and a number of Prometheus components within Prometheus itself are available on the Docker Hub.
 
 
-Promtheus Server
+Prometheus Server
 
 Prometheus has a main central component called Prometheus Server. 
 As a monitoring service, Prometheus servers monitor a particular thing. 
@@ -146,7 +146,7 @@ That thing could be anything: it could be a an entire Linux server, a stand-alon
 
 Each unit of a target such as current CPU status, memory usage (in case of a Linux server Prometheus Target) or any other specific unit that you would like to monitor is called a **metric**. So Prometheus server collects metrics from targets (over HTTP), stores them locally or remotely and displays them back in the Prometheus server.
 
-The Prometheus server scrapes targets at an interval that you define to collect metrics from specific targets and store them in a time-series database. You define the targets to be scraped and the time-interval for scraping metrics.
+The Prometheus server **scrapes** targets at an interval that you define to collect metrics from specific targets and store them in a time-series database. You define the targets to be scraped and the time-interval for scraping metrics.
 
 
 
