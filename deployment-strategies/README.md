@@ -159,3 +159,6 @@ Prometheus provides client-libraries in a number of languages that you can use t
 Visualization Layer with **Grafana**
 You use Grafana, the visualization layer, as the 3rd component to visualize metrics stored in the Prometheus time-series database. Instead of writing PromQL queries directly into the Prometheus server, you use Grafana UI boards to query metrics from Prometheus server and visualize them in the Grafana Dashboard as a whole, as we will see it in action shortly.
 
+
+![Prometheus and Grafana](prom-graf.png)
+
