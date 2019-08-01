@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    owner: djkormo
+    run: my-app
+  name: my-app
+  selfLink: /api/v1/namespaces/default/services/my-app
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    run: my-app
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
