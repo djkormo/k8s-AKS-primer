@@ -1,4 +1,4 @@
-###Simple operations with Helm
+### Simple operations with Helm
 
 
 ```console
@@ -30,12 +30,14 @@ helm repo add azure-samples  https://azure-samples.github.io/helm-charts/
 <pre>
 "azure-samples" has been added to your repositories
 </pre>
+
 ```console
 helm repo add azure-marketplace https://marketplace.azurecr.io/helm/v1/repo
 ```
 <pre>
 "azure-marketplace" has been added to your repositories
-<pre>
+</pre>
+
 ```console
 helm repo update  
 ```
@@ -66,7 +68,6 @@ helm repo update
 ```
 <pre>
 "stable" has been added to your repositories
-
 </pre>
 
 ```console
