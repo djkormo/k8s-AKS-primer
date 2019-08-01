@@ -418,11 +418,12 @@ my-app-67dbbfbd74-kkw9g   1/1     Running   0          63s   10.244.0.125   aks-
 my-app-67dbbfbd74-kvw4l   1/1     Running   0          59s   10.244.0.126   aks-agentpool-64356105-0   <none>
 </pre>
 ##### Look what is going with Replicaset objects
+
 <pre>
 NAME                 DESIRED   CURRENT   READY   AGE
 my-app-64dd8fc57f    0         0         0       15m
 my-app-67dbbfbd74    2         2         2       10m
-<pre>
+</pre>
 
 ##### Exporting  to yaml 
 ```console
@@ -430,11 +431,13 @@ kubectl get deployment my-app -o yaml --export > my-app-deployment.yaml
 kubectl get service my-app -o yaml --export > my-app-service.yaml
 ###### replicasets and pods are controlled and don’t need manifests (the deployment spec contains a pod template)
 ```
+
 <pre>
 Flag --export has been deprecated, This flag is deprecated and will be removed in future.
 </pre>
 
 my-app-deployment.yaml
+
 ```yaml
 apiVersion: extensions/v1beta1
 kind: Deployment
