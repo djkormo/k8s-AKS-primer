@@ -512,4 +512,12 @@ status:
 ```
 
 
+##### Recreate the same from yaml files
+
+```console
+kubectl delete deployment my-app
+kubectl delete service my-app
+kubectl apply -f my-app-deployment.yaml -f my-app-service.yaml
+```
+
 
