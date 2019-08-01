@@ -56,6 +56,7 @@ kubectl describe deployment my-chess
 ```console
 kubectl get deployment --show-labels
 ```
+
 <pre>
 NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE   LABELS
 my-chess   2         2         2            2           5m    run=my-chess
@@ -104,10 +105,10 @@ deployment.extensions/my-chess labeled
 ```console
 kubectl get deployment --show-labels
 ```
-</pre>
+<pre>
 NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE   LABELS
 my-chess   2         2         2            2           10m   owner=djkormo,run=my-chess
-<pre>
+</pre>
 
 ```console
 kubectl get pods -l run=my-chess
