@@ -165,11 +165,15 @@ You use Grafana, the visualization layer, as the 3rd component to visualize metr
 
 
 Per-pod Prometheus Annotations
+
 Annotations on pods allow a fine control of the scraping process:
 
 **prometheus.io/scrape**: The default configuration will scrape all pods and, if set to false, this annotation will exclude the pod from the scraping process.
+
 **prometheus.io/path**: If the metrics path is not /metrics, define it with this annotation.
+
 **prometheus.io/port**: Scrape the pod on the indicated port instead of the pod’s declared ports (default is a port-free target if none are declared).
+
 
 
 
