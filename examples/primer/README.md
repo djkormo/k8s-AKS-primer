@@ -383,7 +383,7 @@ echo $WHOAMI
 HAL 9000
 </pre>
 
-#### On what nodes are out pods
+#### On what nodes are our pods
 ```console
 kubectl get pods -l run=my-app -o wide # check the NODE column
 ```
@@ -417,7 +417,12 @@ NAME                      READY   STATUS    RESTARTS   AGE   IP             NODE
 my-app-67dbbfbd74-kkw9g   1/1     Running   0          63s   10.244.0.125   aks-agentpool-64356105-0   <none>
 my-app-67dbbfbd74-kvw4l   1/1     Running   0          59s   10.244.0.126   aks-agentpool-64356105-0   <none>
 </pre>
-
+##### Look what is going with Replicaset objects
+<pre>
+NAME                 DESIRED   CURRENT   READY   AGE
+my-app-64dd8fc57f    0         0         0       15m
+my-app-67dbbfbd74    2         2         2       10m
+<pre>
 
 ##### Exporting  to yaml 
 ```console
