@@ -433,7 +433,7 @@ kubectl get service my-app -o yaml --export > my-app-service.yaml
 <pre>
 Flag --export has been deprecated, This flag is deprecated and will be removed in future.
 </pre>
-```
+
 my-app-deployment.yaml
 ```yaml
 apiVersion: extensions/v1beta1
@@ -484,7 +484,9 @@ spec:
       terminationGracePeriodSeconds: 30
 status: {}
 ```
+
 my-app-service.yaml
+
 ```yaml
 apiVersion: v1
 kind: Service
