@@ -77,6 +77,7 @@ helm search ghost
 NAME                    CHART VERSION   APP VERSION     DESCRIPTION
 
 azure-marketplace/ghost 6.7.32          2.25.9          A simple, powerful publishing platform that allows you to...
+stable/ghost            6.7.33          2.26.0          A simple, powerful publishing platform that allows you to...
 </pre>
 
 ```console
