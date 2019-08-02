@@ -72,7 +72,7 @@ kubectl run load-generator --generator=run-pod/v1 \
 ```
 
 <pre>
-while true; do wget -q -O- http://apache-php-api.default.svc.cluster.local; done
+while true; do wget -q -O- http://apache-php-api.default.svc.cluster.local/pi.php; done
 </pre>
 
 #### Based on  https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/

@@ -130,6 +130,22 @@ EOF
 kubectl apply -f ./quotas.yaml --namespace=my-app
 
 ```
+### Creating limit ranges for pods in namespace
+
+```console
+ kubectl apply -f ./limit-mem-cpu-container.yaml --namespace=my-app
+```
+
+```console
+kubectl describe limitrange
+```
+<pre>
+Namespace:  my-app
+Type        Resource  Min   Max   Default Request  Default Limit  Max Limit/Request Ratio
+----        --------  ---   ---   ---------------  -------------  -----------------------
+Container   memory    50Mi  1Gi   101Mi            200Mi          -
+Container   cpu       50m   800m  100m             200m           -
+</pre>
 
 Prometheus is an open-source and one of the popular CNCF projects written in Golang. 
 Some of its components are written in Ruby but most of the components are written in Go. 

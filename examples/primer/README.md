@@ -10,8 +10,7 @@ kubectl run --generator=deployment/apps.v1 is DEPRECATED and will be removed in 
 ###### Create only pod (different case)
 ```console
 kubectl run my-app --image=djkormo/primer --replicas=2 --generator=run-pod/v1
-console
-
+```
 
 ```console
 kubectl get deployment # or deploy
