@@ -27,6 +27,41 @@ TCP probes come in handy if you have a scenario where HTTP probes or command pro
 You can read more about TCP probes here.
 
 
+```console
+kubectl apply -f ./exec-liveness.yaml
+```
+<pre>
+kubectl apply -f ./exec-liveness.yaml
+</pre>
+
+```console
+kubectl get pod liveness-exec
+```
+<pre>
+NAME            READY   STATUS    RESTARTS   AGE
+liveness-exec   1/1     Running   1          108s
+
+NAME            READY   STATUS    RESTARTS   AGE
+liveness-exec   1/1     Running   2          3m6s
+
+</pre>
+#### Why is the pod in restarting mode ?
+```
+kubectl describe pod liveness-exec |grep Events -A20
+```
+<pre>
+Events:
+  Type     Reason     Age                    From                               Message
+  ----     ------     ----                   ----                               -------
+  Normal   Scheduled  9m37s                  default-scheduler                  Successfully assigned my-app/liveness-exec to aks-nodepool1-16191604-1
+  Normal   Pulled     7m5s (x3 over 9m35s)   kubelet, aks-nodepool1-16191604-1  Successfully pulled image "k8s.gcr.io/busybox"
+  Normal   Created    7m4s (x3 over 9m35s)   kubelet, aks-nodepool1-16191604-1  Created container liveness
+  Normal   Started    7m4s (x3 over 9m34s)   kubelet, aks-nodepool1-16191604-1  Started container liveness
+  Warning  Unhealthy  6m21s (x9 over 9m1s)   kubelet, aks-nodepool1-16191604-1  Liveness probe failed: cat: can't open '/tmp/healthy': No such file or directory
+  Normal   Killing    6m21s (x3 over 8m51s)  kubelet, aks-nodepool1-16191604-1  Container liveness failed liveness probe, will be restarted
+  Normal   Pulling    4m35s (x5 over 9m36s)  kubelet, aks-nodepool1-16191604-1  Pulling image "k8s.gcr.io/busybox"
+</pre>
+
 
 ```console
 kubectl apply -f kuard-deploy-heath-check.yaml
@@ -37,17 +72,18 @@ kubectl get all --namespace=default
 ```
 <pre>
 NAME                                           READY   STATUS    RESTARTS   AGE
-pod/kuard-health-deployment-68d9766d56-hd6xp   1/1     Running   0          11m
-pod/kuard-health-deployment-68d9766d56-kqhjh   1/1     Running   0          11m
+pod/kuard-health-deployment-68d9766d56-89v27   1/1     Running   0          105s
+pod/kuard-health-deployment-68d9766d56-thj9p   1/1     Running   0          105s
+pod/liveness-exec                              1/1     Running   9          18m
 
-NAME                   TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
-service/kuard-health   NodePort    10.0.53.91    <none>        8080:31324/TCP   11m
+NAME                   TYPE       CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
+service/kuard-health   NodePort   10.0.211.24   <none>        8080:31885/TCP   106s
 
 NAME                                      READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/kuard-health-deployment   2/2     2            2           11m
+deployment.apps/kuard-health-deployment   2/2     2            2           106s
 
 NAME                                                 DESIRED   CURRENT   READY   AGE
-replicaset.apps/kuard-health-deployment-68d9766d56   2         2         2       11m
+replicaset.apps/kuard-health-deployment-68d9766d56   2         2         2       106s
 </pre>
 
 ```console
@@ -60,6 +96,33 @@ Handling connection for 8080
 Handling connection for 8080
 </pre>
 
+```console
+kubectl get pods
+```
+<pre>
+NAME                                       READY   STATUS             RESTARTS   AGE
+kuard-health-deployment-68d9766d56-89v27   1/1     Running            3          11m
+kuard-health-deployment-68d9766d56-thj9p   1/1     Running            0          11m
+liveness-exec                              0/1     CrashLoopBackOff   11         27m
+</pre>
+
+```console
+kubectl describe pod kuard-health-deployment-68d9766d56-89v27 |grep Events -A20
+```
+<pre>
+Events:
+  Type     Reason     Age                   From                               Message
+  ----     ------     ----                  ----                               -------
+  Normal   Scheduled  19m                   default-scheduler                  Successfully assigned my-app/kuard-health-deployment-68d9766d56-89v27 to aks-nodepool1-16191604-1
+  Warning  BackOff    9m4s (x2 over 9m11s)  kubelet, aks-nodepool1-16191604-1  Back-off restarting failed container
+  Normal   Killing    3m44s                 kubelet, aks-nodepool1-16191604-1  Container kuard-health failed liveness probe, will be restarted
+  Warning  Unhealthy  3m44s (x3 over 4m4s)  kubelet, aks-nodepool1-16191604-1  Liveness probe failed: HTTP probe
+failed with statuscode: 500
+  Normal   Pulling    3m43s (x4 over 19m)   kubelet, aks-nodepool1-16191604-1  Pulling image "djkormo/kuard"
+  Normal   Pulled     3m42s (x4 over 19m)   kubelet, aks-nodepool1-16191604-1  Successfully pulled image "djkormo/kuard"
+  Normal   Created    3m42s (x4 over 19m)   kubelet, aks-nodepool1-16191604-1  Created container kuard-health
+  Normal   Started    3m42s (x4 over 19m)   kubelet, aks-nodepool1-16191604-1  Started container kuard-health
+</pre>
 
 ## Resources reqests and limits
 
