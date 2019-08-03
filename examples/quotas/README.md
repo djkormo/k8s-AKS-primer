@@ -1,4 +1,7 @@
-## Create namespace for application
+## Using quotas and pod resource limits
+
+
+### Create namespace for application
 
 ```console
 kubectl create namespace my-app
@@ -30,7 +33,7 @@ kubectl apply -f ./quotas.yaml --namespace=my-app
 
 ```
 <pre>
-resourcequota/compute-resources configured
+resourcequota/compute-resources created
 </pre>
 
 ### Creating limit ranges for pods in namespace
@@ -53,13 +56,16 @@ spec:
       memory: "200Mi"
     defaultRequest:
       cpu: "100m"
-      memory: "101Mi"
+      memory: "100Mi"
     type: Container
 ```
 
 ```console
  kubectl apply -f ./limit-mem-cpu-container.yaml --namespace=my-app
 ```
+<pre>
+kubectl apply -f ./limit-mem-cpu-container.yaml --namespace=my-app
+</pre>
 
 ```console
 kubectl describe limitrange
@@ -74,7 +80,7 @@ Container   cpu       50m   800m  100m             200m           -
 
 
 ```console
-kubectl describe namespace my-app |grep "Resource Quotas" -a9
+kubectl describe namespace my-app |grep "Resource Quotas" -A9
 ```
 
 <pre>
@@ -82,12 +88,12 @@ Resource Quotas
  Name:                    compute-resources
  Resource                 Used  Hard
  --------                 ---   ---
- limits.cpu               0     4
- limits.memory            0     4Gi
+ limits.cpu               0     2
+ limits.memory            0     2Gi
  pods                     0     20
- requests.cpu             0     2
- requests.memory          0     2Gi
- requests.nvidia.com/gpu  0     4
+ requests.cpu             0     1
+ requests.memory          0     1Gi
+ requests.nvidia.com/gpu  0     3
 </pre>
 
 
@@ -131,7 +137,7 @@ kubectl get pod pod-quota-1 --namespace=my-app
 ```
 <pre>
 NAME          READY   STATUS    RESTARTS   AGE
-pod-quota-1   1/1     Running   0          2m38s
+pod-quota-1   1/1     Running   0          8s
 </pre>
 
 ```console
@@ -141,26 +147,26 @@ kubectl get resourcequota compute-resources --namespace=my-app --output=yaml
 <pre>
 spec:
   hard:
-    limits.cpu: "4"
-    limits.memory: 4Gi
+    limits.cpu: "2"
+    limits.memory: 2Gi
     pods: "20"
-    requests.cpu: "2"
-    requests.memory: 2Gi
-    requests.nvidia.com/gpu: "4"
+    requests.cpu: "1"
+    requests.memory: 1Gi
+    requests.nvidia.com/gpu: "3"
 status:
   hard:
-    limits.cpu: "4"
-    limits.memory: 4Gi
+    limits.cpu: "2"
+    limits.memory: 2Gi
     pods: "20"
-    requests.cpu: "2"
-    requests.memory: 2Gi
-    requests.nvidia.com/gpu: "4"
+    requests.cpu: "1"
+    requests.memory: 1Gi
+    requests.nvidia.com/gpu: "3"
   used:
     limits.cpu: 200m
     limits.memory: 200Mi
     pods: "1"
     requests.cpu: 100m
-    requests.memory: 101Mi
+    requests.memory: 100Mi
     requests.nvidia.com/gpu: "0"
 </pre>
 ```console
@@ -176,7 +182,7 @@ kubectl get pod pod-quota-2 --namespace=my-app
 
 <pre>
 NAME          READY   STATUS    RESTARTS   AGE
-pod-quota-2   1/1     Running   0          101s
+pod-quota-2   1/1     Running   0          32s
 </pre>
 
 
@@ -185,12 +191,12 @@ kubectl get resourcequota compute-resources --namespace=my-app --output=yaml
 ```
 
 <pre>
- used:
+  used:
     limits.cpu: "1"
     limits.memory: 1224Mi
     pods: "2"
     requests.cpu: 500m
-    requests.memory: 801Mi
+    requests.memory: 800Mi
     requests.nvidia.com/gpu: "0"
 </pre>
 
@@ -198,8 +204,13 @@ kubectl get resourcequota compute-resources --namespace=my-app --output=yaml
 kubectl apply -f ./pod-3.yaml
 ```
 <pre>
-Error from server (Forbidden): error when creating "./pod-3.yaml": pods "pod-quota-3" is forbidden: [maximum cpu
-usage per Container is 800m, but limit is 1., maximum memory usage per Container is 1Gi, but limit is 1800Mi.]
+Error from server (Forbidden): error when creating "./pod-3.yaml": pods "pod-quota-3" is forbidden: exceeded quota: compute-resources, requested: limits.memory=1000Mi,requests.cpu=800m,requests.memory=1000Mi, used: limits.memory=1224Mi,requests.cpu=500m,requests.memory=800Mi, limited: limits.memory=2Gi,requests.cpu=1,requests.memory=1Gi
+
 </pre>
 
-
+```console
+kubectl apply -f ./pod-4.yaml
+```
+<pre>
+Error from server (Forbidden): error when creating "./pod-4.yaml": pods "pod-quota-4" is forbidden: maximum cpu usage per Container is 800m, but limit is 1.
+</pre>
