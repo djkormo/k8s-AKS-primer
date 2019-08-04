@@ -93,7 +93,7 @@ spec:
       ports:
         - containerPort: 80
     - name: rss-reader
-      image: nickchase/rss-php-nginx:v1
+      image: nickchase/rss-php-nginx:v2 # v2 does not exist
       ports:
         - containerPort: 88
 ```
@@ -121,7 +121,7 @@ the same in JSON
                       }, 
                       {
                        "name": "rss-reader",
-                       "image": "nickchase/rss-php-nginx:v1",
+                       "image": "nickchase/rss-php-nginx:v2", 
                        "ports": [{
                                   "containerPort": "88"
                                  }]
@@ -166,13 +166,59 @@ rss-site   1/2       ErrImagePull   0          9s
 </pre>
 
 ```console
-kubectl describe pod rss-site
+kubectl describe pod rss-site | grep Events: -A20
 ```
 
 <pre>
-42s           26s             2       {kubelet 10.0.10.7}                    Warning          FailedSync              Error syncing pod, skipping: failed to "StartContainer" for "rss-reader" with ErrImagePull: "Tag latest not found in repository docker.io/nickchase/rss-php-nginx
+Events:
+  Type     Reason     Age                    From                               Message
+  ----     ------     ----                   ----                               -------
+  Normal   Scheduled  3m43s                  default-scheduler                  Successfully assigned my-app/rss-site to aks-nodepool1-16191604-1
+  Normal   Pulling    3m42s                  kubelet, aks-nodepool1-16191604-1  Pulling image "nginx"
+  Normal   Pulled     3m41s                  kubelet, aks-nodepool1-16191604-1  Successfully pulled image "nginx"
+  Normal   Created    3m40s                  kubelet, aks-nodepool1-16191604-1  Created container front-end
+  Normal   Started    3m40s                  kubelet, aks-nodepool1-16191604-1  Started container front-end
+  Normal   Pulling    2m55s (x3 over 3m40s)  kubelet, aks-nodepool1-16191604-1  Pulling image "nickchase/rss-php-nginx:v2"
+  Warning  Failed     2m54s (x3 over 3m39s)  kubelet, aks-nodepool1-16191604-1  Failed to pull image "nickchase/rss-php-nginx:v2": rpc error: code = Unknown desc = Error response from daemon: manifest for nickchase/rss-php-nginx:v2 not found: manifest unknown: manifest unknown
+  Warning  Failed     2m54s (x3 over 3m39s)  kubelet, aks-nodepool1-16191604-1  Error: ErrImagePull
+  Normal   BackOff    2m39s (x3 over 3m38s)  kubelet, aks-nodepool1-16191604-1  Back-off pulling image "nickchase/rss-php-nginx:v2"
+  Warning  Failed     2m39s (x3 over 3m38s)  kubelet, aks-nodepool1-16191604-1  Error: ImagePullBackOff
 </pre>
 
+
+##### Correct v2 do v1 in bad image
+```console
+kubectl create -f pod.yaml
+```
+<pre>
+Error from server (AlreadyExists): error when creating "pod.yaml": pods "rss-site" already exists
+</pre>
+
+```console
+kubectl apply -f pod.yaml
+```
+
+<pre>
+Warning: kubectl apply should be used on resource created by either kubectl create --save-config or kubectl apply
+pod/rss-site configured
+</pre>
+
+```console
+kubectl get pods
+```
+
+<pre>
+NAME       READY   STATUS    RESTARTS   AGE
+rss-site   2/2     Running   0          5m48s
+</pre>
+
+#### deleting pod based on yaml file
+```console
+kubectl delete -f pod.yaml
+```
+<pre>
+pod "rss-site" deleted
+</pre>
 
 #### Creating deployment in YAML
 
@@ -205,7 +251,7 @@ kubectl describe pod rss-site
            ports:
              - containerPort: 80
          - name: rss-reader
-           image: nickchase/rss-php-nginx:v1
+           image: nickchase/rss-php-nginx:v1 ##### v1 is the correct version
            ports:
              - containerPort: 88
 
@@ -216,7 +262,7 @@ kubectl create -f deployment.yaml
 ```
 
 <pre>
-deployment "rss-site" created
+deployment.extensions/rss-site created
 </pre>
 
 ```console
@@ -224,16 +270,25 @@ kubectl get deployments
 ```
 
 <pre>
-NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-rss-site   2         2         2            1           7s
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+rss-site   2/2     2            2           13s
 </pre>
 
-
+```console
+kubectl get rs
+```
 <pre>
-NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-rss-site   2         2         2            2           1m
+NAME                 DESIRED   CURRENT   READY   AGE
+rss-site-c88f9b65c   2         2         2       40s
 </pre>
 
+```console
+kubectl get pods
+```
+<pre>
+rss-site-c88f9b65c-8gqgr   2/2     Running   0          88s
+rss-site-c88f9b65c-xhnjm   2/2     Running   0          88s
+</pre>
 
 ##### Based on 
 

@@ -12,6 +12,6 @@ spec:
       ports:
         - containerPort: 80
     - name: rss-reader
-      image: nickchase/rss-php-nginx:v1
+      image: nickchase/rss-php-nginx:v2 ### bad version, should be v1
       ports:
         - containerPort: 88
