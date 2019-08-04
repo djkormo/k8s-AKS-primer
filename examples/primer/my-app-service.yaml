@@ -6,7 +6,7 @@ metadata:
     owner: djkormo
     run: my-app
   name: my-app
-  selfLink: /api/v1/namespaces/default/services/my-app
+  selfLink: /api/v1/namespaces/my-app/services/my-app
 spec:
   ports:
   - port: 3000
