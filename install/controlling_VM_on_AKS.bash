@@ -2,9 +2,9 @@
 
 # bash controlling_VM_on_AKS.bash -o start -n aks-simple5129 -g rg-aks-simple
 
-##1  start or stop
-#$2  aks_name
-#$3 ars-rg
+# -o start , stop, status
+# -n aks-name
+# -g aks-rg
 # set your name and resource group
 
 while getopts n:g:o: option
