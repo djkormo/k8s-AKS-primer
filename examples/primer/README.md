@@ -39,6 +39,33 @@ kubectl run my-app --image=djkormo/primer --replicas=2 --generator=run-pod/v1
 pod/my-app created
 </pre>
 
+#### You can also try to verify  in dry run mode
+```
+kubectl run my-app --generator=run-pod/v1 nginx --image=djkormo/primer --dry-run -o yaml --port=3000
+```
+##### Definition of pod in YAML format
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: my-app
+  name: my-app
+spec:
+  containers:
+  - args:
+    - nginx
+    image: djkormo/primer
+    name: my-app
+    ports:
+    - containerPort: 3000
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+```
+
 ###### Let's stop at this moment
 
 #### See what we have inside k8s cluster
