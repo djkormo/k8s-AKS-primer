@@ -720,4 +720,56 @@ replicaset.apps/my-app-dd8846c94   2         2         2       54s
 </pre>
 
 
+###### Not only kubectl
+```console
+kubectl proxy
+```
+<pre>
+Starting to serve on 127.0.0.1:8001
+</pre>
+
+##### Try to use http://localhost:8001/api/v1/namespaces/my-app/services/my-app
+
+```json
+{
+  "kind": "Service",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "my-app",
+    "namespace": "my-app",
+    "selfLink": "/api/v1/namespaces/my-app/services/my-app",
+    "uid": "e82695e9-b6b2-11e9-8fb6-7a04c9d91c64",
+    "resourceVersion": "1702098",
+    "creationTimestamp": "2019-08-04T12:25:12Z",
+    "labels": {
+      "owner": "djkormo",
+      "run": "my-app"
+    },
+    "annotations": {
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"creationTimestamp\":null,\"labels\":{\"owner\":\"djkormo\",\"run\":\"my-app\"},\"name\":\"my-app\",\"namespace\":\"my-app\",\"selfLink\":\"/api/v1/namespaces/my-app/services/my-app\"},\"spec\":{\"ports\":[{\"port\":3000,\"protocol\":\"TCP\",\"targetPort\":3000}],\"selector\":{\"run\":\"my-app\"},\"sessionAffinity\":\"None\",\"type\":\"ClusterIP\"},\"status\":{\"loadBalancer\":{}}}\n"
+    }
+  },
+  "spec": {
+    "ports": [
+      {
+        "protocol": "TCP",
+        "port": 3000,
+        "targetPort": 3000
+      }
+    ],
+    "selector": {
+      "run": "my-app"
+    },
+    "clusterIP": "10.0.230.0",
+    "type": "ClusterIP",
+    "sessionAffinity": "None"
+  },
+  "status": {
+    "loadBalancer": {
+      
+    }
+  }
+}
+```
+
 
