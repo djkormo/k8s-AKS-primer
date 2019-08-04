@@ -59,11 +59,13 @@ az vm start --ids $(az vm list -g $RG_VM_POOL --query "[].id" -o tsv) --no-wait
 fi
 
 if [ "$OPERATION" = "stop" ] ;
+then
 echo "stopping VMs...";
 az vm deallocate --ids $(az vm list -g $RG_VM_POOL --query "[].id" -o tsv) --no-wait
 fi
 
 if [ "$OPERATION" = "status" ] ;
+then
 echo "listing VMs...";
 az vm list -g $RG_VM_POOL -o table
 fi
