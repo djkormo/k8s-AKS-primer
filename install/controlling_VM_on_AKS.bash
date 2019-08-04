@@ -5,7 +5,7 @@
 ##1  start or stop
 #$2  aks_name
 #$3 ars-rg
-# set your name and resource group 
+# set your name and resource group
 
 while getopts n:g:o: option
 do
@@ -16,13 +16,6 @@ g) AKS_RG=${OPTARG};;
 o) OPERATION=${OPTARG};;
 esac
 done
-
-echo "OPERATION: $OPERATION"
-echo "AKS_NAME: $AKS_NAME"
-echo "AKS_RG: $AKS_RG"
-
-#AKS_NAME=aks-simple
-#AKS_RG=rg-aks-simple
 
 if [ -z "$OPERATION" ]
 then
@@ -45,28 +38,32 @@ else
       echo "\$AKS_RG is NOT empty"
 fi
 
-# get the resource group for VMs 
+echo "OPERATION: $OPERATION"
+echo "AKS_NAME: $AKS_NAME"
+echo "AKS_RG: $AKS_RG"
+
+
+# get the resource group for VMs
 
 RG_VM_POOL=$(az aks show -g $AKS_RG -n $AKS_NAME --query nodeResourceGroup -o tsv)
-  
+
 echo "RG_VM_POOL: $RG_VM_POOL"
 
 az vm list -d -g $RG_VM_POOL  | grep powerState
 
-# stop VMs
-#az vm deallocate --ids $(az vm list -g $RG_VM_POOL --query "[].id" -o tsv) --no-wait
 
-# or
-
-# start VMS
-#az vm start --ids $(az vm list -g $RG_VM_POOL --query "[].id" -o tsv) --no-wait
-
-
-if [ "$OPERATION" -eq "start" ] ; 
-then 
-echo "starting VMs..."; 
+if [ "$OPERATION" = "start" ] ;
+then
+echo "starting VMs...";
 az vm start --ids $(az vm list -g $RG_VM_POOL --query "[].id" -o tsv) --no-wait
-else 
-echo "stopping VM..."; 
+fi
+
+if [ "$OPERATION" = "stop" ] ;
+echo "stopping VMs...";
 az vm deallocate --ids $(az vm list -g $RG_VM_POOL --query "[].id" -o tsv) --no-wait
+fi
+
+if [ "$OPERATION" = "status" ] ;
+echo "listing VMs...";
+az vm list -g $RG_VM_POOL -o table
 fi
