@@ -389,12 +389,14 @@ kubectl apply -f postgres-secret-pvc-deployment.yaml --namespace=postgres-app
 deployment.apps/postgres configured
 </pre>
 
-
+```console
 kubectl get pods --namespace=postgres-app
-
+```
+<pre>
 NAME                        READY   STATUS    RESTARTS   AGE
 postgres-69867dc454-qn6hf   1/1     Running   0          97s
 webapp-5bdbc4bffb-4n84q     1/1     Running   0          14m
+</pre>
 
 ```console
 POSTGRES_POD=$(
@@ -412,19 +414,21 @@ Volumes:
 </pre>
 
 #### restart pod with webapp by deleting it
-
+```console
 kubectl delete pod/webapp-5bdbc4bffb-4n84q --namespace=postgres-app
-
+```
 
 ###### forward port 
+```console
 kubectl port-forward service/webapp 8080:8080 --namespace=postgres-app
+```
 
 #### after a while
-
+```console
 curl -X POST http://localhost:8080/ -d "full_url=https://redhat.com"
 curl -X POST http://localhost:8080/ -d "full_url=https://portal.azure.com"
 curl -X POST http://localhost:8080/ -d "full_url=https://www.whitehouse.gov"
-
+```
 <pre>
 ngDJXOj
 RTdkAmi
