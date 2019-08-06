@@ -86,13 +86,13 @@ deployment.apps/webapp   1/1     1            1           2m6s
 NAME                                DESIRED   CURRENT   READY   AGE
 replicaset.apps/webapp-586ff7cfcd   1         1         1       2m6s
 </pre>
-
+```
 WEBAPP_POD=$(
 kubectl get pods --namespace=postgres-app -l app=webapp -o jsonpath={.items[0].metadata.name})
 echo $WEBAPP_POD
 
 kubectl logs $WEBAPP_POD --namespace=postgres-app
-
+```
 <pre>
 time="2019-08-06T18:15:56Z" level=info msg="Connecting to Postgres database using: host=`postgres:5432` dbname=`url_shortener_db` username=`user`\n"
 time="2019-08-06T18:15:56Z" level=info msg="Adding the 'uuid-ossp' extension..."
@@ -123,6 +123,7 @@ NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)          AGE   SELECTO
 postgres   ClusterIP   10.0.54.35   <none>        5432/TCP         10m   app=postgres
 webapp     NodePort    10.0.48.34   <none>        8080:31317/TCP   97s   app=webapp
 </pre>
+
 ```console
 kubectl port-forward service/webapp 8080:8080 --namespace=postgres-app
 ```
@@ -136,10 +137,11 @@ vtwo17O
 HF8sL7e
 8HpiBPW
 </pre>
-
+```console
 curl -X GET http://localhost:8080/vtwo17O -v
 curl -X GET http://localhost:8080/HF8sL7e -v
 curl -X GET http:/localhost:8080/8HpiBPW -v
+```
 
 <pre>
 ...
