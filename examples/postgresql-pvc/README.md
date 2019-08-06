@@ -127,16 +127,17 @@ webapp     NodePort    10.0.48.34   <none>        8080:31317/TCP   97s   app=web
 ```console
 kubectl port-forward service/webapp 8080:8080 --namespace=postgres-app
 ```
-
+```console
 curl -X POST http://localhost:8080/ -d "full_url=https://redhat.com"
 curl -X POST http://localhost:8080/ -d "full_url=https://portal.azure.com"
 curl -X POST http://localhost:8080/ -d "full_url=https://www.whitehouse.gov"
-
+```
 <pre>
 vtwo17O
 HF8sL7e
 8HpiBPW
 </pre>
+
 ```console
 curl -X GET http://localhost:8080/vtwo17O -v
 curl -X GET http://localhost:8080/HF8sL7e -v
@@ -173,9 +174,11 @@ curl -X GET http:/localhost:8080/8HpiBPW -v
 ```console
 echo -n "url_shortener_db" | base64 -
 ```
+
 <pre>
 dXJsX3Nob3J0ZW5lcl9kYg==
 </pre>
+
 ```console
 echo -n "user" | base64 -
 ```
@@ -345,8 +348,8 @@ kubectl get pods --namespace=postgres-app -l app=webapp -o jsonpath={.items[0].m
 echo $WEBAPP_POD
 kubectl exec -it $WEBAPP_POD bash  --namespace=postgres-app
 kubectl logs $WEBAPP_POD --namespace=postgres-app
-
 ```
+
 <pre>
 
 cat /etc/config/config.yaml
