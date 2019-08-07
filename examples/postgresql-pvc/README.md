@@ -1,11 +1,15 @@
 ##### repo for application https://github.com/xcoulon/go-url-shortener
 
+
+#### Let's create our application namespace (psotres-app)
 ```console
 kubectl create namespace postgres-app
 ```
 <pre>
 
 </pre>
+
+#### Creating pod for postgresql database
 
 ```console
 kubectl apply -f ./postgres-deployment.yaml --namespace=postgres-app
@@ -14,6 +18,7 @@ kubectl apply -f ./postgres-deployment.yaml --namespace=postgres-app
 deployment.apps/postgres created
 </pre>
 
+#### See what we have inside our namespace
 ```console
 kubectl get all --namespace=postgres-app
 ```
@@ -28,6 +33,8 @@ deployment.apps/postgres   1/1     1            1           61s
 NAME                                 DESIRED   CURRENT   READY   AGE
 replicaset.apps/postgres-cd7d5b497   1         1         1       61s
 </pre>
+
+#### Check what is inside of our posgresql pod
 
 ```console
 POSTGRES_POD=$(
@@ -51,12 +58,15 @@ url_shortener_db=#
 exit
 </pre>
 
+#### Create service for postgresql
+
 ```console
 kubectl apply -f postgres-service.yaml --namespace=postgres-app
 ```
 <pre>
 service/postgres created
 </pre>
+
 ```console
 kubectl get services  --namespace=postgres-app
 ```
@@ -64,6 +74,8 @@ kubectl get services  --namespace=postgres-app
 NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
 postgres   ClusterIP   10.0.54.35   <none>        5432/TCP   18s
 </pre>
+
+#### Create web application for with podstresql backend
 
 ```console
 kubectl apply -f webapp-deployment.yaml --namespace=postgres-app
@@ -86,6 +98,8 @@ deployment.apps/webapp   1/1     1            1           2m6s
 NAME                                DESIRED   CURRENT   READY   AGE
 replicaset.apps/webapp-586ff7cfcd   1         1         1       2m6s
 </pre>
+
+#### See logs of webapp part of our application
 ```
 WEBAPP_POD=$(
 kubectl get pods --namespace=postgres-app -l app=webapp -o jsonpath={.items[0].metadata.name})
@@ -107,6 +121,9 @@ ____________________________________O/_______
                                     O\
 ⇨ http server started on [::]:8080
 </pre>
+
+#### Let's create service for web application
+
 ```console
 kubectl apply -f webapp-service.yaml --namespace=postgres-app
 ```
@@ -123,6 +140,8 @@ NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)          AGE   SELECTO
 postgres   ClusterIP   10.0.54.35   <none>        5432/TCP         10m   app=postgres
 webapp     NodePort    10.0.48.34   <none>        8080:31317/TCP   97s   app=webapp
 </pre>
+
+#### LOcal test of web app application on port 8080
 
 ```console
 kubectl port-forward service/webapp 8080:8080 --namespace=postgres-app
