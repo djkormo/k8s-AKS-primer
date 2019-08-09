@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fileshare-deployment
+  namespace: filesharetest
+  labels:
+    app: fileshare-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fileshare-deployment
+  template:
+    metadata:
+      labels:
+        app: fileshare-deployment
+    spec:
+      volumes:
+      - name: azure
+        persistentVolumeClaim:
+          claimName: fileshare-pvc
+      containers:
+      - name: main
+        image: nginx:1.15.5
+        volumeMounts:
+        - name: azure
+          mountPath: "/configfiles"
