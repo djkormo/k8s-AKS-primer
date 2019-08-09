@@ -68,7 +68,7 @@ kubectl apply -f ./limit-mem-cpu-container.yaml --namespace=my-app
 </pre>
 
 ```console
-kubectl describe limitrange
+kubectl describe limitrange --namespace=my-app
 ```
 <pre>
 Namespace:  my-app

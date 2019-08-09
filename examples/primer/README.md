@@ -12,9 +12,11 @@ deployment.apps/my-app created
 
 ```console
 kubectl delete deployment/my-app
+kubectl delete service/kubernetes
 ```
 <pre>
 deployment.extensions "my-app" deleted
+service "kubernetes" deleted
 </pre>
 
 ```console

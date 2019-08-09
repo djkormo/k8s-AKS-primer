@@ -2,14 +2,14 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    deployment.kubernetes.io/revision: "4"
+    deployment.kubernetes.io/revision: "3"
   creationTimestamp: null
   generation: 1
   labels:
     owner: djkormo
     run: my-app
   name: my-app
-  selfLink: /apis/extensions/v1beta1/namespaces/my-app/deployments/my-app
+  selfLink: /apis/extensions/v1beta1/namespaces/default/deployments/my-app
 spec:
   progressDeadlineSeconds: 600
   replicas: 2
