@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-failure-app
+  labels:
+    app: my-failure-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-failure-app
+  template:
+    metadata:
+      labels:
+        app: my-failure-app
+        version: v1.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9101"
+    spec:
+      containers:
+      - name: my-failure-app
+        image: djkormo/primer
+        resources:
+          limits:
+            cpu: "0.2"
+            memory: "100Mi"
+          requests:
+            cpu: "0.1"
+            memory: "50Mi"
+        ports:
+        - name: http
+          containerPort: 3000
+        - name: probe
+          containerPort: 3000
+        env:
+        - name: VERSION
+          value: v1.0.0
+        
