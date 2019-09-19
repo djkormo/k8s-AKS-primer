@@ -111,6 +111,34 @@ EOF
 kubectl apply -f operator.yml
 ```
 <pre>
+deployment.apps/op created
+</pre>
+
+```console
+kubectl get deploy,pod
+```
+
+```console
+cat <<EOF > mongo.yml
+apiVersion: zalando.org/v1
+kind: Database
+metadata:
+  name: mongo-db
+spec:
+  type: mongo
+EOF
+```
+
+```console
+kubectl apply -f mongo.yml
+```
+<pre>
+database.zalando.org/mongo-db created
+</pre>
+
+```console
+kubectl get pod,svc
+```
 Literature:
 
 https://medium.com/swlh/building-a-kubernetes-operator-in-python-with-zalandos-kopf-37c311d8edff

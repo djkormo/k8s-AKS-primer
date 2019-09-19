@@ -1,0 +1,6 @@
+apiVersion: zalando.org/v1
+kind: Database
+metadata:
+  name: mongo-db
+spec:
+  type: mongo
