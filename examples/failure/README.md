@@ -142,3 +142,10 @@ my-failure-app-5b784b5746-twc45   1/1     Running   0          7m37s   10.244.0.
 </pre>
 
 Our terminating pods are missing, Why ?
+
+Literature:
+https://medium.com/google-cloud/fine-tuning-a-kubernetes-cluster-187d79370fd9
+
+https://fatalfailure.wordpress.com/2016/06/10/improving-kubernetes-reliability-quicker-detection-of-a-node-down/
+
+
