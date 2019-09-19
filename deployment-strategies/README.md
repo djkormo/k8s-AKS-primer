@@ -76,8 +76,6 @@ to get EXTERNAL-IP and PORT
 
 
 
-
-
 ### Connect grafana to Prometheus
 
 kubectl get svc myprometheus-server --namespace=monitoring
