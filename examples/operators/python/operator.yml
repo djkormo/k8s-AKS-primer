@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: op
+spec:
+  selector:
+    matchLabels:
+      app: op
+  template:
+    metadata:
+      labels:
+        app: op
+    spec:
+      serviceAccountName: db-operator
+      containers:
+      - image: lucj/db-op:latest
+        name: op
