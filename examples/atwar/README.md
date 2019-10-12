@@ -33,7 +33,7 @@ kube-public       Active   12m
 kube-system       Active   12m
 </pre>
 
-#### What are limits of our nodes 
+#### What are the limits of our nodes 
 
 
 ```console
@@ -63,11 +63,11 @@ Allocatable:
 
 alias util='kubectl get nodes | grep node | awk '\''{print $1}'\'' | xargs -I {} sh -c '\''echo   {} ; kubectl describe node {} | grep Allocated -A 5 | grep -ve Event -ve Allocated -ve percent -ve -- ; echo '\'''
 
-# Note: 4000m cores is the total cores in one node
-alias cpualloc="util | grep % | awk '{print \$1}' | awk '{ sum += \$1 } END { if (NR > 0) { result=(sum**4000); printf result/NR \"%\n\" } }'"
+# Note: 2000m cores is the total cores in one node
+alias cpualloc="util | grep % | awk '{print \$1}' | awk '{ sum += \$1 } END { if (NR > 0) { result=(sum**2000); printf result/NR \"%\n\" } }'"
 
-# Note: 1600MB is the total cores in one node
-alias memalloc='util | grep % | awk '\''{print $3}'\'' | awk '\''{ sum += $1 } END { if (NR > 0) { result=(sum*100)/(NR*1600); printf result/NR "%\n" } }'\'''
+# Note: 2000MB is the total cores in one node
+alias memalloc='util | grep % | awk '\''{print $3}'\'' | awk '\''{ sum += $1 } END { if (NR > 0) { result=(sum*100)/(NR*2000); printf result/NR "%\n" } }'\'''
 
 
 util
@@ -138,7 +138,7 @@ No resource limits.
 </pre>
 
 
-### Create RecourceQuota per namespace
+### Create Resource quota per namespace
 
 ```yaml
 cat <<EOF > quotas.yaml
@@ -184,7 +184,7 @@ kubectl config set-context --current --namespace=failure
 Context "aks-simple20191023" modified.
 </pre>
 
-### let's try to see information about quotas in failter namespace
+### Let's try to see information about quotas in failure namespace
 ```console
 kubectl describe ns failure
 ```
@@ -207,7 +207,6 @@ Resource Quotas
 
 No resource limits.
 </pre>
-
 
 
 ### Creating limit ranges for containers in namespace
@@ -234,7 +233,7 @@ spec:
     type: Container
 ```
 
-#### Applying dafault limits and requests per  container in our namespace
+#### Applying default limits and requests per container in our namespace
 ```console
  kubectl apply -f ./limit-mem-cpu-container.yaml --namespace=failure
 ```
@@ -273,7 +272,7 @@ Resource Quotas
 </pre>
 
 
-### Once again lets see information about our namespace
+### Once again let's see the information about our namespace
 ```console
 kubectl describe ns failure
 ```
@@ -302,8 +301,9 @@ Resource Limits
  Container  cpu       50m   800m  100m             200m           -
 </pre>
 
-
-### Here we have our environment ready to make some experiments.
+------------------------------------------------------------------
+## Here we have our environment ready to make some experiments.
+------------------------------------------------------------------
 
 
 ### Lets' create simple  deployment
@@ -348,14 +348,7 @@ kubectl get all --namespace=failure
 <pre>
 NAME                         READY   STATUS    RESTARTS   AGE
 pod/nginx-64cccc97fb-28b9z   1/1     Running   0          69s
-pod/nginx-64cccc97fb-gsw7t   1/1     Running   0          69s
-pod/nginx-64cccc97fb-kdszb   1/1     Running   0          69s
-pod/nginx-64cccc97fb-lf6k6   1/1     Running   0          69s
-pod/nginx-64cccc97fb-m7wds   1/1     Running   0          69s
-pod/nginx-64cccc97fb-mvjqw   1/1     Running   0          4m21s
-pod/nginx-64cccc97fb-p6xx2   1/1     Running   0          4m21s
-pod/nginx-64cccc97fb-pf4ws   1/1     Running   0          69s
-pod/nginx-64cccc97fb-rq7jx   1/1     Running   0          4m21s
+...
 pod/nginx-64cccc97fb-wnkxw   1/1     Running   0          4m21s
 
 
@@ -539,3 +532,417 @@ Resource Limits
  Container  cpu       25m   400m   30m              50m            -
  Container  memory    25Mi  500Mi  30Mi             50Mi           -
 </pre>
+
+
+### before deleting whole deployment... Let's chck what is QoS Class
+```console
+kubectl describe pod nginx-64cccc97fb-287ng  |grep "QoS Class" -A20
+```
+
+<pre>
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age   From                               Message
+  ----    ------     ----  ----                               -------
+  Normal  Scheduled  10m   default-scheduler                  Successfully assigned failure/nginx-64cccc97fb-287ng to aks-nodepool1-16191604-2
+  Normal  Pulling    10m   kubelet, aks-nodepool1-16191604-2  Pulling image "nginx:latest"
+  Normal  Pulled     10m   kubelet, aks-nodepool1-16191604-2  Successfully pulled image "nginx:latest"
+  Normal  Created    10m   kubelet, aks-nodepool1-16191604-2  Created container nginx
+  Normal  Started    10m   kubelet, aks-nodepool1-16191604-2  Started container nginx
+<pre>
+
+```console
+ kubectl describe pod nginx-64cccc97fb-287ng  |grep "Limits" -A5
+ ```
+ <pre>
+    Limits:
+      cpu:     50m
+      memory:  50Mi
+    Requests:
+      cpu:        30m
+      memory:     30Mi
+</pre>
+
+```console
+kubectl delete deployment nginx
+```
+<pre>
+deployment.extensions "nginx" deleted
+<pre>
+
+```console
+kubectl get all
+```
+<pre>
+No resources found.
+</pre>
+
+
+
+kubectl run nginx --image=nginx:latest --replicas=15  --requests='cpu=50m,memory=50Mi' \
+ --limits='cpu=50m,memory=50Mi'
+
+<pre>
+kubectl run --generator=deployment/apps.v1 is DEPRECATED and will be removed in a future version. Use kubectl run --generator=run-pod/v1 or kubectl create instead.
+deployment.apps/nginx created
+</pre>
+
+
+### Instead of using kubectl run  should use yaml files
+
+
+```console
+kubectl get all
+```
+<pre>
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/nginx-5d796d5bd4-2h7lk   1/1     Running   0          49s
+...
+pod/nginx-5d796d5bd4-zzld9   1/1     Running   0          49s
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx   15/15   15           15          49s
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-5d796d5bd4   15        15        15      49s
+
+</pre>
+
+### Now we have Guaranteed QoS Class
+
+```bash
+POD_NAME=$(kubectl get pods -o jsonpath={.items[0].metadata.name})
+kubectl describe pod $POD_NAME |grep "QoS Class" -A20
+kubectl describe pod $POD_NAME |grep "Limits" -A5
+```
+<pre>
+QoS Class:       Guaranteed
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age   From                               Message
+  ----    ------     ----  ----                               -------
+  Normal  Scheduled  10m   default-scheduler                  Successfully assigned failure/nginx-5d796d5bd4-2h7lk to aks-nodepool1-16191604-0
+  Normal  Pulling    10m   kubelet, aks-nodepool1-16191604-0  Pulling image "nginx:latest"
+  Normal  Pulled     10m   kubelet, aks-nodepool1-16191604-0  Successfully pulled image "nginx:latest"
+  Normal  Created    10m   kubelet, aks-nodepool1-16191604-0  Created container nginx
+  Normal  Started    10m   kubelet, aks-nodepool1-16191604-0  Started container nginx
+
+    Limits:
+      cpu:     50m
+      memory:  50Mi
+    Requests:
+      cpu:        50m
+      memory:     50Mi
+<pre>
+
+
+### Let's look how are pod are scheduled on our nodes
+```console
+kubectl get pods -o wide
+# or
+kubectl get pod -o=custom-columns=NAME:.metadata.name,STATUS:.status.phase,NODE:.spec.nodeName
+```
+<pre>
+NAME                     STATUS    NODE
+nginx-5d796d5bd4-2h7lk   Running   aks-nodepool1-16191604-0
+..
+nginx-5d796d5bd4-8thdf   Running   aks-nodepool1-16191604-1
+nginx-5d796d5bd4-8x5nv   Running   aks-nodepool1-16191604-0
+..
+nginx-5d796d5bd4-mftdw   Running   aks-nodepool1-16191604-1
+nginx-5d796d5bd4-mjz72   Running   aks-nodepool1-16191604-2
+..
+nginx-5d796d5bd4-zzld9   Running   aks-nodepool1-16191604-1
+</pre>
+
+### Now we are going to shutdown on of the VMs , for example  aks-nodepool1-16191604-2
+
+### Before
+
+$ kubectl get nodes
+NAME                       STATUS   ROLES   AGE   VERSION
+aks-nodepool1-16191604-0   Ready    agent   93m   v1.15.3
+aks-nodepool1-16191604-1   Ready    agent   93m   v1.15.3
+aks-nodepool1-16191604-2   Ready    agent   93m   v1.15.3
+
+```console
+kubectl get pod -o=custom-columns=NAME:.metadata.name,STATUS:.status.phase,NODE:.spec.nodeName | grep aks-nodepool1-16191604-2
+```
+<pre>
+nginx-5d796d5bd4-4nlqb   Running   aks-nodepool1-16191604-2
+nginx-5d796d5bd4-6xgp7   Running   aks-nodepool1-16191604-2
+nginx-5d796d5bd4-mjz72   Running   aks-nodepool1-16191604-2
+nginx-5d796d5bd4-rpxr9   Running   aks-nodepool1-16191604-2
+</pre>
+
+### Stopping virtual machine 'aks-nodepool1-16191604-2'...
+
+## Shut down VM aks-nodepool1-16191604-2 
+
+### After 
+
+#
+kubectl get nodes
+NAME                       STATUS     ROLES   AGE   VERSION
+aks-nodepool1-16191604-0   Ready      agent   99m   v1.15.3
+aks-nodepool1-16191604-1   Ready      agent   99m   v1.15.3
+aks-nodepool1-16191604-2   NotReady   agent   99m   v1.15.3
+
+
+#### Kubernetes stil doesnt know that pods node aks-nodepool1-16191604-0 are out of service
+```console
+kubectl get pod -o=custom-columns=NAME:.metadata.name,STATUS:.status.phase,NODE:.spec.nodeName | grep aks-nodepool1-16191604-2
+```
+<pre>
+nginx-5d796d5bd4-4nlqb   Running   aks-nodepool1-16191604-2
+nginx-5d796d5bd4-6xgp7   Running   aks-nodepool1-16191604-2
+nginx-5d796d5bd4-mjz72   Running   aks-nodepool1-16191604-2
+nginx-5d796d5bd4-rpxr9   Running   aks-nodepool1-16191604-2
+</pre>
+
+### Let's us stop next VM  aks-nodepool1-16191604-1  after 5  minutes then aks-nodepool1-16191604-2
+
+```console
+Stopping virtual machine 'aks-nodepool1-16191604-1'...
+```
+
+$ kubectl get nodes
+NAME                       STATUS     ROLES   AGE    VERSION
+aks-nodepool1-16191604-0   Ready      agent   107m   v1.15.3
+aks-nodepool1-16191604-1   NotReady   agent   107m   v1.15.3
+aks-nodepool1-16191604-2   NotReady   agent   107m   v1.15.3
+
+
+### After 5 minutes  of shuting down aks-nodepool1-16191604-2  we can see terminating pods
+
+<pre>
+kubectl get pods -o wide
+NAME                     READY   STATUS        RESTARTS   AGE    IP            NODE                       NOMINATED NODE
+ READINESS GATES
+nginx-5d796d5bd4-2h7lk   1/1     Running       0          37m    10.244.2.17   aks-nodepool1-16191604-0   <none>
+ <none>
+nginx-5d796d5bd4-2xmzl   1/1     Running       0          7m6s   10.244.2.25   aks-nodepool1-16191604-0   <none>
+ <none>
+nginx-5d796d5bd4-4nlqb   1/1     Terminating   0          37m    10.244.0.18   aks-nodepool1-16191604-2   <none>
+ <none>
+nginx-5d796d5bd4-58wnm   1/1     Running       0          7m6s   10.244.2.23   aks-nodepool1-16191604-0   <none>
+ <none>
+nginx-5d796d5bd4-6xgp7   1/1     Terminating   0          37m    10.244.0.20   aks-nodepool1-16191604-2   <none>
+ <none>
+nginx-5d796d5bd4-8thdf   1/1     Running       0          37m    10.244.1.19   aks-nodepool1-16191604-1   <none>
+ <none>
+nginx-5d796d5bd4-8x5nv   1/1     Running       0          37m    10.244.2.18   aks-nodepool1-16191604-0   <none>
+ <none>
+nginx-5d796d5bd4-dbwc2   1/1     Running       0          37m    10.244.2.15   aks-nodepool1-16191604-0   <none>
+ <none>
+nginx-5d796d5bd4-gcc6j   1/1     Running       0          37m    10.244.1.16   aks-nodepool1-16191604-1   <none>
+ <none>
+nginx-5d796d5bd4-gfzjg   1/1     Running       0          37m    10.244.1.15   aks-nodepool1-16191604-1   <none>
+ <none>
+nginx-5d796d5bd4-gmmkd   1/1     Running       0          37m    10.244.2.19   aks-nodepool1-16191604-0   <none>
+ <none>
+nginx-5d796d5bd4-jg2zv   1/1     Running       0          7m6s   10.244.1.22   aks-nodepool1-16191604-1   <none>
+ <none>
+nginx-5d796d5bd4-k825p   1/1     Running       0          7m6s   10.244.1.23   aks-nodepool1-16191604-1   <none>
+ <none>
+nginx-5d796d5bd4-mftdw   1/1     Running       0          37m    10.244.1.18   aks-nodepool1-16191604-1   <none>
+ <none>
+nginx-5d796d5bd4-mjz72   1/1     Terminating   0          37m    10.244.0.17   aks-nodepool1-16191604-2   <none>
+ <none>
+nginx-5d796d5bd4-mvmtf   1/1     Running       0          37m    10.244.2.16   aks-nodepool1-16191604-0   <none>
+ <none>
+nginx-5d796d5bd4-rpxr9   1/1     Terminating   0          37m    10.244.0.19   aks-nodepool1-16191604-2   <none>
+ <none>
+nginx-5d796d5bd4-txrsb   1/1     Running       0          37m    10.244.2.14   aks-nodepool1-16191604-0   <none>
+ <none>
+nginx-5d796d5bd4-zzld9   1/1     Running       0          37m    10.244.1.17   aks-nodepool1-16191604-1   <none>
+ <none>
+
+</pre>
+
+#### terminating forever
+
+### What is going on ?
+```console
+kubectl get pods -o wide |wc -l
+````
+<pre>
+20
+</pre>
+### Do you remember limits of pods per our namespace ?
+
+
+### after next 5 minutes of shuting down  aks-nodepool1-16191604-1 
+
+```console
+kubectl get pods -o wide |wc -l
+```
+<pre>
+25
+</pre>
+
+```console
+kubectl get pods -o wide
+```
+<pre>
+NAME                     READY   STATUS        RESTARTS   AGE     IP            NODE                       NOMINATED NODE   READINESS GATES
+nginx-5d796d5bd4-2h7lk   1/1     Running       0          43m     10.244.2.17   aks-nodepool1-16191604-0   <none>           <none>
+nginx-5d796d5bd4-2xmzl   1/1     Running       0          13m     10.244.2.25   aks-nodepool1-16191604-0   <none>           <none>
+nginx-5d796d5bd4-4nlqb   1/1     Terminating   0          43m     10.244.0.18   aks-nodepool1-16191604-2   <none>           <none>
+nginx-5d796d5bd4-58wnm   1/1     Running       0          13m     10.244.2.23   aks-nodepool1-16191604-0   <none>           <none>
+nginx-5d796d5bd4-6xgp7   1/1     Terminating   0          43m     10.244.0.20   aks-nodepool1-16191604-2   <none>           <none>
+nginx-5d796d5bd4-6xgqj   1/1     Running       0          4m35s   10.244.2.31   aks-nodepool1-16191604-0   <none>           <none>
+nginx-5d796d5bd4-8thdf   1/1     Terminating   0          43m     10.244.1.19   aks-nodepool1-16191604-1   <none>           <none>
+nginx-5d796d5bd4-8x5nv   1/1     Running       0          43m     10.244.2.18   aks-nodepool1-16191604-0   <none>           <none>
+nginx-5d796d5bd4-dbwc2   1/1     Running       0          43m     10.244.2.15   aks-nodepool1-16191604-0   <none>           <none>
+nginx-5d796d5bd4-g82tz   1/1     Running       0          4m35s   10.244.2.32   aks-nodepool1-16191604-0   <none>           <none>
+nginx-5d796d5bd4-gcc6j   1/1     Terminating   0          43m     10.244.1.16   aks-nodepool1-16191604-1   <none>           <none>
+nginx-5d796d5bd4-gfzjg   1/1     Terminating   0          43m     10.244.1.15   aks-nodepool1-16191604-1   <none>           <none>
+nginx-5d796d5bd4-gmmkd   1/1     Running       0          43m     10.244.2.19   aks-nodepool1-16191604-0   <none>           <none>
+nginx-5d796d5bd4-jg2zv   1/1     Terminating   0          13m     10.244.1.22   aks-nodepool1-16191604-1   <none>           <none>
+nginx-5d796d5bd4-jk778   1/1     Running       0          4m35s   10.244.2.29   aks-nodepool1-16191604-0   <none>           <none>
+nginx-5d796d5bd4-k825p   1/1     Terminating   0          13m     10.244.1.23   aks-nodepool1-16191604-1   <none>           <none>
+nginx-5d796d5bd4-mftdw   1/1     Terminating   0          43m     10.244.1.18   aks-nodepool1-16191604-1   <none>           <none>
+nginx-5d796d5bd4-mhwm8   1/1     Running       0          4m35s   10.244.2.33   aks-nodepool1-16191604-0   <none>           <none>
+nginx-5d796d5bd4-mjz72   1/1     Terminating   0          43m     10.244.0.17   aks-nodepool1-16191604-2   <none>           <none>
+nginx-5d796d5bd4-mvmtf   1/1     Running       0          43m     10.244.2.16   aks-nodepool1-16191604-0   <none>           <none>
+nginx-5d796d5bd4-rpxr9   1/1     Terminating   0          43m     10.244.0.19   aks-nodepool1-16191604-2   <none>           <none>
+nginx-5d796d5bd4-txrsb   1/1     Running       0          43m     10.244.2.14   aks-nodepool1-16191604-0   <none>           <none>
+nginx-5d796d5bd4-vxdqn   1/1     Running       0          4m35s   10.244.2.30   aks-nodepool1-16191604-0   <none>           <none>
+nginx-5d796d5bd4-zzld9   1/1     Terminating   0          43m     10.244.1.17   aks-nodepool1-16191604-1   <none>           <none>
+</pre>
+
+
+#### The pods from -1 and -2 node are terminating forever.
+
+
+### Let's start our VMs
+<pre>
+Successfully started virtual machine 'aks-nodepool1-16191604-1'.
+Successfully started virtual machine 'aks-nodepool1-16191604-2'.
+</pre>
+
+```console
+kubectl get nodes
+```
+
+</pre>
+NAME                       STATUS   ROLES   AGE    VERSION
+aks-nodepool1-16191604-0   Ready    agent   122m   v1.15.3
+aks-nodepool1-16191604-1   Ready    agent   122m   v1.15.3
+aks-nodepool1-16191604-2   Ready    agent   123m   v1.15.3
+</pre>
+
+
+```console
+kubectl get pod -o=custom-columns=NAME:.metadata.name,STATUS:.status.phase,NODE:.spec.nodeName
+```
+<pre>
+NAME                     STATUS    NODE
+nginx-5d796d5bd4-2h7lk   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-2xmzl   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-58wnm   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-6xgqj   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-7v7gj   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-8rrst   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-8x5nv   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-dbwc2   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-g82tz   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-gmmkd   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-jk778   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-mhwm8   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-mvmtf   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-txrsb   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-vxdqn   Running   aks-nodepool1-16191604-0
+</pre>
+
+### All pods are now running on node -0
+
+```console
+util
+```
+<pre>
+aks-nodepool1-16191604-0
+  Resource                       Requests      Limits
+  cpu                            1365m (71%)   1150m (60%)
+  memory                         1489Mi (69%)  2690Mi (125%)
+
+aks-nodepool1-16191604-1
+  Resource                       Requests     Limits
+  cpu                            175m (9%)    150m (7%)
+  memory                         225Mi (10%)  600Mi (27%)
+
+aks-nodepool1-16191604-2
+  Resource                       Requests     Limits
+  cpu                            175m (9%)    150m (7%)
+  memory                         225Mi (10%)  600Mi (27%)
+
+</pre>
+
+### Now we have unfortunately unbalanced  nodes consumed resorces 
+
+
+```console
+kubectl get deployment
+```
+
+<pre>
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   15/15   15           15          54m
+</pre>
+```console
+kubectl get deployment -o yaml --export  > nginx-deployment.yaml
+```
+</pre>
+Flag --export has been deprecated, This flag is deprecated and will be removed in future.
+</pre>
+```console
+kubectl delete -f ./nginx-deployment.yaml
+```
+<pre>
+deployment.extensions "nginx" deleted
+</pre>
+
+```console
+kubectl apply -f ./nginx-deployment.yaml
+```
+<pre>
+deployment.extensions/nginx created
+</pre>
+
+```console
+kubectl get pod -o=custom-columns=NAME:.metadata.name,STATUS:.status.phase,NODE:.spec.nodeName
+```
+<pre>
+NAME                     STATUS    NODE
+nginx-5d796d5bd4-528tn   Running   aks-nodepool1-16191604-1
+nginx-5d796d5bd4-5tcdc   Running   aks-nodepool1-16191604-1
+nginx-5d796d5bd4-6cb5j   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-b4cxj   Running   aks-nodepool1-16191604-1
+nginx-5d796d5bd4-d75nz   Running   aks-nodepool1-16191604-2
+nginx-5d796d5bd4-drt65   Running   aks-nodepool1-16191604-2
+nginx-5d796d5bd4-dz2wc   Running   aks-nodepool1-16191604-1
+nginx-5d796d5bd4-g55dm   Running   aks-nodepool1-16191604-1
+nginx-5d796d5bd4-l7trq   Running   aks-nodepool1-16191604-1
+nginx-5d796d5bd4-lxptm   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-m27xl   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-m2df4   Running   aks-nodepool1-16191604-2
+nginx-5d796d5bd4-r8fjd   Running   aks-nodepool1-16191604-0
+nginx-5d796d5bd4-rwblp   Running   aks-nodepool1-16191604-2
+nginx-5d796d5bd4-tkngp   Running   aks-nodepool1-16191604-2
+</pre>
+
+### At the end delete our toys
+```console
+kubectl delete ns failure
+```
+<pre>
+namespace "failure" deleted
+</pre>
+
+### That's all folks

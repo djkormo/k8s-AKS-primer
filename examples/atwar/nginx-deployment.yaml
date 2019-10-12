@@ -1,0 +1,75 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+    creationTimestamp: "2019-10-12T19:28:28Z"
+    generation: 1
+    labels:
+      run: nginx
+    name: nginx
+    namespace: failure
+    resourceVersion: "12221"
+    selfLink: /apis/extensions/v1beta1/namespaces/failure/deployments/nginx
+    uid: c08c8d44-168a-477e-80b1-c2e75742a8dd
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 15
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        run: nginx
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          run: nginx
+      spec:
+        containers:
+        - image: nginx:latest
+          imagePullPolicy: Always
+          name: nginx
+          resources:
+            limits:
+              cpu: 50m
+              memory: 50Mi
+            requests:
+              cpu: 50m
+              memory: 50Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 15
+    conditions:
+    - lastTransitionTime: "2019-10-12T19:28:28Z"
+      lastUpdateTime: "2019-10-12T19:28:44Z"
+      message: ReplicaSet "nginx-5d796d5bd4" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2019-10-12T20:08:23Z"
+      lastUpdateTime: "2019-10-12T20:08:23Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 15
+    replicas: 15
+    updatedReplicas: 15
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
