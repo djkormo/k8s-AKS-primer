@@ -944,5 +944,14 @@ kubectl delete ns failure
 <pre>
 namespace "failure" deleted
 </pre>
+```console
+kubectl top node
+```
+<pre>
+NAME                       CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+aks-nodepool1-16191604-0   165m         8%     1163Mi          54%
+aks-nodepool1-16191604-1   50m          2%     465Mi           21%
+aks-nodepool1-16191604-2   48m          2%     468Mi           21%
+</pre>
 
 ### That's all folks
