@@ -641,7 +641,7 @@ Events:
 </pre>
 
 
-### Let's look how are pod are scheduled on our nodes
+### Let's look how are pods scheduled on our nodes
 ```console
 kubectl get pods -o wide
 # or
