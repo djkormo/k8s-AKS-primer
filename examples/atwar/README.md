@@ -571,7 +571,7 @@ kubectl delete deployment nginx
 ```
 <pre>
 deployment.extensions "nginx" deleted
-<pre>
+</pre>
 
 ```console
 kubectl get all
@@ -638,7 +638,7 @@ Events:
     Requests:
       cpu:        50m
       memory:     50Mi
-<pre>
+</pre>
 
 
 ### Let's look how are pod are scheduled on our nodes
@@ -663,12 +663,15 @@ nginx-5d796d5bd4-zzld9   Running   aks-nodepool1-16191604-1
 ### Now we are going to shutdown on of the VMs , for example  aks-nodepool1-16191604-2
 
 ### Before
-
-$ kubectl get nodes
+```console
+kubectl get nodes
+```
+<pre>
 NAME                       STATUS   ROLES   AGE   VERSION
 aks-nodepool1-16191604-0   Ready    agent   93m   v1.15.3
 aks-nodepool1-16191604-1   Ready    agent   93m   v1.15.3
 aks-nodepool1-16191604-2   Ready    agent   93m   v1.15.3
+</pre>
 
 ```console
 kubectl get pod -o=custom-columns=NAME:.metadata.name,STATUS:.status.phase,NODE:.spec.nodeName | grep aks-nodepool1-16191604-2
@@ -684,15 +687,18 @@ nginx-5d796d5bd4-rpxr9   Running   aks-nodepool1-16191604-2
 
 ## Shut down VM aks-nodepool1-16191604-2 
 
-### After 
+### Soon after 
 
-#
+
+```console
 kubectl get nodes
+```
+<pre>
 NAME                       STATUS     ROLES   AGE   VERSION
 aks-nodepool1-16191604-0   Ready      agent   99m   v1.15.3
 aks-nodepool1-16191604-1   Ready      agent   99m   v1.15.3
 aks-nodepool1-16191604-2   NotReady   agent   99m   v1.15.3
-
+</pre>
 
 #### Kubernetes stil doesnt know that pods node aks-nodepool1-16191604-0 are out of service
 ```console
@@ -710,13 +716,15 @@ nginx-5d796d5bd4-rpxr9   Running   aks-nodepool1-16191604-2
 ```console
 Stopping virtual machine 'aks-nodepool1-16191604-1'...
 ```
-
-$ kubectl get nodes
+```console
+kubectl get nodes
+```
+<pre>
 NAME                       STATUS     ROLES   AGE    VERSION
 aks-nodepool1-16191604-0   Ready      agent   107m   v1.15.3
 aks-nodepool1-16191604-1   NotReady   agent   107m   v1.15.3
 aks-nodepool1-16191604-2   NotReady   agent   107m   v1.15.3
-
+</pre>
 
 ### After 5 minutes  of shuting down aks-nodepool1-16191604-2  we can see terminating pods
 
@@ -738,11 +746,7 @@ nginx-5d796d5bd4-8thdf   1/1     Running       0          37m    10.244.1.19   a
  <none>
 nginx-5d796d5bd4-8x5nv   1/1     Running       0          37m    10.244.2.18   aks-nodepool1-16191604-0   <none>
  <none>
-nginx-5d796d5bd4-dbwc2   1/1     Running       0          37m    10.244.2.15   aks-nodepool1-16191604-0   <none>
- <none>
-nginx-5d796d5bd4-gcc6j   1/1     Running       0          37m    10.244.1.16   aks-nodepool1-16191604-1   <none>
- <none>
-nginx-5d796d5bd4-gfzjg   1/1     Running       0          37m    10.244.1.15   aks-nodepool1-16191604-1   <none>
+
  <none>
 nginx-5d796d5bd4-gmmkd   1/1     Running       0          37m    10.244.2.19   aks-nodepool1-16191604-0   <none>
  <none>
