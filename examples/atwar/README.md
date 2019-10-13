@@ -552,7 +552,7 @@ Events:
   Normal  Pulled     10m   kubelet, aks-nodepool1-16191604-2  Successfully pulled image "nginx:latest"
   Normal  Created    10m   kubelet, aks-nodepool1-16191604-2  Created container nginx
   Normal  Started    10m   kubelet, aks-nodepool1-16191604-2  Started container nginx
-<pre>
+</pre>
 
 ```console
  kubectl describe pod nginx-64cccc97fb-287ng  |grep "Limits" -A5
@@ -580,10 +580,10 @@ kubectl get all
 No resources found.
 </pre>
 
-
-
+```console
 kubectl run nginx --image=nginx:latest --replicas=15  --requests='cpu=50m,memory=50Mi' \
  --limits='cpu=50m,memory=50Mi'
+```
 
 <pre>
 kubectl run --generator=deployment/apps.v1 is DEPRECATED and will be removed in a future version. Use kubectl run --generator=run-pod/v1 or kubectl create instead.
@@ -591,7 +591,7 @@ deployment.apps/nginx created
 </pre>
 
 
-### Instead of using kubectl run  should use yaml files
+### Instead of using kubectl run we should use yaml files
 
 
 ```console
