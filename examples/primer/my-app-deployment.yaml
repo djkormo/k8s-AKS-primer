@@ -39,7 +39,6 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
       dnsPolicy: ClusterFirst
-      nodeName: aks-nodepool1-16191604-1
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}

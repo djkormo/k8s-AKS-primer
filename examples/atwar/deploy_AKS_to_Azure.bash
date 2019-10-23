@@ -59,7 +59,9 @@ az aks create --resource-group $AKS_RG \
 	--node-count $AKS_NODES \
 	--node-vm-size $AKS_VM_SIZE \
 	--tags 'environment=develop'  \
-	--disable-rbac
+	--disable-rbac \
+    --vm-set-type AvailabilitySet
+
 
 	
 # 1. Grant the AKS-generated service principal pull access to our ACR, the AKS cluster will be able to pull images of our ACR
