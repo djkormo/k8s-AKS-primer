@@ -6,7 +6,7 @@ h5py==2.7.1
 html5lib==0.9999999
 itsdangerous==0.24
 Jinja2>=2.10.1
-Keras>=2.1.4
+Keras==2.1.4
 Markdown==2.6.11
 MarkupSafe==1.0
 numpy>=1.14.5
