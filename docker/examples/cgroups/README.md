@@ -4,10 +4,10 @@
 Let's  run container with Ubuntu image
 
 ```console
-docker run -it --rm ubuntu /bin/bash
+docker run -it --rm ubuntu bash
 ```
 <pre>
-root@xxxxxxxxx
+root@79178017aa58:/#
 </pre>
 
 From host point of view. Loook what pid  the ubuntu container is using
@@ -16,13 +16,13 @@ From host point of view. Loook what pid  the ubuntu container is using
 docker inspect --format "{{.State.Pid}}"  container_id
 ```
 <pre>
-xxxx
+15425
 </pre>
 
 Look at processes inside our container
 
 ```console
-ps -fp xxxx
+ps -fp 15425
 ```
 <pre>
 
@@ -30,7 +30,7 @@ ps -fp xxxx
 
 
 ```console
-cat -v /proc/xxx/environ
+cat -v /proc/15425/environ
 ```
 <pre>
 

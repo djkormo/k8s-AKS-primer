@@ -152,6 +152,7 @@ Successfully tagged djkormo/clair-scanner:latest
 </pre>
 
 
+
 #### Run the build docker 
 ```console
 docker run -ti \
@@ -182,8 +183,15 @@ docker pull imiell/bad-dockerfile
 <pre>
 
 </pre>
+##### Run local image with clair scanner
+bash ./run-local.bash 
 
-
+#### Inside container
+```console
+./run-scanner.bash -n node:10 -t Critical
+or 
+./run-scanner.bash -n node:10 -t Critical
+```
 
 #### Links:
 
