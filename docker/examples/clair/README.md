@@ -184,7 +184,9 @@ docker pull imiell/bad-dockerfile
 
 </pre>
 ##### Run local image with clair scanner
+```console
 bash ./run-local.bash 
+```
 
 #### Inside container
 ```console
@@ -196,7 +198,10 @@ or
 #### Links:
 
 https://cloud.docker.com/repository/docker/arminc/clair-db
+
 https://www.muspells.net/blog/2019/05/docker-image-scanner-for-vulnerabilities-with-clair/
+
 https://nullsweep.com/docker-static-analysis-with-clair/
+
 
 
