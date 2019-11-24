@@ -176,7 +176,7 @@ echo $IP
 
 #### Let's pull some bad images
 ```console
-docker pull node:10
+docker pull djkormo/chess-ai
 docker pull imiell/bad-dockerfile
 ```
 
@@ -190,9 +190,9 @@ bash ./run-local.bash
 
 #### Inside container
 ```console
-./run-scanner.bash -n node:10 -t Critical
+./run-scanner.bash -n djkormo/chess-ai -t Critical
 or 
-./run-scanner.bash -n node:10 -t Critical
+./run-scanner.bash -n imiell/bad-dockerfile -t Critical
 ```
 
 #### Links:
