@@ -6,6 +6,7 @@
 # -n image name 
 # -t threshold level 
 
+echo "parameters to run  -n Image -t Threshold "
 
 while getopts n:t: option
 do
@@ -18,7 +19,8 @@ done
 
 if [ -z "$NAME" ]
 then
-      echo "\$NAME is empty"
+      echo "\ -n $NAME is empty"
+	  echo "parameters to run  -n Image -t Threshold "
 	  exit 1
 else
       echo "\$NAME is NOT empty"
@@ -26,7 +28,8 @@ fi
 
 if [ -z "$THRESHOLD" ]
 then
-      echo "\$THRESHOLD is empty"
+      echo "\ -t $THRESHOLD is empty"
+	  echo "parameters to run  -n Image -t Threshold "
 	  exit 1
 else
       echo "\$THRESHOLD is NOT empty"
