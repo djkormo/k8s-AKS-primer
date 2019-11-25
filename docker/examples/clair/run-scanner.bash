@@ -16,16 +16,18 @@ t) THRESHOLD=${OPTARG};;
 esac
 done
 
-if [ -n "$NAME" ]
+if [ -z "$NAME" ]
 then
       echo "\$NAME is empty"
+	  exit 1
 else
       echo "\$NAME is NOT empty"
 fi
 
-if [ -t "$THRESHOLD" ]
+if [ -z "$THRESHOLD" ]
 then
       echo "\$THRESHOLD is empty"
+	  exit 1
 else
       echo "\$THRESHOLD is NOT empty"
 fi
