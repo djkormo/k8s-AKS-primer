@@ -5,15 +5,18 @@
 ` $ java -jar sentiment-analysis-web-0.0.1-SNAPSHOT.jar --sa.logic.api.url=http://localhost:5000 ` 
 
 ## Building the container
-` $ docker build -f Dockerfile -t $DOCKER_USER_ID/sentiment-analysis-web-app . `
+` $ docker build -f Dockerfile -t $DOCKER_USER_ID/np-webapp . `
 
 ## Running the container
 ``` 
-$ docker run -d -p 8080:8080 -e SA_LOGIC_API_URL='http://<container_ip or docker machine ip>:5000' $DOCKER_USER_ID/sentiment-analysis-web-app  
+$ docker run -d -p 8080:8080 -e SA_LOGIC_API_URL='http://<container_ip or docker machine ip>:5000' $DOCKER_USER_ID/np-webapp  
 ```
 
+docker run -d -p 8080:8080 -e SA_LOGIC_API_URL='http://localhost:5000'  $DOCKER_USER_ID/np-webapp
+
+
 #### Native docker support needs the Container IP
-CONTAINER_IP: To forward messages to the sa-logic container we need to get  its IP. To do so execute:
+CONTAINER_IP: To forward messages to the np-logic container we need to get  its IP. To do so execute:
 
 ` $ docker container list`
 
@@ -32,6 +35,6 @@ Use this one in the command.
 
 
 ## Pushing the container
-` $ docker push $DOCKER_USER_ID/sentiment-analysis-web-app `
+` $ docker push $DOCKER_USER_ID/np-webapp `
 
 
