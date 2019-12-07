@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: np-webapp
+spec:
+  replicas: 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: 
+      maxUnavailable: 1
+      maxSurge: 1 
+  template:
+    metadata:
+      labels:
+        app: np-webapp
+    spec:
+      containers:
+      - image: djkormo/np-webapp
+        imagePullPolicy: Always
+        name: sa-webapp
+        env:
+          - name: SA_LOGIC_API_URL
+            value: "http://np-logic"
+        ports:
+          - containerPort: 8080

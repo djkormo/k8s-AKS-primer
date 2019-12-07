@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment                                          # 1
+metadata:
+  name: np-frontend
+spec:
+  replicas: 2                                             # 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate                                   # 3
+    rollingUpdate: 
+      maxUnavailable: 1                                   # 4
+      maxSurge: 1                                         # 5
+  template:
+    metadata:
+      labels:
+        app: np-frontend                                  # 6
+    spec:
+      containers:
+        - image: djkormo/np-frontend
+          imagePullPolicy: Always                         # 7
+          name: np-frontend
+          env:
+          - name: SA_WEBAPP_API_URL
+            value: "http://np-webapp-lb/sentiment/"
+          ports:
+            - containerPort: 80

@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: np-logic
+spec:
+  replicas: 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: 
+      maxUnavailable: 1
+      maxSurge: 1 
+  template:
+    metadata:
+      labels:
+        app: np-logic
+    spec:
+      containers:
+        - image: djkormo/np-logic
+          imagePullPolicy: Always
+          name: np-logic
+          ports:
+            - containerPort: 5000
