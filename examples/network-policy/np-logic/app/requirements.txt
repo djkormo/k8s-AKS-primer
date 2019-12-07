@@ -1,0 +1,4 @@
+Flask==0.12.3
+textblob==0.15.0
+flask-restplus==0.12.1
+flask_cors

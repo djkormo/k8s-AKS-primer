@@ -1,0 +1,27 @@
+version: "2.0"
+
+services:
+  sa-frontend:
+    build: 
+      context: ./np-frontend
+    image: djkormo/np-frontend:
+    ports:
+    - "80:80"
+
+  sa-webapp:
+    build: 
+      context: ./np-webapp
+    image: djkormo/np-webapp
+    ports:
+    - "8080:8080"
+    environment:
+    - SA_LOGIC_API_URL=http://sa-logic:5000
+    links:
+    - np-logic
+
+  sa-logic:
+    build:
+      context: ./np-logic
+    image: djkormo/np-logic
+    ports:
+    - "5000:5000"
