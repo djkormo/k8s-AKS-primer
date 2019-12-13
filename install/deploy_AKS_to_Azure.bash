@@ -118,11 +118,9 @@ AKS_NODES=2
 AKS_VM_SIZE=Standard_B2s
 
 
-echo "$AKS_RG"
-echo "$AKS_NAME"
-echo "$AKS_NODES"
-echo "$AKS_VERSION"
-echo "$AKS_VM_SIZE"
+echo "AKS_NODES: $AKS_NODES"
+echo "AKS_VERSION: $AKS_VERSION"
+echo "AKS_VM_SIZE: $AKS_VM_SIZE"
 
 
 
