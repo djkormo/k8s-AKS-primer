@@ -12,8 +12,8 @@
 
 
 display_usage() { 
-	echo "Example usage \n " 
-	echo -e "\deploy_AKS_to_Azure.bash -n aks-simple2020 -g rg-aks-simple -l northeurope, -o create \n \n" 
+	echo "Example of usage:" 
+	echo -e "\bash deploy_AKS_to_Azure.bash -n aks-simple2020 -g rg-aks-simple -l northeurope -o create" 
 	} 
 
 while getopts n:g:o:l: option
