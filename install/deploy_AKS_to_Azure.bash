@@ -214,6 +214,46 @@ az aks create --resource-group $AKS_RG \
 fi
 
 
+
+if [ "$OPERATION" = "start" ] ;
+then
+echo "starting VMs...";
+  # get the resource group for VMs
+  
+  RG_VM_POOL=$(az aks show -g $AKS_RG -n $AKS_NAME --query nodeResourceGroup -o tsv)
+  echo "RG_VM_POOL: $RG_VM_POOL"
+  
+  az vm list -d -g $RG_VM_POOL  | grep powerState 
+  az vm start --ids $(az vm list -g $RG_VM_POOL --query "[].id" -o tsv) --no-wait
+fi
+
+if [ "$OPERATION" = "stop" ] ;
+then
+echo "stopping VMs...";
+  # get the resource group for VMs
+  RG_VM_POOL=$(az aks show -g $AKS_RG -n $AKS_NAME --query nodeResourceGroup -o tsv)
+
+  echo "RG_VM_POOL: $RG_VM_POOL"
+
+  az vm list -d -g $RG_VM_POOL  | grep powerState
+
+  az vm deallocate --ids $(az vm list -g $RG_VM_POOL --query "[].id" -o tsv) --no-wait
+fi
+
+if [ "$OPERATION" = "stop" ] ;
+then
+  echo "AKS cluster status";
+  az aks show --name $AKS_NAME --resource-group $AKS_RG
+fi 
+
+if [ "$OPERATION" = "start" ] ;
+then
+  echo "AKS cluster status";
+  az aks show --name $AKS_NAME --resource-group $AKS_RG
+fi 
+
+
+
 if [ "$OPERATION" = "status" ] ;
 then
   echo "AKS cluster status";
