@@ -147,7 +147,8 @@ echo "Creating AKS cluster...";
 		--node-vm-size $AKS_VM_SIZE \
 		--tags 'environment=develop'  \
 		--network-plugin kubenet \
-		--network-policy calico 
+		--network-policy calico \
+		--vm-set-type AvailabilitySet
 		#--disable-rbac
 
 	
@@ -167,7 +168,7 @@ echo "Creating AKS cluster...";
 
 	registryLogin=$(az ad sp show --id http://$ACR_NAME-push --query appId -o tsv)
 
-    log_file ='deploy_log aks_simple.log' 
+    log_file ='deploy_log_aks_simple.log' 
 	echo "CLIENT_ID"
 	echo $CLIENT_ID
 
