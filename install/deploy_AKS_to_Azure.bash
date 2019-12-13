@@ -13,7 +13,7 @@
 
 display_usage() { 
 	echo "Example of usage:" 
-	echo -e "\bash deploy_AKS_to_Azure.bash -n aks-simple2020 -g rg-aks-simple -l northeurope -o create" 
+	echo -e "bash deploy_AKS_to_Azure.bash -n aks-simple2020 -g rg-aks-simple -l northeurope -o create" 
 	} 
 
 while getopts n:g:o:l: option
@@ -152,6 +152,7 @@ az aks create --resource-group $AKS_RG \
 	--node-count $AKS_NODES \
 	--node-vm-size $AKS_VM_SIZE \
 	--tags 'environment=develop'  \
+	--network-plugin kubenet \
 	--network-policy calico 
 	#--disable-rbac
 
