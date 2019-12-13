@@ -118,15 +118,10 @@ AKS_NODES=2
 AKS_VM_SIZE=Standard_B2s
 
 
-
-
 echo "$AKS_RG"
 echo "$AKS_NAME"
 echo "$AKS_NODES"
-echo "$INIT_DIR"
-echo "$SP_PASSWORD"
 echo "$AKS_VERSION"
-echo "$APP_ID"
 echo "$AKS_VM_SIZE"
 
 
@@ -225,7 +220,7 @@ echo "starting VMs...";
   az vm start --ids $(az vm list -g $RG_VM_POOL --query "[].id" -o tsv) --no-wait
 fi
 
-if [ "$OPERATION" = "stop" ] ;
+if [ "$AKS_OPERATION" = "stop" ] ;
 then
 echo "stopping VMs...";
   # get the resource group for VMs
