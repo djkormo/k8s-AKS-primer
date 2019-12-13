@@ -120,7 +120,6 @@ AKS_VM_SIZE=Standard_B2s
 
 
 
-
 echo "$AKS_RG"
 echo "$AKS_NAME"
 echo "$AKS_NODES"
@@ -136,27 +135,27 @@ if [ "$AKS_OPERATION" = "create" ] ;
 then
 echo "Creating AKS cluster...";
 
-# utworzenie nowej grupy 
-az group create --name $ACR_GROUP
+	# utworzenie nowej grupy 
+	az group create --name $ACR_GROUP
 
-# tworzymy rejestr dla kontenerów 
-az acr create  --name $ACR_NAME --sku Basic
+	# tworzymy rejestr dla kontenerów 
+	az acr create  --name $ACR_NAME --sku Basic
 
-# włączenie konta administratorskiego
-az acr update -n  $ACR_NAME --admin-enabled true
-# tworzymy klaster AKS 
+	# włączenie konta administratorskiego
+	az acr update -n  $ACR_NAME --admin-enabled true
+	# tworzymy klaster AKS 
 
-az aks create --resource-group $AKS_RG \
-    --name  $AKS_NAME \
-    #--enable-addons monitoring \
-    --kubernetes-version $AKS_VERSION \
-    --generate-ssh-keys \
-	--node-count $AKS_NODES \
-	--node-vm-size $AKS_VM_SIZE \
-	--tags 'environment=develop'  \
-	--network-plugin kubenet \
-	--network-policy calico 
-	#--disable-rbac
+	az aks create --resource-group $AKS_RG \
+		--name  $AKS_NAME \
+		#--enable-addons monitoring \
+		--kubernetes-version $AKS_VERSION \
+		--generate-ssh-keys \
+		--node-count $AKS_NODES \
+		--node-vm-size $AKS_VM_SIZE \
+		--tags 'environment=develop'  \
+		--network-plugin kubenet \
+		--network-policy calico 
+		#--disable-rbac
 
 	
 	# 1. Grant the AKS-generated service principal pull access to our ACR, the AKS cluster will be able to pull images of our ACR
@@ -175,7 +174,7 @@ az aks create --resource-group $AKS_RG \
 
 	registryLogin=$(az ad sp show --id http://$ACR_NAME-push --query appId -o tsv)
 
-
+    log_file ='deploy_log aks_simple.log' 
 	echo "CLIENT_ID"
 	echo $CLIENT_ID
 
@@ -186,7 +185,6 @@ az aks create --resource-group $AKS_RG \
 	echo "registryName"
 	echo $registryName
 
-
 	echo "registryLogin"
 	echo $registryLogin
 
@@ -194,28 +192,28 @@ az aks create --resource-group $AKS_RG \
 	echo $registryPassword 
 
 
-	echo "CLIENT_ID" >> deploy_aks_simple.log
-	echo $CLIENT_ID >> deploy_aks_simple.log
+	echo "CLIENT_ID" >> $log_file
+	echo $CLIENT_ID >> $log_file
 
 
-	echo "ACR_ID" >> deploy_aks_simple.log
-	echo $ACR_ID >> deploy_aks_simple.log
+	echo "ACR_ID" >> $log_file
+	echo $ACR_ID >> $log_file
 
-	echo "registryName" >> deploy_aks_simple.log
-	echo $registryName >> deploy_aks_simple.log
+	echo "registryName" >> $log_file
+	echo $registryName >> $log_file
 
-	echo "registryLogin" >> deploy_aks_simple.log
-	echo $registryLogin >> deploy_aks_simple.log
+	echo "registryLogin" >> $log_file
+	echo $registryLogin >> $log_file
 
 
-	echo "registryPassword" >> deploy_aks_simple.log
-	echo $registryPassword >> deploy_aks_simple.log
+	echo "registryPassword" >> $log_file
+	echo $registryPassword >> $log_file
 
 fi
 
 
 
-if [ "$OPERATION" = "start" ] ;
+if [ "$AKS_OPERATION" = "start" ] ;
 then
 echo "starting VMs...";
   # get the resource group for VMs
@@ -240,28 +238,15 @@ echo "stopping VMs...";
   az vm deallocate --ids $(az vm list -g $RG_VM_POOL --query "[].id" -o tsv) --no-wait
 fi
 
-if [ "$OPERATION" = "stop" ] ;
-then
-  echo "AKS cluster status";
-  az aks show --name $AKS_NAME --resource-group $AKS_RG
-fi 
 
-if [ "$OPERATION" = "start" ] ;
-then
-  echo "AKS cluster status";
-  az aks show --name $AKS_NAME --resource-group $AKS_RG
-fi 
-
-
-
-if [ "$OPERATION" = "status" ] ;
+if [ "$AKS_OPERATION" = "status" ] ;
 then
   echo "AKS cluster status";
   az aks show --name $AKS_NAME --resource-group $AKS_RG
 fi 
 
 
-if [ "$OPERATION" = "delete" ] ;
+if [ "$AKS_OPERATION" = "delete" ] ;
 then
   echo "AKS cluster deleting ";
   az aks delete --name $AKS_NAME --resource-group $AKS_RG
