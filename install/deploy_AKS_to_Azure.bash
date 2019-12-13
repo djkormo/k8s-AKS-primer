@@ -85,14 +85,6 @@ az configure --defaults group=$AKS_RG
 # domyslna lokalizacja rejestru z obrazami 
 az configure --defaults location=$ACR_LOCATION
 
-# utworzenie nowej grupy 
-az group create --name $ACR_GROUP
-
-# tworzymy rejestr dla kontenerów 
-az acr create  --name $ACR_NAME --sku Basic
-
-# włączenie konta administratorskiego
-az acr update -n  $ACR_NAME --admin-enabled true
 
 
 # service principal 
@@ -143,6 +135,16 @@ echo "$AKS_VM_SIZE"
 if [ "$AKS_OPERATION" = "create" ] ;
 then
 echo "Creating AKS cluster...";
+
+# utworzenie nowej grupy 
+az group create --name $ACR_GROUP
+
+# tworzymy rejestr dla kontenerów 
+az acr create  --name $ACR_NAME --sku Basic
+
+# włączenie konta administratorskiego
+az acr update -n  $ACR_NAME --admin-enabled true
+# tworzymy klaster AKS 
 
 az aks create --resource-group $AKS_RG \
     --name  $AKS_NAME \
