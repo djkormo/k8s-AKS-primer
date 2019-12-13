@@ -8,9 +8,15 @@
 # -g aks-rg
 # set your name and resource group
 
-# deploy_AKS_to_Azure.bash -n aks-simple2020 -g rg-aks-simple -l nordeurope -o create
+# deploy_AKS_to_Azure.bash -n aks-simple2020 -g rg-aks-simple -l northeurope, -o create
 
-while getopts n:g:o,l: option
+
+display_usage() { 
+	echo "Example usage \n " 
+	echo -e "\deploy_AKS_to_Azure.bash -n aks-simple2020 -g rg-aks-simple -l northeurope, -o create \n \n" 
+	} 
+
+while getopts n:g:o:l: option
 do
 case "${option}"
 in
@@ -25,6 +31,7 @@ done
 if [ -z "$AKS_OPERATION" ]
 then
       echo "\$AKS_OPERATION is empty"
+	  display_usage
 	  exit 1
 else
       echo "\$AKS_OPERATION is NOT empty"
@@ -33,6 +40,7 @@ fi
 if [ -z "$AKS_NAME" ]
 then
       echo "\$AKS_NAME is empty"
+	  display_usage
 	  exit 
 else
       echo "\$AKS_NAME is NOT empty"
@@ -41,6 +49,7 @@ fi
 if [ -z "$AKS_RG" ]
 then
       echo "\$AKS_RG is empty"
+	  display_usage
 	  exit 1
 else
       echo "\$AKS_RG is NOT empty"
@@ -49,6 +58,7 @@ fi
 if [ -z "$AKS_LOCATION" ]
 then
       echo "\$AKS_LOCATION is empty"
+	  display_usage
 	  exit 1
 else
       echo "\$AKS_LOCATION is NOT empty"
@@ -130,7 +140,7 @@ echo "$AKS_VM_SIZE"
 
 
 
-if [ "$OPERATION" = "create" ] ;
+if [ "$AKS_OPERATION" = "create" ] ;
 then
 echo "Creating AKS cluster...";
 
@@ -145,7 +155,7 @@ az aks create --resource-group $AKS_RG \
 	--network-policy calico 
 	#--disable-rbac
 
-
+	
 	# 1. Grant the AKS-generated service principal pull access to our ACR, the AKS cluster will be able to pull images of our ACR
 
 	CLIENT_ID=$(az aks show -g $AKS_RG -n $AKS_NAME --query "servicePrincipalProfile.clientId" -o tsv)
