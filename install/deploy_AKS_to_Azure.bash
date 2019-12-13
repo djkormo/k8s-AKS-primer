@@ -168,7 +168,7 @@ echo "Creating AKS cluster...";
 
 	registryLogin=$(az ad sp show --id http://$ACR_NAME-push --query appId -o tsv)
 
-    log_file ='deploy_log_aks_simple.log' 
+    LOG_FILE ='deploy_log_aks_simple.log' 
 	echo "CLIENT_ID"
 	echo $CLIENT_ID
 
@@ -186,22 +186,22 @@ echo "Creating AKS cluster...";
 	echo $registryPassword 
 
 
-	echo "CLIENT_ID" >> $log_file
-	echo $CLIENT_ID >> $log_file
+	echo "CLIENT_ID" >> $LOG_FILE
+	echo $CLIENT_ID >> $LOG_FILE
 
 
-	echo "ACR_ID" >> $log_file
-	echo $ACR_ID >> $log_file
+	echo "ACR_ID" >> $LOG_FILE
+	echo $ACR_ID >> $LOG_FILE
 
-	echo "registryName" >> $log_file
-	echo $registryName >> $log_file
+	echo "registryName" >> $LOG_FILE
+	echo $registryName >> $LOG_FILE
 
-	echo "registryLogin" >> $log_file
-	echo $registryLogin >> $log_file
+	echo "registryLogin" >> $LOG_FILE
+	echo $registryLogin >> $LOG_FILE
 
 
-	echo "registryPassword" >> $log_file
-	echo $registryPassword >> $log_file
+	echo "registryPassword" >> $LOG_FILE
+	echo $registryPassword >> $LOG_FILE
 
 fi
 
@@ -237,6 +237,13 @@ if [ "$AKS_OPERATION" = "status" ] ;
 then
   echo "AKS cluster status";
   az aks show --name $AKS_NAME --resource-group $AKS_RG
+  
+  # get the resource group for VMs
+  RG_VM_POOL=$(az aks show -g $AKS_RG -n $AKS_NAME --query nodeResourceGroup -o tsv)
+  echo "RG_VM_POOL: $RG_VM_POOL"
+  
+  az vm list -d -g $RG_VM_POOL  | grep powerState 
+  
 fi 
 
 
@@ -244,6 +251,7 @@ if [ "$AKS_OPERATION" = "delete" ] ;
 then
   echo "AKS cluster deleting ";
   az aks delete --name $AKS_NAME --resource-group $AKS_RG
+  
 fi 
 
 
