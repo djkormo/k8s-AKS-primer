@@ -146,7 +146,7 @@ echo "Creating AKS cluster...";
 
 az aks create --resource-group $AKS_RG \
     --name  $AKS_NAME \
-    --enable-addons monitoring \
+    #--enable-addons monitoring \
     --kubernetes-version $AKS_VERSION \
     --generate-ssh-keys \
 	--node-count $AKS_NODES \
@@ -215,12 +215,14 @@ fi
 if [ "$OPERATION" = "status" ] ;
 then
   echo "AKS cluster status";
+  az aks show --name $AKS_NAME --resource-group $AKS_RG
 fi 
 
 
 if [ "$OPERATION" = "delete" ] ;
 then
   echo "AKS cluster deleting ";
+  az aks delete --name $AKS_NAME --resource-group $AKS_RG
 fi 
 
 
