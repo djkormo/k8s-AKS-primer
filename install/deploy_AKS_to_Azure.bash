@@ -140,6 +140,7 @@ echo "Creating AKS cluster...";
 
 	az aks create --resource-group $AKS_RG \
 		--name  $AKS_NAME \
+		--vm-set-type AvailabilitySet 
 		#--enable-addons monitoring \
 		--kubernetes-version $AKS_VERSION \
 		--generate-ssh-keys \
@@ -147,8 +148,8 @@ echo "Creating AKS cluster...";
 		--node-vm-size $AKS_VM_SIZE \
 		--tags 'environment=develop'  \
 		--network-plugin kubenet \
-		--network-policy calico \
-		--vm-set-type AvailabilitySet
+		--network-policy calico 
+
 		#--disable-rbac
 
 	
@@ -218,7 +219,7 @@ echo "starting VMs...";
   az vm list -d -g $RG_VM_POOL  | grep powerState 
   az vm start --ids $(az vm list -g $RG_VM_POOL --query "[].id" -o tsv) --no-wait
 fi
-
+ 
 if [ "$AKS_OPERATION" = "stop" ] ;
 then
 echo "stopping VMs...";
