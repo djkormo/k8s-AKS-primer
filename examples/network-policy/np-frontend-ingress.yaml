@@ -11,5 +11,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: np-frontend
+          serviceName: np-frontend-lb
           servicePort: 80

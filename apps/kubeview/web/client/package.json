@@ -1,0 +1,25 @@
+{
+  "name": "kubeview",
+  "version": "0.1.9",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "bootstrap-vue": "^2.1.0",
+    "bootswatch": "^4.4.1",
+    "cytoscape": "^3.11.0",
+    "vue": "^2.6.10",
+    "vue-timers": "^2.0.2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-eslint": "^4.1.1",
+    "@vue/cli-service": "^4.1.1",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^6.0.1",
+    "eslint-plugin-vue": "^5.2.3",
+    "vue-template-compiler": "^2.6.10"
+  }
+}

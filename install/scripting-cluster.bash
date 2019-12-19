@@ -23,6 +23,20 @@ do
     kubectl get -o=yaml --export $n > $n.yaml
 done
 
+### loop per every namespace except kube-system 
+for ns in $(kubectl get -o=name ns |grep -v kube | sed 's/namespace\///g')
+do
+  mkdir -p $ns
+  echo "Processing namespace $ns:"
+  for n in $(kubectl get -o=name -n $ns pvc,configmap,serviceaccount,secret,ingress,service,deployment,statefulset,hpa,job,cronjob)
+  do
+    mkdir -p $(dirname "$ns/$n")
+    kubectl get -o=yaml --export $n -n $ns > "$ns/$n.yaml"
+    echo "Processing file $ns/$n.yaml:->>>"
+  done
+done
+
+
 # next try 
 
 kubectl config set-context --current --namespace=sandbox
