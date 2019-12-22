@@ -331,7 +331,7 @@ kubectl get deployment  my-app -o json
 kubectl get deployment  my-app -o jsonpath={.metadata.*}
 ```
 <pre>
-map[run:my-app] my-app /apis/extensions/v1beta1/namespaces/my-app/deployments/my-app 1697123 1 2019-08-04T11:27:36Z my-app dc0d20f4-b6aa-11e9-8fb6-7a04c9d91c64 
+map[run:my-app] my-app /apis/extensions/v1beta1/namespaces/default/deployments/my-app 1697123 1 2019-08-04T11:27:36Z my-app dc0d20f4-b6aa-11e9-8fb6-7a04c9d91c64 
 map[deployment.kubernetes.io/revision:1]
 </pre>
 
@@ -785,7 +785,7 @@ metadata:
     owner: djkormo
     run: my-app
   name: my-app
-  selfLink: /apis/extensions/v1beta1/namespaces/my-app/deployments/my-app
+  selfLink: /apis/extensions/v1beta1/namespaces/default/deployments/my-app
 spec:
   progressDeadlineSeconds: 600
   replicas: 2
@@ -836,7 +836,7 @@ metadata:
     owner: djkormo
     run: my-app
   name: my-app
-  selfLink: /api/v1/namespaces/my-app/services/my-app
+  selfLink: /api/v1/namespaces/default/services/my-app
 spec:
   ports:
   - port: 3000
@@ -908,7 +908,7 @@ kubectl proxy
 Starting to serve on 127.0.0.1:8001
 </pre>
 
-##### Try to use http://localhost:8001/api/v1/namespaces/my-app/services/my-app
+##### Try to use http://localhost:8001/api/v1/namespaces/default/services/my-app
 
 ```json
 {
@@ -926,7 +926,7 @@ Starting to serve on 127.0.0.1:8001
       "run": "my-app"
     },
     "annotations": {
-      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"creationTimestamp\":null,\"labels\":{\"owner\":\"djkormo\",\"run\":\"my-app\"},\"name\":\"my-app\",\"namespace\":\"my-app\",\"selfLink\":\"/api/v1/namespaces/my-app/services/my-app\"},\"spec\":{\"ports\":[{\"port\":3000,\"protocol\":\"TCP\",\"targetPort\":3000}],\"selector\":{\"run\":\"my-app\"},\"sessionAffinity\":\"None\",\"type\":\"ClusterIP\"},\"status\":{\"loadBalancer\":{}}}\n"
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"creationTimestamp\":null,\"labels\":{\"owner\":\"djkormo\",\"run\":\"my-app\"},\"name\":\"my-app\",\"namespace\":\"default\",\"selfLink\":\"/api/v1/namespaces/default/services/my-app\"},\"spec\":{\"ports\":[{\"port\":3000,\"protocol\":\"TCP\",\"targetPort\":3000}],\"selector\":{\"run\":\"my-app\"},\"sessionAffinity\":\"None\",\"type\":\"ClusterIP\"},\"status\":{\"loadBalancer\":{}}}\n"
     }
   },
   "spec": {
