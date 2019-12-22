@@ -1,4 +1,5 @@
-Types of health checks
+## Types of health checks
+
 Kubernetes gives you two types of health checks: **readiness** and **liveness**, and it is important to understand the differences between the two, and their uses.
 
 ### Readiness
@@ -6,14 +7,15 @@ Kubernetes gives you two types of health checks: **readiness** and **liveness**,
 
 Readiness probes are designed to let Kubernetes know when your app is ready to serve traffic. Kubernetes makes sure the readiness probe passes before allowing a service to send traffic to the pod. If a readiness probe starts to fail, Kubernetes stops sending traffic to the pod until it passes.
 
-![Readiness](google-kubernetes-probe-readiness.gif){ width=50% }.
+![Readiness|512x397,50%](google-kubernetes-probe-readiness.gif).
 
 ### Liveness
 
 Liveness probes let Kubernetes know if your app is alive or dead. If you app is alive, then Kubernetes leaves it alone. If your app is dead, Kubernetes removes the Pod and starts a new one to replace it.
 
-![Liveness](google-kubernetes-probe-liveness.gif){ width=50% }.
-Type of Probes 
+![Liveness|512x397,50%](google-kubernetes-probe-liveness.gif).
+
+**Type of Probes** 
 The next step is to define the probes that test readiness and liveness. There are three types of probes: 
 - HTTP
 - Command
@@ -37,7 +39,7 @@ The last type of probe is the TCP probe, where Kubernetes tries to establish a T
 TCP probes come in handy if you have a scenario where HTTP probes or command probe don’t work well. For example, a gRPC or FTP service is a prime candidate for this type of probe.
 
 
-### It is time to experiment.
+## It is time to experiment.
 
 
 ```console
