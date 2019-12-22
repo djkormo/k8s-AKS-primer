@@ -17,7 +17,7 @@ Context "***" modified.
 
 ### Create pods 
 ```console
-kubectl apply -f apache-php-api.yaml
+kubectl apply -f apache-php-api-deployment.yaml
 ```
 <pre>
 deployment.apps/apache-php-api created
@@ -50,7 +50,7 @@ replicaset.apps/apache-php-api-f6c45cd64   3         3         0       85s
 
 Why is ready equals zero a long time ?
 
-A part of  file apache-php-api.yaml
+A part of  file apache-php-api-deployment.yaml
 ```yaml
         livenessProbe:
           httpGet:
@@ -81,7 +81,7 @@ apache-php-api-f6c45cd64   3         3         3       4m29s
 kubectl scale --replicas=5 deployment/apache-php-api
 ```
 <pre>
-  deployment.extensions/apache-php-api sca
+deployment.extensions/apache-php-api scaled
 </pre>
 
 ```console
@@ -115,14 +115,14 @@ pod/apache-php-api-f6c45cd64-wskvn   1/1     Running   0          84s
 kubectl apply -f apache-php-api-hpa.yaml
 ```
 <pre>
- horizontalpodautoscaler.autoscaling/apache-php-api created
+horizontalpodautoscaler.autoscaling/apache-php-api created
 </pre>
 
 ```console
 kubectl autoscale deployment apache-php-api --cpu-percent=30 --min=1 --max=10
 ```
 <pre>
-  horizontalpodautoscaler.autoscaling/apache-php-api autoscaled
+horizontalpodautoscaler.autoscaling/apache-php-api autoscaled
 </pre>
 
 ```console
@@ -163,6 +163,70 @@ Events:
 for resource cpu: unable to fetch metrics from resource metrics API: the server could not find the requested resource (get pods.metrics.k8s.io)
   Warning  FailedComputeMetricsReplicas  7s (x2 over 22s)  horizontal-pod-autoscaler  failed to get cpu utilization: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server could not find the requested resource (get pods.metrics.k8s.io)
 </pre>
+
+
+### Metrics server is mossing on my local k8s cluster.
+
+Cookbook to install metric server
+
+curl -A https://raw.githubusercontent.com/kubernetes-sigs/metrics-server/master/deploy/1.8%2B/metrics-server-deployment.yaml > metrics-server-deployment.yaml
+
+
+#### patch yaml file by adding after  imagePullPolicy: Always
+<pre>
+  command:
+    - /metrics-server
+    - --kubelet-insecure-tls
+    - --cert-dir=/tmp
+    - --secure-port=4443
+    - --kubelet-preferred-address-types=InternalIP
+</pre>
+
+#### Save the file and deploy on cluster in kube-system namespace
+```console
+kubectl apply -n kube-system -f metrics-server-deployment.yaml
+```
+<pre>
+serviceaccount/metrics-server unchanged
+deployment.apps/metrics-server configured
+</pre>
+```console
+kubectl get pods -n kube-system |grep metrics
+```
+<pre>
+metrics-server-564fbf75b5-dtr2v          1/1     Running   0          98s
+</pre>
+```console
+kubectl logs metrics-server-564fbf75b5-dtr2v -n kube-system
+```
+<pre>
+I1222 22:06:38.041311       1 serving.go:312] Generated self-signed cert (/tmp/apiserver.crt, /tmp/apiserver.key)
+I1222 22:06:39.019465       1 manager.go:95] Scraping metrics from 0 sources
+I1222 22:06:39.019657       1 manager.go:148] ScrapeMetrics: time: 2µs, nodes: 0, pods: 0        
+I1222 22:06:39.031001       1 secure_serving.go:116] Serving securely on [::]:4443
+I1222 22:07:39.020001       1 manager.go:95] Scraping metrics from 1 sources
+I1222 22:07:39.027658       1 manager.go:120] Querying source: kubelet_summary:docker-desktop    
+I1222 22:07:39.088902       1 manager.go:148] ScrapeMetrics: time: 68.8058ms, nodes: 1, pods: 23 
+I1222 22:08:39.019769       1 manager.go:95] Scraping metrics from 1 sources
+I1222 22:08:39.023063       1 manager.go:120] Querying source: kubelet_summary:docker-desktop    
+I1222 22:08:39.057139       1 manager.go:148] ScrapeMetrics: time: 37.2889ms, nodes: 1, pods: 23 
+</pre>
+
+```console
+kubectl top nodes
+```
+<pre>
+Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
+</pre>
+```console
+kubectl to pods
+```
+<pre>
+Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
+</pre>
+
+
+
 
 
 service=13.79.164.182
@@ -207,4 +271,12 @@ while true; do wget -q -O- http://apache-php-api.default.svc.cluster.local/pi.ph
 
 #### Based on  https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
 
-#### https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-cooldown-delay
+##### https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/support-for-cooldown-delay
+
+##### https://github.com/kubernetes-sigs/metrics-server/issues/317
+
+##### https://aws.amazon.com/premiumsupport/knowledge-center/eks-metrics-server-pod-autoscaler/?nc1=h_ls
+
+
+##### https://blog.codewithdan.com/enabling-metrics-server-for-kubernetes-on-docker-desktop/
+
