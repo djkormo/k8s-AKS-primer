@@ -12,7 +12,6 @@ deployment.apps/my-app created
 
 ```console
 kubectl delete deployment/my-app
-kubectl delete service/kubernetes
 ```
 <pre>
 deployment.extensions "my-app" deleted
@@ -113,10 +112,138 @@ kubectl delete pod my-app
 pod "my-app" deleted
 </pre>
 
+
+### Let's experiment with dry-run and pod restart policy
+
+```console
+kubectl run my-app --image=djkormo/primer --restart="Never" 
+```
+<pre>
+pod/my-app created
+</pre>
+
+### Delete this new pod
+
+```console
+kubectl delete pod/my-app
+```
+<pre>
+pod "my-app" deleted
+</pre>
+
+#### Dry-run allows us to prepare changes in kubernetes cluster 
+
+```console
+kubectl run my-app --image=djkormo/primer --restart="Never"  --dry-run
+```
+<pre>
+pod/my-app created (dry run)
+</pre>
+```console
+kubectl get pods
+```
+<pre>
+No resources found.
+</pre>
+
+#### Additionally we can export our future deployment in yaml  or json format
+
+```console
+kubectl run my-app --image=djkormo/primer --restart="Never"  --dry-run -o yaml
+```
+<pre>
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: my-app
+  name: my-app
+spec:
+  containers:
+  - image: djkormo/primer
+    name: my-app
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+</pre>
+```console
+kubectl run my-app --image=djkormo/primer --restart="Never"  --dry-run -o yaml
+```
+<pre>
+{
+    "kind": "Pod",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "my-app",
+        "creationTimestamp": null,
+        "labels": {
+            "run": "my-app"
+        }
+    },
+    "spec": {
+        "containers": [
+            {
+                "name": "my-app",
+                "image": "djkormo/primer",
+                "resources": {}
+            }
+        ],
+        "restartPolicy": "Never",
+        "dnsPolicy": "ClusterFirst"
+    },
+    "status": {}
+}
+</pre>
+
+### Now we only change restart pod policy from Never to Always in dry-run mode
+```console
+kubectl run my-app --image=djkormo/primer --restart="Always" --replicas=2 --dry-run
+```
+<pre>
+kubectl run --generator=deployment/apps.v1 is DEPRECATED and will be removed in a future version. Use kubectl run --generator=run-pod/v1 or kubectl create instead.
+deployment.apps/my-app created (dry run)
+</pre>
+
+```console
+kubectl run my-app --image=djkormo/primer --restart="Always" --replicas=2 --dry-run  -o yaml
+```
+<pre>
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: my-app
+  name: my-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: my-app
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: my-app
+    spec:
+      containers:
+      - image: djkormo/primer
+        name: my-app
+        resources: {}
+status: {}
+</pre>
+
+
+
+#### Now we have new objects deployment -> replicaset -> pod. Lets remove --dry-run mode
+
 ##### Lets create our objects as deloyment
 
 ```console
-kubectl run my-app --image=djkormo/primer --replicas=2
+kubectl run my-app --image=djkormo/primer --replicas=2 --restart="Always"
 ```
 <pre>
 kubectl run --generator=deployment/apps.v1 is DEPRECATED and will be removed in a future version. Use kubectl run --generator=run-pod/v1 or kubectl create instead
@@ -150,7 +277,8 @@ my-app-6b7855d554-c5scw   1/1     Running   0          3m1s
 my-app-6b7855d554-q7nzl   1/1     Running   0          3m1s
 </pre>
 
-#### You can get all objects
+#### You can get all objects. 
+#### Beware! All does not mean all types of objects, but  only pods, services, replicasets and deployments
 
 ```console
 kubectl get all
@@ -181,10 +309,22 @@ aks-nodepool1-16191604-1   Ready    agent   11d   v1.14.3
 ```console
 kubectl get deployment  my-app -o yaml
 ```
+<pre>
+apiVersion: extensions/v1beta1
+kind: Deployment
+....
+</pre>
+
 ##### In Json format
 ```console
 kubectl get deployment  my-app -o json
 ```
+<pre>
+{
+    "apiVersion": "extensions/v1beta1",
+    "kind": "Deployment",
+....
+</pre>
 
 ##### In own template 
 ```console
@@ -214,7 +354,7 @@ Events:
 #### Labels
 
 ```console
-kubectl get deployment --show-labels
+kubectl get deployment --show-labels # or kubectl get deploy --show-labels
 ```
 
 <pre>
@@ -223,7 +363,7 @@ my-app   2/2     2            2           10m   run=my-app
 </pre>
 
 ```console
-kubectl get replicasets --show-labels
+kubectl get replicasets --show-labels # or kubectl get rs --show-labels
 ```
 <pre>
 NAME                DESIRED   CURRENT   READY   AGE   LABELS
@@ -231,7 +371,7 @@ my-app-6b7855d554   2         2         2       10m   pod-template-hash=6b7855d5
 </pre>
 
 ```console
-kubectl get pods --show-labels
+kubectl get pods --show-labels # or kubectl get pod --show-labels # or kubectl get po --show-labels
 ```
 <pre>
 my-app-6b7855d554-c5scw   1/1     Running   0          11m   pod-template-hash=6b7855d554,run=my-app
@@ -241,7 +381,7 @@ my-app-6b7855d554-q7nzl   1/1     Running   0          11m   pod-template-hash=6
 #### Adding label column
 
 ```console
-kubectl get replicaset -L run # --label-columns
+kubectl get replicaset -L run # abbreviation of --label-columns
 ```
 
 <pre>
@@ -260,7 +400,7 @@ my-app-6b7855d554   2         2         2       12m   my-app   6b7855d554
 
 
 ```console
-kubectl get replicaset -l run=my-app # --selector
+kubectl get replicaset -l run=my-app # abbreviation of --selector
 ```
 <pre>
 NAME                DESIRED   CURRENT   READY   AGE
@@ -407,7 +547,7 @@ service/my-app exposed
 #### Show services
 
 ```console
-kubectl get services my-app # or svc
+kubectl get services my-app # or kubectl get svc my-app
 ```
 <pre>
 NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
@@ -443,7 +583,7 @@ NAME     ENDPOINTS                             AGE
 my-app   10.244.1.211:3000,10.244.1.212:3000   2m58s
 </pre>
 
-##### Temporary pod 
+##### Temporary pod  --rm flag means remove, -it flag means interactive
 ```console
 kubectl run my-test  -it --rm --image=alpine  --generator=run-pod/v1
 ```
@@ -465,6 +605,15 @@ Hi, Im Anonymous, from my-app-6b7855d554-fzjhl.
 ...
 Hi, Im Anonymous, from my-app-6b7855d554-sjg7m.
 </pre>
+
+```console
+nslookup my-app
+```
+<pre>
+Name:      my-app
+Address 1: 10.0.74.93 my-app.default.svc.cluster.local
+</pre>
+
 
 ```console
 exit
@@ -492,7 +641,7 @@ cat log.txt
 
 </pre>
 
-#### Let's do something iside runninig pod
+#### Let's do something inside runninig pod
 ```console
 POD_NAME=$(kubectl get pods -l run=my-app -o jsonpath={.items[0].metadata.name})
 echo $POD_NAME
@@ -537,7 +686,7 @@ const whoami = process.env['WHOAMI'] || 'Anonymous';const server = http.createSe
 ##### setting env variable
 ```console
 POD_NAME=$(kubectl get pods -l run=my-app -o jsonpath={.items[0].metadata.name})
-kubectl set env deployment/my-app WHOAMI="WROCLAW 2019"
+kubectl set env deployment/my-app WHOAMI="Kubernetes in 2020"
 echo $POD_NAME
 kubectl exec $POD_NAME -it sh
 ```
@@ -548,7 +697,9 @@ deployment.extensions/my-app env updated
 #### Inside $POD_NAME
 <pre>
 echo $WHOAMI
-WROCLAW 2019
+Kubernetes in 2020
+printenv |grep WHOAMI
+WHOAMI=Kubernetes in 20210
 exit
 </pre>
 
@@ -563,6 +714,8 @@ my-app-7875b68698-6cjrc   1/1     Running   0          2m46s   10.244.1.218   ak
 my-app-7875b68698-f4wmt   1/1     Running   0          2m43s   10.244.1.219   aks-nodepool1-16191604-1   <none>
          <none>
 </pre>
+
+#### Example valid only if you have more than one node. On local clusters (minicube) it is useless
 ```console
 NODE_NAME=$(kubectl get pods -l run=my-app -o jsonpath={.items[0].spec.nodeName})
 echo $NODE_NAME
@@ -698,7 +851,6 @@ status:
 
 ```
 
-
 ##### Recreate the same from yaml files
 
 ```console
@@ -747,7 +899,6 @@ NAME                               DESIRED   CURRENT   READY   AGE
 replicaset.apps/my-app-dd8846c94   2         2         2       54s
 
 </pre>
-
 
 ###### Not only kubectl
 ```console
