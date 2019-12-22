@@ -1,37 +1,51 @@
 Types of health checks
-Kubernetes gives you two types of health checks, and it is important to understand the differences between the two, and their uses.
-Readiness
+Kubernetes gives you two types of health checks: **readiness** and **liveness**, and it is important to understand the differences between the two, and their uses.
 
-![Readiness](google-kubernetes-probe-readiness.gif)
+### Readiness
+
 
 Readiness probes are designed to let Kubernetes know when your app is ready to serve traffic. Kubernetes makes sure the readiness probe passes before allowing a service to send traffic to the pod. If a readiness probe starts to fail, Kubernetes stops sending traffic to the pod until it passes.
-Liveness
+
+![Readiness](google-kubernetes-probe-readiness.gif) {:height="500px" width="400px"}
+
+### Liveness
+
 Liveness probes let Kubernetes know if your app is alive or dead. If you app is alive, then Kubernetes leaves it alone. If your app is dead, Kubernetes removes the Pod and starts a new one to replace it.
 
-![Liveness](google-kubernetes-probe-liveness.gif)
+![Liveness](google-kubernetes-probe-liveness.gif) {:height="500px" width="400px"}
 
-Type of Probes
-The next step is to define the probes that test readiness and liveness. There are three types of probes: HTTP, Command, and TCP. You can use any of them for liveness and readiness checks.
-HTTP
+Type of Probes 
+The next step is to define the probes that test readiness and liveness. There are three types of probes: 
+- HTTP
+- Command
+- TCP
+
+You can use any of them for liveness and readiness checks.
+
+**HTTP**
+
 HTTP probes are probably the most common type of custom liveness probe. Even if your app isn’t an HTTP server, you can create a lightweight HTTP server inside your app to respond to the liveness probe. Kubernetes pings a path, and if it gets an HTTP response in the 200 or 300 range, it marks the app as healthy. Otherwise it is marked as unhealthy.
-You can read more about HTTP probes here.
-Command
+
+
+**Command**
+
 For command probes, Kubernetes runs a command inside your container. If the command returns with exit code 0, then the container is marked as healthy. Otherwise, it is marked unhealthy. This type of probe is useful when you can’t or don’t want to run an HTTP server, but can run a command that can check whether or not your app is healthy.
 
-You can read more about command probes here.
-TCP
+**TCP**
+
 The last type of probe is the TCP probe, where Kubernetes tries to establish a TCP connection on the specified port. If it can establish a connection, the container is considered healthy; if it can’t it is considered unhealthy.
 
 TCP probes come in handy if you have a scenario where HTTP probes or command probe don’t work well. For example, a gRPC or FTP service is a prime candidate for this type of probe.
 
-You can read more about TCP probes here.
+
+### It is time to experiment.
 
 
 ```console
 kubectl apply -f ./exec-liveness.yaml
 ```
 <pre>
-kubectl apply -f ./exec-liveness.yaml
+pod/liveness-exec created
 </pre>
 
 ```console
@@ -62,11 +76,17 @@ Events:
   Normal   Pulling    4m35s (x5 over 9m36s)  kubelet, aks-nodepool1-16191604-1  Pulling image "k8s.gcr.io/busybox"
 </pre>
 
+### Examples from excellent book Kubernetes up and running
 
 ```console
 kubectl apply -f kuard-deploy-heath-check.yaml
 ```
+<pre>
+service/kuard-health created
+deployment.apps/kuard-health-deployment created
+</pre>
 
+#### --namespace filters object from on namespace
 ```console
 kubectl get all --namespace=default
 ```
