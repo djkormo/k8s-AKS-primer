@@ -61,6 +61,29 @@ liveness-exec   1/1     Running   2          3m6s
 
 </pre>
 #### Why is the pod in restarting mode ?
+
+Lets look inside pod definition
+```yaml
+...
+containers:
+  - name: liveness
+    image: k8s.gcr.io/busybox
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 5
+      periodSeconds: 5
+...
+
+```
+
+
 ```
 kubectl describe pod liveness-exec |grep Events -A20
 ```
@@ -77,7 +100,7 @@ Events:
   Normal   Pulling    4m35s (x5 over 9m36s)  kubelet, aks-nodepool1-16191604-1  Pulling image "k8s.gcr.io/busybox"
 </pre>
 
-### Examples from excellent book Kubernetes up and running
+### Examples from excellent book "Kubernetes up and running".
 
 ```console
 kubectl apply -f kuard-deploy-heath-check.yaml
@@ -175,6 +198,14 @@ Allocated resources:
 kubectl create namespace my-app
 ```
 <pre>
+namespace/my-app created
+</pre>
+
+### Lets create quotas.yaml file for restrictions for one namespace
+
+Inside of file we have....
+<pre>
+
 cat <<EOF > quotas.yaml
 apiVersion: v1
 kind: ResourceQuota
@@ -191,43 +222,165 @@ spec:
 EOF
 </pre>
 
+
 ### Applying quotas to namespace
 ```console
 kubectl apply -f ./quotas.yaml --namespace=my-app
 ```
+<pre>
+resourcequota/compute-resources created
+</pre>
 
-#### Trying to allocate memory and putting liveness to status 500
+Now we are ready to control bad behaviour of our application
+
+
+#### Lets switch connection context to a new namespace (my-app)
 ```console
-kubectl get all --namespace=default
+kubectl config set-context --current --namespace=my-app
+```
+<pre>
+Context "***" modified.
+</pre>
+
+I worth to check if our namespace is empty
+```console
+kubectl get all
+```
+<pre>
+No resources found.
+</pre>
+```console
+kubectl apply -f kuard-deploy-heath-check.yaml 
+```
+<pre>
+service/kuard-health created
+deployment.apps/kuard-health-deployment created
+</pre>
+
+```console
+kubectl get all
 ```
 <pre>
 NAME                                           READY   STATUS    RESTARTS   AGE
-pod/kuard-health-deployment-68d9766d56-hd6xp   1/1     Running   2          13m
-pod/kuard-health-deployment-68d9766d56-kqhjh   1/1     Running   3          13m
+pod/kuard-health-deployment-68d9766d56-s9xst   1/1     Running   0          30s
+pod/kuard-health-deployment-68d9766d56-wtqcq   1/1     Running   0          30s
 
-NAME                   TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
-service/kuard-health   NodePort    10.0.53.91    <none>        8080:31324/TCP   13m
-
+NAME                   TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/kuard-health   NodePort   10.106.107.160   <none>        8080:30454/TCP   30s
 
 NAME                                      READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/kuard-health-deployment   2/2     2            2           13m
+deployment.apps/kuard-health-deployment   2/2     2            2           30s
 
 NAME                                                 DESIRED   CURRENT   READY   AGE
-replicaset.apps/kuard-health-deployment-68d9766d56   2         2         2       13m
+replicaset.apps/kuard-health-deployment-68d9766d56   2         2         2       30s
 
+</pre>
+
+```console
+kubectl get pods
+```
+Our pods have zero restart counters
+<pre>
+NAME                                       READY   STATUS    RESTARTS   AGE  
+kuard-health-deployment-68d9766d56-s9xst   1/1     Running   0          9m14s
+kuard-health-deployment-68d9766d56-wtqcq   1/1     Running   0          9m14s
+</pre>
+
+What is resources utilisation
+
+```console
+kubectl describe ns my-app
+```
+<pre>
+Name:         my-app
+Labels:       <none>
+Annotations:  <none>
+Status:       Active
+
+Resource Quotas
+ Name:                    compute-resources
+ Resource                 Used   Hard
+ --------                 ---    ---
+ limits.cpu               400m   4
+ limits.memory            200Mi  4Gi
+ pods                     2      20
+ requests.cpu             200m   2
+ requests.memory          100Mi  2Gi
+ requests.nvidia.com/gpu  0      4
+
+No resource limits.
+</pre>
+
+
+```console
+kubectl port-forward deployment/kuard-health-deployment 8080:8080
+```
+<pre>
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
+Handling connection for 8080
+</pre>
+
+
+Open the browser at http://localhost:8080
+
+
+#### Trying to allocate memory 
+
+![kuard memory allocation](kuard_memory.png)
+
+```console
+kubectl get pods
+```
+<pre>
+NAME                                       READY   STATUS    RESTARTS   AGE
+kuard-health-deployment-68d9766d56-s9xst   1/1     Running   0          18m
+kuard-health-deployment-68d9766d56-wtqcq   1/1     Running   2          18m
 </pre>
 
 
 
+```console
+kubectl describe pods kuard-health-deployment-68d9766d56-wtqcq |grep -A10 Back-off
+```
 
+<pre>
+  Warning  BackOff    2m8s (x2 over 2m9s)  kubelet, docker-desktop  Back-off restarting failed container
+  Normal   Pulling    117s (x3 over 20m)   kubelet, docker-desktop  Pulling image "djkormo/kuard"
+  Normal   Pulled     114s (x3 over 20m)   kubelet, docker-desktop  Successfully pulled image "djkormo/kuard"
+  Normal   Created    114s (x3 over 20m)   kubelet, docker-desktop  Created container kuard-health
+  Normal   Started    114s (x3 over 20m)   kubelet, docker-desktop  Started container kuard-health
+</pre>
 
-![kuard memory allocation](kuard_memory.png)
+#### Putting liveness to status 500
 
 ![kuard liveness](kuard_liveness.png)
 
+Press 10
+Probe will fail for next 10 calls
+Repeat twice
 
+```console
+kubectl get pod --namespace=my-app # remember then name of our namespace
+```
 
+<pre>
+NAME                                       READY   STATUS    RESTARTS   AGE
+kuard-health-deployment-68d9766d56-s9xst   1/1     Running   0          129m
+kuard-health-deployment-68d9766d56-wtqcq   1/1     Running   4          129m
+</pre>
 
+```console
+kubectl describe pods kuard-health-deployment-68d9766d56-wtqcq |grep "Liveness probe" -A10
+```
+
+<pre>
+  Warning  Unhealthy  54s (x9 over 2m44s)  kubelet, docker-desktop  Liveness probe failed: HTTP probe failed with statuscode: 500
+  Normal   Killing    54s (x3 over 2m24s)  kubelet, docker-desktop  Container kuard-health failed liveness probe, will be restarted
+  Normal   Pulled     51s (x6 over 130m)   kubelet, docker-desktop  Successfully pulled image "djkormo/kuard"
+  Normal   Created    51s (x6 over 130m)   kubelet, docker-desktop  Created container kuard-health
+  Normal   Started    51s (x6 over 130m)   kubelet, docker-desktop  Started container kuard-health
+</pre>
 
 
 Based on 
