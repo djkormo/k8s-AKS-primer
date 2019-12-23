@@ -1,4 +1,7 @@
-###Installing Docker Desktop
+## Using local kubernetes (k8s) cluster in Docker Desktop
+
+
+### Installing Docker Desktop
 
 
 
@@ -31,7 +34,7 @@ kubectl cluster-info
 
 ![Cluster info](cluster-info.png)
 
-For new k8s user lets try to use cluster from GUI instead of cli (kubectl)
+For new k8s users: lets try to control the cluster from GUI instead of cli (kubectl)
 
 ### Adding dashboard
 
@@ -89,6 +92,52 @@ Unfortunately  the metrics server is absent
 
 
 ### Adding  cluster visualizator  
+
+#### Let's use the kubeview application 
+```console
+kubectl create ns monitor
+```
+<pre>
+namespace/monitor created
+</pre>
+
+```console
+kubectl apply -f kubeview-deployment.yaml -n monitor
+```
+<pre>
+deployment.extensions/kubeview created
+</pre>
+
+```console
+kubectl apply -f kubeview-service.yaml -n monitor
+```
+<pre>
+service/kubeview created
+</pre>
+```console
+kubectl get svc,deploy,rs,po -n monitor
+```
+<pre>
+NAME               TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+service/kubeview   LoadBalancer   10.99.111.95   localhost     8000:30000/TCP   91s
+
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.extensions/kubeview   1/1     1            1           2m4s
+
+NAME                                        DESIRED   CURRENT   READY   AGE
+replicaset.extensions/kubeview-564df48b54   1         1         1       2m4s
+
+NAME                            READY   STATUS    RESTARTS   AGE
+pod/kubeview-564df48b54-gsks2   1/1     Running   0          2m4s
+
+</pre>
+
+Open the browser at:
+http://localhost:8000/
+
+Use monitor namespace see deployment of kubeview application
+
+![Kubeview monitor](kubeview-monitor.png)
 
 Literature:
 
