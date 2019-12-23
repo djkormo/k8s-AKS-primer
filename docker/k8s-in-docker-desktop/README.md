@@ -144,10 +144,14 @@ Literature:
 https://docs.docker.com/docker-for-windows/#kubernetes
 
 https://github.com/kubernetes/dashboard
+
 https://collabnix.com/kubernetes-dashboard-on-docker-desktop-for-windows-2-0-0-3-in-2-minutes/
 
 
 https://blog.codewithdan.com/enabling-metrics-server-for-kubernetes-on-docker-desktop/
+
+
+https://github.com/benc-uk/kubeview
 
 
 
