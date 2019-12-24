@@ -169,7 +169,7 @@ for resource cpu: unable to fetch metrics from resource metrics API: the server 
 
 Cookbook to install metric server
 
-curl -A https://raw.githubusercontent.com/kubernetes-sigs/metrics-server/master/deploy/1.8%2B/metrics-server-deployment.yaml > metrics-server-deployment.yaml
+curl  https://raw.githubusercontent.com/kubernetes-sigs/metrics-server/master/deploy/1.8%2B/metrics-server-deployment.yaml > metrics-server-deployment.yaml
 
 
 #### patch yaml file by adding after  imagePullPolicy: Always
@@ -279,4 +279,6 @@ while true; do wget -q -O- http://apache-php-api.default.svc.cluster.local/pi.ph
 
 
 ##### https://blog.codewithdan.com/enabling-metrics-server-for-kubernetes-on-docker-desktop/
+
+##### https://github.com/kubernetes-sigs/metrics-server/issues/167
 

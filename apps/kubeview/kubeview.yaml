@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: kubeview
+  name: kubeview
+spec:
+  containers:
+  - args:
+    - kubeview
+    env:
+    - name: KUBERNETES_SERVICE_HOST
+      value: https://kubernetes.docker.internal
+    - name: KUBERNETES_SERVICE_PORT
+      value: "6443"
+    image: djkormo/kubeview:latest # bencuk/kubeview
+    name: kubeview
+    ports:
+    - containerPort: 8000
+    imagePullPolicy: Always
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  
+
