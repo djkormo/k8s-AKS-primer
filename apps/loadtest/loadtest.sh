@@ -45,6 +45,7 @@ echo "ENDPOINT: $ENDPOINT"
 echo "METHOD: $METHOD"
 echo "CONTENT_TYPE: $CONTENT_TYPE"
 echo "PAYLOAD: $PAYLOAD"
+echo "PHASES: $PHASES"
 
 echo "Phase 1: Warming up - 30 seconds, 100 users."
 ./hey -z 30s -c 100 -d "$PAYLOAD" -H "$CONTENT_TYPE" -m $METHOD "$ENDPOINT"
@@ -52,7 +53,7 @@ echo "Phase 1: Warming up - 30 seconds, 100 users."
 echo "Waiting 15 seconds for the cluster to stabilize"
 sleep 15
 
-if [$PHASEd<2]
+if [$PHASES<2]
 then 
   exit 0
 fi 
@@ -64,7 +65,7 @@ echo "Waiting 15 seconds for the cluster to stabilize"
 sleep 15
 
 
-if [$PHASEd<3]
+if [$PHASES<3]
 then 
   exit 0
 fi 
@@ -77,7 +78,7 @@ echo "Waiting 15 seconds for the cluster to stabilize"
 sleep 15
 
 
-if [$PHASEd<4]
+if [$PHASES<4]
 then 
   exit 0
 fi 
@@ -89,7 +90,7 @@ echo "Waiting 15 seconds for the cluster to stabilize"
 sleep 15
 
 
-if [$PHASEd<5]
+if [$PHASES<5]
 then 
   exit 0
 fi 
@@ -99,7 +100,7 @@ fi
 echo "\nPhase 5: Load test - 30 seconds, 6400 users."
 ./hey -z 30s -c 6400 -d "$PAYLOAD" -H "$CONTENT_TYPE" -m $METHOD "$ENDPOINT"
 
-if [$PHASEd<6]
+if [$PHASES<6]
 then 
   exit 0
 fi 
