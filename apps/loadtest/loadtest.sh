@@ -54,7 +54,7 @@ echo "Phase 1: Warming up - 30 seconds, 100 users."
 echo "Waiting 15 seconds for the cluster to stabilize"
 sleep 15
 
-if [$PHASES -lt 2]
+if [ $PHASES -lt 2 ]
 then 
   exit 0
 fi 
@@ -66,7 +66,7 @@ echo "Waiting 15 seconds for the cluster to stabilize"
 sleep 15
 
 
-if [$PHASES -lt 3]
+if [ $PHASES -lt 3 ]
 then 
   exit 0
 fi 
@@ -79,7 +79,7 @@ echo "Waiting 15 seconds for the cluster to stabilize"
 sleep 15
 
 
-if [$PHASES -lt 4]
+if [ $PHASES -lt 4 ]
 then 
   exit 0
 fi 
@@ -91,7 +91,7 @@ echo "Waiting 15 seconds for the cluster to stabilize"
 sleep 15
 
 
-if [$PHASES -lt 5]
+if [ $PHASES -lt 5 ]
 then 
   exit 0
 fi 
@@ -101,7 +101,7 @@ fi
 echo "\nPhase 5: Load test - 30 seconds, 6400 users."
 ./hey -z 30s -c 6400 -d "$PAYLOAD" -H "$CONTENT_TYPE" -m $METHOD "$ENDPOINT"
 
-if [$PHASES -lt 6]
+if [ $PHASES -lt 6 ]
 then 
   exit 0
 fi 
