@@ -6,7 +6,7 @@ echo "**************************************************************************
 
 export CONTENT_TYPE="Content-Type: application/json"
 #export PAYLOAD='{"EmailAddress": "email@domain.com", "Product": "prod-1", "Total": 100}'
-export PHASES=
+export PHASES=4
 if [ -z "$1" ]
 then
   echo "ENDPOINT was passed as a parameter, assuming it is passed as environment variable"
