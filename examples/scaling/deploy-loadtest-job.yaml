@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: loadtest
+spec:
+  ttlSecondsAfterFinished: 120  
+  template:
+    spec: 
+      containers:
+      - name: loadtest
+        image: djkormo/loadtest
+        command: ["bash",  "loadtest.sh"]
+      restartPolicy: Never
+    
+      

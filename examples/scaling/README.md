@@ -112,14 +112,15 @@ pod/apache-php-api-f6c45cd64-wskvn   1/1     Running   0          84s
 
 ### Turning on autoscaling based on CPU utilisation
 ```console
-kubectl apply -f apache-php-api-hpa.yaml
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
 ```
 <pre>
 horizontalpodautoscaler.autoscaling/apache-php-api created
 </pre>
 
 ```console
-kubectl autoscale deployment apache-php-api --cpu-percent=30 --min=1 --max=10
+kubectl autoscale deployment apache-php-api --cpu-percent=20 --min=1 --max=10
 ```
 <pre>
 horizontalpodautoscaler.autoscaling/apache-php-api autoscaled
@@ -131,7 +132,7 @@ kubectl get hpa apache-php-api
 
 <pre>
 NAME             REFERENCE                   TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
-apache-php-api   Deployment/apache-php-api   <unknown>/30%   1         10        5          70s
+apache-php-api   Deployment/apache-php-api   <unknown>/20%   1         10        5          70s
 </pre>
 
 
@@ -146,7 +147,7 @@ Annotations:                                           <none>
 CreationTimestamp:                                     Sun, 22 Dec 2019 21:00:38 +0100
 Reference:                                             Deployment/apache-php-api
 Metrics:                                               ( current / target )
-  resource cpu on pods  (as a percentage of request):  <unknown> / 30%
+  resource cpu on pods  (as a percentage of request):  <unknown> / 20%
 Min replicas:                                          1
 Max replicas:                                          10
 Deployment pods:                                       5 current / 0 desired
@@ -165,7 +166,7 @@ for resource cpu: unable to fetch metrics from resource metrics API: the server 
 </pre>
 
 
-### Metrics server is mossing on my local k8s cluster.
+### Metrics server is lossing on my local k8s cluster.
 
 Cookbook to install metric server
 
@@ -226,7 +227,23 @@ Error from server (NotFound): the server could not find the requested resource (
 </pre>
 
 
+The final solution was to install metrics server via helm 
 
+```console
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm install metrics stable/metrics-server  --namespace kube-system --set args={--kubelet-insecure-tls}
+```
+
+After all we have
+```console
+kubectl get hpa
+```
+<pre>
+NAME             REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+apache-php-api   Deployment/apache-php-api   1%/30%    1         10        1          38h
+</pre>
+
+#### Lets try to stress our deployment
 
 
 service=13.79.164.182
@@ -248,12 +265,55 @@ service=13.79.164.182
 curl -s "http://$service/?[1-1000]"
 
 ### using dedicated  load test 
-service=13.79.149.180
+
+HPA_SERVICE=apache-php-api:2020
 
 kubectl run --image=djkormo/loadtest loadtest-app \
---generator=run-pod/v1 --env ENDPOINT=http://$service \
+--generator=run-pod/v1 --restart="Never" \
+--image-pull-policy Always \
+--env ENDPOINT=http://$HPA_SERVICE \
 --env METHOD=GET  \
---env PAYLOAD='{"Test": "test@whitehouse.gov"}'
+--env PAYLOAD='{"Test": "test@whitehouse.gov"}' \
+--env PHASES=3
+
+### Testing online ...
+```console
+kubectl logs loadtest-app; kubectl get hpa; kubectl get pod loadtest-app
+```
+
+History of pod instances number
+```console
+kubectl get hpa -w
+```
+
+NAME             REFERENCE                   TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+apache-php-api   Deployment/apache-php-api   141%/20%   1         10        4          18m
+apache-php-api   Deployment/apache-php-api   141%/20%   1         10        8          18m
+apache-php-api   Deployment/apache-php-api   150%/20%   1         10        8          18m
+apache-php-api   Deployment/apache-php-api   150%/20%   1         10        8          19m
+apache-php-api   Deployment/apache-php-api   151%/20%   1         10        10         20m
+apache-php-api   Deployment/apache-php-api   1%/20%     1         10        10         20m
+apache-php-api   Deployment/apache-php-api   129%/20%   1         10        10         21m
+apache-php-api   Deployment/apache-php-api   146%/20%   1         10        10         22m
+apache-php-api   Deployment/apache-php-api   129%/20%   1         10        10         23m
+apache-php-api   Deployment/apache-php-api   1%/20%     1         10        10         23m
+apache-php-api   Deployment/apache-php-api   16%/20%    1         10        10         25m
+apache-php-api   Deployment/apache-php-api   31%/20%    1         10        10         26m
+apache-php-api   Deployment/apache-php-api   23%/20%    1         10        10         27m
+apache-php-api   Deployment/apache-php-api   16%/20%    1         10        10         28m
+apache-php-api   Deployment/apache-php-api   1%/20%     1         10        10         29m
+apache-php-api   Deployment/apache-php-api   1%/20%     1         10        10         33m
+apache-php-api   Deployment/apache-php-api   1%/20%     1         10        8          33m
+apache-php-api   Deployment/apache-php-api   1%/20%     1         10        8          34m
+apache-php-api   Deployment/apache-php-api   2%/20%     1         10        1          34m
+apache-php-api   Deployment/apache-php-api   1%/20%     1         10        1          37m
+apache-php-api   Deployment/apache-php-api   2%/20%     1         10        1          38m
+
+Instead of using on time run pod, we can experiment with kubernetes job objects.
+
+
+
+
 
 ### using pod inside
 ```console
@@ -266,8 +326,14 @@ kubectl run load-generator --generator=run-pod/v1 \
 ```
 
 <pre>
-while true; do wget -q -O- http://apache-php-api.default.svc.cluster.local/pi.php; done
+while true; do wget -O- http://apache-php-api:2020; done
 </pre>
+<pre>
+Connecting to apache-php-api:2020 (10.96.213.227:2020)
+</pre>
+
+
+
 
 #### Based on  https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
 

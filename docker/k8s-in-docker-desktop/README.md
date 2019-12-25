@@ -286,10 +286,11 @@ Forwarding from [::1]:9090 -> 9090
 </pre>
 
 ```console
-helm install mygrafana stable/grafana --namespace=monitor --version=1.12.0 \
+helm install mygrafana stable/grafana --namespace=monitor \
     --set=adminUser=admin \
     --set=adminPassword=admin \
-    --set=service.type=LoadBalancer    # if IP should by outside 	   
+    --set=service.type=LoadBalancer  \
+    --set=service.port=4444
 ```
 ```console
 kubectl get pod --namespace monitor  -l release=mygrafana -l app=grafana

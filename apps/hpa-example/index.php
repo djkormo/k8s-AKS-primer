@@ -4,7 +4,7 @@
 
   # based on https://coderwall.com/p/g35wya/calculating-pi-using-php
   $pi = 4; $top = 4; $bot = 3; $minus = TRUE;
-  $accuracy = 100000;
+  $accuracy = 1000000;
 
   for($i = 0; $i < $accuracy; $i++)
   {

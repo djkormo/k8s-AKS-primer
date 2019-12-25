@@ -7,13 +7,13 @@ metadata:
 spec:
   externalTrafficPolicy: Cluster
   ports:
-  - name: tcp-8000-8000-sdqbg
+  - name: tcp-3030-8000-sdqbg
     nodePort: 30000
-    port: 8000
+    port: 3030
     protocol: TCP
     targetPort: 8000
   selector:
     k8s-app: kubeview
   sessionAffinity: None
   type: LoadBalancer
-status:
+
