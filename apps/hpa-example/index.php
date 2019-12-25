@@ -1,6 +1,10 @@
+
+
 <?php
+
+  # based on https://coderwall.com/p/g35wya/calculating-pi-using-php
   $pi = 4; $top = 4; $bot = 3; $minus = TRUE;
-  $accuracy = 1000000;
+  $accuracy = 100000;
 
   for($i = 0; $i < $accuracy; $i++)
   {
@@ -14,7 +18,7 @@
   for ($i = 0; $i <= 100000000; $i++) {
     $x += sqrt($x);
   }
-  echo "OK!";
+  echo " OK!";
   
   
   
