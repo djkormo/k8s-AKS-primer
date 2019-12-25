@@ -5,31 +5,35 @@ echo "*---------------------------------BEGIN LOAD TEST-------------------------
 echo "***************************************************************************************"
 
 export CONTENT_TYPE="Content-Type: application/json"
-#export PAYLOAD='{"EmailAddress": "email@domain.com", "Product": "prod-1", "Total": 100}'
-export PHASES=4
+
+export PHASES=3
+
 
 if [ -z "$1" ]
 then
   echo "ENDPOINT was passed as a parameter, assuming it is passed as environment variable"
 else
-  echo "ENDPOINT was passed as a parameter"
   export ENDPOINT=$1
+  echo "ENDPOINT was passed as a parameter : value -> $ENDPOINT"
+
 fi
 
 if [ -z "$2" ]
 then
   echo "METHOD was passed as a parameter, assuming it is passed as environment variable"
 else
-  echo "METHOD was passed as a parameter"
   export METHOD=$2
+  echo "METHOD was passed as a parameter : value -> $METHOD"
+  
 fi
 
 if [ -z "$3" ]
 then
   echo "PAYLOAD was passed as a parameter, assuming it is passed as environment variable"
 else
-  echo "PAYLOAD was passed as a parameter"
   export PAYLOAD=$3
+  echo "PAYLOAD was passed as a parameter : value -> $PAYLOAD"
+ 
 fi
 
 
@@ -37,8 +41,8 @@ if [ -z "$4" ]
 then
   echo "PHASES was passed as a parameter, assuming it is passed as environment variable"
 else
-  echo "PHASES was passed as a parameter"
   export PHASES=$4
+  echo "PHASES was passed as a parameter : value -> $PHASES"
 fi
 
 
