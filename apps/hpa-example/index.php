@@ -1,6 +1,8 @@
 
 
 <?php
+   
+  
 
   # based on https://coderwall.com/p/g35wya/calculating-pi-using-php
   $pi = 4; $top = 4; $bot = 3; $minus = TRUE;
@@ -19,7 +21,8 @@
     $x += sqrt($x);
   }
   echo " OK!";
-  
+  echo " Computed at: ";
+  echo gethostname();
   
   
   
