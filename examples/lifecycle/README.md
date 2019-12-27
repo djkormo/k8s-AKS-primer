@@ -31,7 +31,7 @@ kubectl config view | grep namespace:
 
 
 
-[mylifecyclepod-1](mylifecyclepod-1.yaml "mylifecyclepod-1 : sleep 6")
+[mylifecyclepod-1 : "mylifecyclepod-1 : sleep 6](mylifecyclepod-1.yaml")
 
 ```console
 kubectl apply -f mylifecyclepod-1.yaml
@@ -53,7 +53,7 @@ pod "myapp-pod" deleted
 </pre>
 
 
-[mylifecyclepod-2](mylifecyclepod-2.yaml "mylifecyclepod-2 : restartPolicy: Never , exit 1")
+[mylifecyclepod-2 : restartPolicy: Never , exit 1](mylifecyclepod-2.yaml "mylifecyclepod-2")
 
 ```console
 kubectl apply -f mylifecyclepod-2.yaml
@@ -73,7 +73,7 @@ kubectl delete/myapp-pod
 pod "myapp-pod" deleted
 </pre>
 
-[mylifecyclepod-3](mylifecyclepod-3.yaml "mylifecyclepod-3 : restartPolicy: Always, exit 1")
+[mylifecyclepod-3 : restartPolicy: Always, exit 1](mylifecyclepod-3.yaml "mylifecyclepod-3")
 
 
 ```console
@@ -95,7 +95,7 @@ kubectl delete/myapp-pod
 pod "myapp-pod" deleted
 </pre>
 
-[mylifecyclepod-4](mylifecyclepod-4.yaml "mylifecyclepod-4: restartPolicy: Always, sleep 1 ")
+[mylifecyclepod-4 : restartPolicy: Always, sleep 1 ](mylifecyclepod-4.yaml "mylifecyclepod-4")
 
 ```console
 kubectl apply -f mylifecyclepod-4.yaml
@@ -116,7 +116,7 @@ kubectl delete/myapp-pod
 pod "myapp-pod" deleted
 </pre>
 
-[mylifecyclepod-5](mylifecyclepod-5.yaml "mylifecyclepod-5: restartPolicy: OnFailure, sleep 1 ")
+[mylifecyclepod-5 : restartPolicy: OnFailure, sleep 1 ](mylifecyclepod-5.yaml "mylifecyclepod-5")
 
 ```console
 kubectl apply -f mylifecyclepod-5.yaml
@@ -139,7 +139,7 @@ pod "myapp-pod" deleted
 </pre>
 
 
-[mylifecyclepod-6](mylifecyclepod-6.yaml "mylifecyclepod-6 : restartPolicy: Never, sleep 1 ")
+[mylifecyclepod-6  : restartPolicy: Never, sleep 1 ](mylifecyclepod-6.yaml "mylifecyclepod-6")
 
 ```console
 kubectl apply -f mylifecyclepod-6.yaml
