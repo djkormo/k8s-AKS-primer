@@ -3,9 +3,9 @@ kind: Service
 metadata:
   name: np-webapp-lb
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-  - port: 8888
+  - port: 80
     protocol: TCP
     targetPort: 8080
   selector:

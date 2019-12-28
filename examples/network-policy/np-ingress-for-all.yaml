@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: np-ingress-frontend
+  name: np-ingress-webapp
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
@@ -9,6 +9,10 @@ spec:
   rules:
   - http:
       paths:
+      - path: /sentiment
+        backend:
+          serviceName: np-webapp-lb
+          servicePort: 80
       - path: /
         backend:
           serviceName: np-frontend-lb

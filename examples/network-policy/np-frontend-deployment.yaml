@@ -1,19 +1,19 @@
 apiVersion: extensions/v1beta1
-kind: Deployment                                          # 1
+kind: Deployment                                          
 metadata:
   name: np-frontend
 spec:
-  replicas: 2                                             # 2
+  replicas: 2                                             
   minReadySeconds: 15
   strategy:
-    type: RollingUpdate                                   # 3
+    type: RollingUpdate                                   
     rollingUpdate: 
-      maxUnavailable: 1                                   # 4
-      maxSurge: 1                                         # 5
+      maxUnavailable: 1                                   
+      maxSurge: 1                                         
   template:
     metadata:
       labels:
-        app: np-frontend                                  # 6
+        app: np-frontend                                  
     spec:
       containers:
         - image: djkormo/np-frontend

@@ -135,18 +135,28 @@ If you don't see a command prompt, try pressing enter.
 </pre>
 
 ```console
-curl http://np-webapp-lb:8888/sentiment/ -X POST  --header "Content-Type: application/json"  -d '{"sentence": "I love yogobella"}'
+curl http://np-webapp-lb:80/sentiment/ -X POST  --header "Content-Type: application/json"  -d '{"sentence": "I love yogobella"}'
 ```
 <pre>
 {"sentence":"I love yogobella","polarity":0.5}
 </pre>
 
 ```console
-curl http://np-webapp-lb:8888/sentiment/ -X POST  --header "Content-Type: application/json"  -d '{"sentence": "I hate lazy people"}'
+curl http://np-webapp-lb:80/sentiment/ -X POST  --header "Content-Type: application/json"  -d '{"sentence": "I hate lazy people"}'
 ```
 <pre>
 {"sentence":"I hate lazy people","polarity":-0.525}
 </pre>
+
+
+```console
+exit
+```
+<pre>
+Session ended, resume using 'kubectl attach app-tester -c app-tester -i -t' command when the pod is running
+pod "app-tester" deleted
+</pre>
+
 
 ```console
 kubectl apply -f np-frontend-deployment.yaml
@@ -161,9 +171,42 @@ kubectl apply -f np-frontend-service-lb.yaml
 <pre>
 service/np-frontend-lb created
 </pre>
+```console
+kubectl get svc,ingress
+```
+<pre>
+NAME                     TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/np-frontend-lb   LoadBalancer   10.110.99.162   localhost     9999:30090/TCP   13h
+service/np-logic         ClusterIP      10.102.87.48    <none>        80/TCP           14h
+service/np-webapp-lb     ClusterIP      10.101.49.112   <none>        80/TCP           13h
+
+NAME                                   HOSTS   ADDRESS   PORTS   AGE
+ingress.extensions/np-ingress-webapp   *                 80      88m
+</pre>
 
 
+```console
+kubectl top pods
+```
+<pre>
+
+NAME                           CPU(cores)   MEMORY(bytes)   
+np-frontend-7db6d4cf86-kjltc   1m           12Mi
+np-frontend-7db6d4cf86-xmw2q   1m           12Mi
+np-logic-67d485f7cd-dwxhb      1m           44Mi
+np-logic-67d485f7cd-xj697      1m           41Mi
+np-webapp-7479d4787-4tv4h      2m           136Mi
+np-webapp-7479d4787-vctkh      2m           164Mi
+
+</pre>
+
+Visualisation of the final step
+
+![Final visualisation](kubeview_final.png)
 
 
+Literature:
+
+https://cloudblogs.microsoft.com/opensource/2019/10/17/tutorial-calico-network-policies-with-azure-kubernetes-service/
 
 
