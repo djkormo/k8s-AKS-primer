@@ -307,6 +307,15 @@ Forwarding from 127.0.0.1:3000 -> 3000
 Forwarding from [::1]:3000 -> 3000
 </pre>
 
+
+#### Adding ingress
+
+helm install myingress stable/nginx-ingress \
+    --namespace ingress-basic \
+    --set controller.replicaCount=2 \
+    --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
+    --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+
 Literature:
 
 https://docs.docker.com/docker-for-windows/#kubernetes
