@@ -182,10 +182,13 @@ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 <pre>
 "stable" has been added to your repositories
 </pre>
-
-$ helm repo list
+```console
+helm repo list
+```
+<pre>
 NAME    URL
 stable  https://kubernetes-charts.storage.googleapis.com/
+</pre>
 
 
 ```console
