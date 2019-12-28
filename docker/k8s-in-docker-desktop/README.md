@@ -166,15 +166,27 @@ The final solution with helm
 ##### Installing helm from
 https://github.com/helm/helm/releases
 
+At preset ...
 
-For windows put the binary into 
+For Windows OS
+
+Extract
+
+https://get.helm.sh/helm-v3.0.2-windows-amd64.zip
+
+and put the binary into 
 
 C:\Program Files\Docker\Docker\resources\bin
 
+```console
+helm version
+```
+<pre>
+version.BuildInfo{Version:"v3.0.2", GitCommit:"19e47ee3283ae98139d98460de796c1be1e3975f", GitTreeState:"clean", GoVersion:"go1.13.5"}
+</pre>
 
 
-
-
+##### Adding standard repo of helm charts
 
 ```console
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
