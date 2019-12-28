@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - image: djkormo/np-frontend
-          imagePullPolicy: Always                         # 7
+          imagePullPolicy: Always
           name: np-frontend
           env:
           - name: SA_WEBAPP_API_URL
