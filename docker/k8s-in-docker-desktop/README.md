@@ -161,6 +161,21 @@ Error from server (NotFound): the server could not find the requested resource (
 The final solution with helm
 
 ### Using helm 3 do deploy metrics server in Docker Destop
+
+
+##### Installing helm from
+https://github.com/helm/helm/releases
+
+
+For windows put the binary into 
+
+C:\Program Files\Docker\Docker\resources\bin
+
+
+
+
+
+
 ```console
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 ```
@@ -316,6 +331,25 @@ helm install myingress stable/nginx-ingress \
     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
 
+# Adding Calico
+
+In calico.yaml replace
+etcd_endpoints: "http://127.0.0.1:2379"
+with 
+etcd_endpoints: "http://etcd-docker-desktop:2379"
+
+```console
+kubectl apply -f calico.yaml
+```
+<pre>
+configmap/calico-config created
+secret/calico-etcd-secrets created
+daemonset.extensions/calico-node created
+deployment.extensions/calico-kube-controllers created
+deployment.extensions/calico-policy-controller created
+serviceaccount/calico-kube-controllers created
+serviceaccount/calico-node created
+</pre>
 Literature:
 
 https://docs.docker.com/docker-for-windows/#kubernetes
@@ -329,11 +363,15 @@ https://blog.codewithdan.com/enabling-metrics-server-for-kubernetes-on-docker-de
 
 https://www.hanselman.com/blog/HowToSetUpKubernetesOnWindows10WithDockerForWindowsAndRunASPNETCore.aspx
 
-
-
-
 https://github.com/benc-uk/kubeview
 
+https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/hosted
+
+
+https://rominirani.com/tutorial-getting-started-with-kubernetes-with-docker-on-mac-7f58467203fd
+
+
+https://poweruser.blog/tweaking-docker-desktops-kubernetes-on-win-mac-7a20aa9b1584
 
 
 
