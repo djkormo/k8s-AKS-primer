@@ -20,6 +20,7 @@ After login  to Docker Hub account  and downloading the stable version
 
 ![Enabling Kubernetes](k8s-enable.png)
 
+![Make sure to install Kubernetes](k8s-confirmation.png)
 
 The installation process begins
 
@@ -28,6 +29,12 @@ The installation process begins
 After a while
 
 ![Enabling Kubernetes](k8s-done.png)
+
+![Enabled Kubernetes](k8s-enabled.png)
+
+Adding more memory (here 4GB)
+
+![Adding more memory](docker-desktop-settings.png)
 
 
 Checking cluster health
