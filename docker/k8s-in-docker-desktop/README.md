@@ -3,13 +3,11 @@
 
 ## 1. Installing Docker Desktop
 
-Instalator pobieramy ze strony
+Installation files taken from
 
 https://hub.docker.com/editions/community/docker-ce-desktop-windows
 
-Po zalogowanie się na konto Docker Huba pobierami plik w wersji stabilnej
-
-
+After login  to Docker Hub account  and downloading the stable version
 
 
 ![Docker Desktop](docker-desktop.png)
