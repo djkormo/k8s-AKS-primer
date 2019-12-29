@@ -521,7 +521,7 @@ deployment.extensions/hello-nginx scaled
 </pre>
 
 ```console
-kubectl expose deployment hello-nginx --type=LoadBalancer --port=8889 --namespace default
+kubectl expose deployment hello-nginx --type=LoadBalancer --target-port=80 --port=8889 --namespace default
 ```
 <pre>
 service/hello-nginx exposed
@@ -534,6 +534,9 @@ kubectl get all --namespace default
 <pre>
 Happy investigating .....
 </pre>
+
+Open the browser at:
+http://localhost:8889/
 
 # CALICO not working yet. Do not install !!!!
 
