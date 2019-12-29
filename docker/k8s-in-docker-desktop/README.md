@@ -46,6 +46,16 @@ kubectl cluster-info
 
 ![Cluster info](cluster-info.png)
 
+```console
+kubectl get componentstatuses
+```
+<pre>
+NAME                 STATUS    MESSAGE             ERROR
+controller-manager   Healthy   ok
+scheduler            Healthy   ok
+etcd-0               Healthy   {"health":"true"}   
+</pre>
+
 For new k8s users: lets try to control the cluster from GUI instead of cli (kubectl)
 
 ## 3. Adding dashboard
@@ -91,8 +101,6 @@ echo $TOKEN
 </pre>
 
 Paste the token value
-
-
 
 
 ## 4. Adding metrics server
