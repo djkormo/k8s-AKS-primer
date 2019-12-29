@@ -288,8 +288,18 @@ helm install myingress stable/nginx-ingress \
     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
 ```    
+## 8. Installing docker-cleanup
 
-## 8. Test our first deployment in default namespace
+```console
+kubectl apply -f  https://raw.githubusercontent.com/meltwater/docker-cleanup/master/contrib/k8s-daemonset.yml --namespace monitor
+</pre>
+```
+<pre>
+daemonset.extensions/clean-up created
+</pre>
+
+
+## 9. Test our first deployment in default namespace
 
 ```console
 kubectl run hello-nginx --image=nginx --port=8089 --namespace  default 
@@ -323,7 +333,7 @@ Happy investigating .....
 
 # CALICO not working yet. Do not install !!!!
 
-## 9. Adding Calico
+## 10. Adding Calico
 
 In calico.yaml replace
 etcd_endpoints: "http://127.0.0.1:2379"
@@ -367,6 +377,7 @@ https://rominirani.com/tutorial-getting-started-with-kubernetes-with-docker-on-m
 
 https://poweruser.blog/tweaking-docker-desktops-kubernetes-on-win-mac-7a20aa9b1584
 
+https://hub.docker.com/r/meltwater/docker-cleanup/
 
 
 ------- TRASH
