@@ -1,19 +1,14 @@
-apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
   labels:
     k8s-app: kubeview
   name: kubeview
 spec:
-  externalTrafficPolicy: Cluster
+  type: LoadBalancer
   ports:
-  - name: tcp-3030-8000-sdqbg
-    nodePort: 30000
+  - protocol: TCP
     port: 3030
-    protocol: TCP
     targetPort: 8000
   selector:
     k8s-app: kubeview
-  sessionAffinity: None
-  type: LoadBalancer
-

@@ -93,16 +93,30 @@ echo $TOKEN
 Paste the token value
 
 
-Unfortunately  the metrics server is absent
+
 
 ## 4. Adding metrics server
 
 
+Unfortunately the metrics server is absent
+
+```console
+kubectl top nodes
+```
+<pre>
+Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
+</pre>
+
+```console
+kubectl top pods
+```
+<pre>
+Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
+</pre>
 
 The final solution with helm
 
 ### Using helm 3 do deploy metrics server in Docker Destop
-
 
 ##### Installing helm from
 https://github.com/helm/helm/releases
@@ -161,26 +175,51 @@ command:
 
 kubectl get --raw "/apis/metrics.k8s.io/v1beta1/nodes"
 </pre>
+
+After few minutes ...... coffe break ?
+...
+Error from server (ServiceUnavailable): the server is currently unable to handle the request (get nodes.metrics.k8s.io)
+...
+error: metrics not available yet
+
+
 ```console
 kubectl top nodes
 ```
 <pre>
 NAME             CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
-docker-desktop   304m         15%    1379Mi          72%
+docker-desktop   274m         13%    948Mi           24%
 </pre>
 
 ```console
 kubectl top pods
 ```
 <pre>
-NAME                             CPU(cores)   MEMORY(bytes)   
-apache-php-api-f6c45cd64-sqjw5   1m           8Mi
+
+</pre>
+
+```console
+kubectl top pods --all-namespaces
+```
+<pre>
+NAMESPACE     NAME                                      CPU(cores)   MEMORY(bytes)   
+docker        compose-6c67d745f6-9bjbb                  1m           7Mi
+docker        compose-api-57ff65b8c7-chtkc              3m           17Mi
+kube-system   coredns-6dcc67dcbc-dczwj                  6m           7Mi
+kube-system   coredns-6dcc67dcbc-z5mvp                  6m           7Mi
+kube-system   etcd-docker-desktop                       32m          27Mi
+kube-system   kube-apiserver-docker-desktop             52m          278Mi
+kube-system   kube-controller-manager-docker-desktop    31m          42Mi
+kube-system   kube-proxy-bwj4l                          4m           8Mi
+kube-system   kube-scheduler-docker-desktop             2m           10Mi
+kube-system   kubernetes-dashboard-5f7b999d65-vc9rs     1m           14Mi
+kube-system   metrics-metrics-server-7665c546b6-7gmzn   3m           11Mi
 </pre>
 
 
 ##  5. Adding cluster visualizator (kubeview)  
 
-#### Let's use the kubeview application 
+#### Let's use the kubeview application  in separate namespace (monitor)
 ```console
 kubectl create ns monitor
 ```
@@ -218,18 +257,17 @@ service/kubeview created
 kubectl get svc,deploy,rs,po -n monitor
 ```
 <pre>
-NAME               TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
-service/kubeview   LoadBalancer   10.99.111.95   localhost     3030:30000/TCP   91s
+NAME               TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/kubeview   LoadBalancer   10.98.143.135   localhost     3030:30329/TCP   5s 
 
 NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.extensions/kubeview   1/1     1            1           2m4s
+deployment.extensions/kubeview   1/1     1            1           10m
 
 NAME                                        DESIRED   CURRENT   READY   AGE
-replicaset.extensions/kubeview-564df48b54   1         1         1       2m4s
+replicaset.extensions/kubeview-7f97c694b4   1         1         1       10m
 
 NAME                            READY   STATUS    RESTARTS   AGE
-pod/kubeview-564df48b54-gsks2   1/1     Running   0          2m4s
-
+pod/kubeview-7f97c694b4-5tlm2   1/1     Running   0          10m
 </pre>
 
 Open the browser at:
@@ -245,17 +283,54 @@ Use monitor namespace to see deployment of kubeview application
 helm install myprometheus  stable/prometheus --version=7.0.0 --namespace=monitor
 ```
 <pre>
-...
+NAME: myprometheus
+LAST DEPLOYED: Sun Dec 29 15:45:55 2019
+NAMESPACE: monitor
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+The Prometheus server can be accessed via port 80 on the following DNS name from within your cluster:
+myprometheus-server.monitor.svc.cluster.local
+
+
+Get the Prometheus server URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace monitor -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace monitor port-forward $POD_NAME 9090
+
+
+The Prometheus alertmanager can be accessed via port 80 on the following DNS name from within your cluster:
+myprometheus-alertmanager.monitor.svc.cluster.local
+
+
+Get the Alertmanager URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace monitor -l "app=prometheus,component=alertmanager" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace monitor port-forward $POD_NAME 9093
+
+
+The Prometheus PushGateway can be accessed via port 9091 on the following DNS name from within your cluster:        
+myprometheus-pushgateway.monitor.svc.cluster.local
+
+
+Get the PushGateway URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace monitor -l "app=prometheus,component=pushgateway" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace monitor port-forward $POD_NAME 9091
+
+For more information on running Prometheus, visit:
+https://prometheus.io/
 
 </pre>
+
 
 ```console
 kubectl get pod --namespace monitor -l release=myprometheus -l component=server  
 ```
 <pre>
 NAME                                   READY   STATUS    RESTARTS   AGE
-myprometheus-server-574487798c-67xsl   2/2     Running   0          76s
+myprometheus-server-574487798c-gt9gj   2/2     Running   0          84s
 </pre>
+
+
 ```console
 kubectl --namespace monitor port-forward $(kubectl get pod --namespace monitor -l release=myprometheus -l component=server -o template --template "{{(index .items 0).metadata.name}}") 9090:9090
 ```
@@ -264,6 +339,12 @@ Forwarding from 127.0.0.1:9090 -> 9090
 Forwarding from [::1]:9090 -> 9090
 </pre>
 
+Open the browser at:
+http://localhost:9090/
+
+![Prometheus dashboard](prometheus_at_9090.png)
+
+
 ```console
 helm install mygrafana stable/grafana --namespace=monitor \
     --set=adminUser=admin \
@@ -271,13 +352,52 @@ helm install mygrafana stable/grafana --namespace=monitor \
     --set=service.type=LoadBalancer  \
     --set=service.port=4444
 ```
+
+<pre>
+NAME: mygrafana
+LAST DEPLOYED: Sun Dec 29 15:51:38 2019
+NAMESPACE: monitor
+STATUS: deployed
+REVISION: 1
+NOTES:
+1. Get your 'admin' user password by running:
+
+   kubectl get secret --namespace monitor mygrafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo   
+
+2. The Grafana server can be accessed via port 4444 on the following DNS name from within your cluster:
+
+   mygrafana.monitor.svc.cluster.local
+
+   Get the Grafana URL to visit by running these commands in the same shell:
+NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status of by running 'kubectl get svc --namespace monitor -w mygrafana'
+     export SERVICE_IP=$(kubectl get svc --namespace monitor mygrafana -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+     http://$SERVICE_IP:4444
+
+3. Login with the password from step 1 and the username: admin
+#################################################################################
+######   WARNING: Persistence is disabled!!! You will lose your data when   #####
+######            the Grafana pod is terminated.                            #####
+</pre>
+
+
 ```console
 kubectl get pod --namespace monitor  -l release=mygrafana -l app=grafana
 ```
 <pre>
-NAME                        READY   STATUS    RESTARTS   AGE
-mygrafana-588c655dc-vswlc   1/1     Running   0          74s
+NAME                         READY   STATUS    RESTARTS   AGE
+mygrafana-5959778575-7sq98   1/1     Running   0          39s
 </pre>
+```console
+kubectl get svc --namespace monitor -l app=grafana
+```
+<pre>
+NAME        TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+mygrafana   LoadBalancer   10.103.191.97   localhost     4444:31418/TCP   93s
+</pre>
+
+Alternatively if using  ClusterIP or NodePort you can forward port for example to 3000
+
 ```console
 kubectl --namespace monitor port-forward $(kubectl get pod --namespace monitor -l release=mygrafana -l app=grafana -o template --template "{{(index .items 0).metadata.name}}") 3000:3000
 ```
@@ -286,15 +406,92 @@ Forwarding from 127.0.0.1:3000 -> 3000
 Forwarding from [::1]:3000 -> 3000
 </pre>
 
+Open the browser at:
+http://localhost:4444/
+
+Use user and password given in  helm chart (admin, admin) and change it ! 
+
+In Grafana add data source, choose Prometheus, in URL put
+http://myprometheus-server:80
+
+Why ?
+
+```console
+kubectl get svc --namespace monitor -l component=server
+```
+
+<pre>
+NAME                  TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+myprometheus-server   ClusterIP   10.104.197.16   <none>        80/TCP    14m
+</pre>
+
+![Grafana datasource](grafana-datasource.png)
 
 ## 7. Adding ingress
+
+```console 
+kubectl create ns ingress
+```
+<pre>
+namespace/ingress created
+</pre>
+
 ```console
 helm install myingress stable/nginx-ingress \
-    --namespace ingress-basic \
+    --namespace ingress \
     --set controller.replicaCount=2 \
     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
 ```    
+<pre>
+NAME: myingress
+LAST DEPLOYED: Sun Dec 29 16:04:51 2019
+NAMESPACE: ingress
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+The nginx-ingress controller has been installed.
+It may take a few minutes for the LoadBalancer IP to be available.
+You can watch the status by running 'kubectl --namespace ingress get services -o wide -w myingress-nginx-ingress-controller'
+
+An example Ingress that makes use of the controller:
+
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    name: example
+    namespace: foo
+  spec:
+    rules:
+      - host: www.example.com
+        http:
+          paths:
+            - backend:
+                serviceName: exampleService
+                servicePort: 80
+              path: /
+    # This section is only required if TLS is to be enabled for the Ingress
+    tls:
+        - hosts:
+            - www.example.com
+          secretName: example-tls
+
+If TLS is enabled for the Ingress, a Secret containing the certificate and key must also be provided:
+
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: example-tls
+    namespace: foo
+  data:
+    tls.crt: <base64 encoded cert>
+    tls.key: <base64 encoded key>
+  type: kubernetes.io/tls
+</pre>
+
 ## 8. Installing docker-cleanup
 
 ```console
@@ -309,7 +506,7 @@ daemonset.extensions/clean-up created
 ## 9. Test our first deployment in default namespace
 
 ```console
-kubectl run hello-nginx --image=nginx --port=8089 --namespace  default 
+kubectl run hello-nginx --image=nginx --port=80 --namespace  default 
 ```
 <pre>
 kubectl run --generator=deployment/apps.v1 is DEPRECATED and will be removed in a future version. Use kubectl run --generator=run-pod/v1 or kubectl create instead.

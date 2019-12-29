@@ -1,16 +1,11 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  annotations:
-    deployment.kubernetes.io/revision: "1"
-  generation: 1
   labels:
     k8s-app: kubeview
   name: kubeview
 spec:
-  progressDeadlineSeconds: 600
   replicas: 1
-  revisionHistoryLimit: 10
   selector:
     matchLabels:
       k8s-app: kubeview
@@ -21,17 +16,21 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      creationTimestamp: null
       labels:
         k8s-app: kubeview
       name: kubeview
     spec:
       containers:
-      - image: bencuk/kubeview
+      - image: bencuk/kubeview:latest
         imagePullPolicy: Always
         name: kubeview
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            memory: "128M"
+            cpu: "0.1"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
-      schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
 status: {}
