@@ -88,75 +88,11 @@ echo $TOKEN
 Paste the token value
 
 
-
-
 Unfortunately  the metrics server is absent
 
 ### Adding metrics server
 
 
-curl https://raw.githubusercontent.com/kubernetes-sigs/metrics-server/master/deploy/1.8%2B/metrics-server-deployment.yaml > metrics-server-deployment.yaml
-
-
-#### patch yaml file by adding after  imagePullPolicy: Always
-<pre>
-  command:
-    - /metrics-server
-    - --kubelet-insecure-tls
-    - --cert-dir=/tmp
-    - --secure-port=4443
-    - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
-</pre>
-
-#### Save the file and deploy on cluster in kube-system namespace
-```console
-kubectl apply -n kube-system -f metrics-server-deployment.yaml
-```
-<pre>
-serviceaccount/metrics-server configured
-deployment.apps/metrics-server configured
-</pre>
-```console
-kubectl get pod -n kube-system  -l k8s-app=metrics-server
-```
-<pre>
-NAME                              READY   STATUS    RESTARTS   AGE
-metrics-server-5f5dfdbd9c-mwb6k   1/1     Running   0          5m18s
-</pre>
-
-
-METRICS_POD=$(kubectl get pod -n kube-system  -l k8s-app=metrics-server -o jsonpath={.items[0].metadata.name})
-
-echo $METRICS_POD
-
-```console
-kubectl logs $METRICS_POD  -n kube-system
-```
-<pre>
-I1222 22:06:38.041311       1 serving.go:312] Generated self-signed cert (/tmp/apiserver.crt, /tmp/apiserver.key)
-I1222 22:06:39.019465       1 manager.go:95] Scraping metrics from 0 sources
-I1222 22:06:39.019657       1 manager.go:148] ScrapeMetrics: time: 2µs, nodes: 0, pods: 0        
-I1222 22:06:39.031001       1 secure_serving.go:116] Serving securely on [::]:4443
-I1222 22:07:39.020001       1 manager.go:95] Scraping metrics from 1 sources
-I1222 22:07:39.027658       1 manager.go:120] Querying source: kubelet_summary:docker-desktop    
-I1222 22:07:39.088902       1 manager.go:148] ScrapeMetrics: time: 68.8058ms, nodes: 1, pods: 23 
-I1222 22:08:39.019769       1 manager.go:95] Scraping metrics from 1 sources
-I1222 22:08:39.023063       1 manager.go:120] Querying source: kubelet_summary:docker-desktop    
-I1222 22:08:39.057139       1 manager.go:148] ScrapeMetrics: time: 37.2889ms, nodes: 1, pods: 23 
-</pre>
-
-```console
-kubectl top nodes
-```
-<pre>
-Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
-</pre>
-```console
-kubectl to pods
-```
-<pre>
-Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
-</pre>
 
 The final solution with helm
 
@@ -166,7 +102,7 @@ The final solution with helm
 ##### Installing helm from
 https://github.com/helm/helm/releases
 
-At preset ...
+At present  version 3.0.2...
 
 For Windows OS
 
@@ -235,15 +171,7 @@ kubectl top pods
 NAME                             CPU(cores)   MEMORY(bytes)   
 apache-php-api-f6c45cd64-sqjw5   1m           8Mi
 </pre>
-#### TODO ....
 
-
-
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/influxdb.yaml
-
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster.yaml
-
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/grafana.yaml
 
 ### Adding  cluster visualizator  
 
@@ -273,7 +201,7 @@ kubectl get svc,deploy,rs,po -n monitor
 ```
 <pre>
 NAME               TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
-service/kubeview   LoadBalancer   10.99.111.95   localhost     8000:30000/TCP   91s
+service/kubeview   LoadBalancer   10.99.111.95   localhost     3030:30000/TCP   91s
 
 NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.extensions/kubeview   1/1     1            1           2m4s
@@ -287,11 +215,13 @@ pod/kubeview-564df48b54-gsks2   1/1     Running   0          2m4s
 </pre>
 
 Open the browser at:
-http://localhost:8000/
+http://localhost:3030/
 
 Use monitor namespace see deployment of kubeview application
 
 ![Kubeview monitor](kubeview-monitor.png)
+
+
 
 
 #### Adding prometheus and grafana
@@ -339,14 +269,17 @@ Forwarding from [::1]:3000 -> 3000
 
 
 #### Adding ingress
-
+```console
 helm install myingress stable/nginx-ingress \
     --namespace ingress-basic \
     --set controller.replicaCount=2 \
     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+```    
 
-# Adding Calico
+### CALICO not working yet. Work under progress
+
+#### Adding Calico
 
 In calico.yaml replace
 etcd_endpoints: "http://127.0.0.1:2379"
@@ -390,3 +323,81 @@ https://poweruser.blog/tweaking-docker-desktops-kubernetes-on-win-mac-7a20aa9b15
 
 
 
+------- TRASH
+
+
+curl https://raw.githubusercontent.com/kubernetes-sigs/metrics-server/master/deploy/1.8%2B/metrics-server-deployment.yaml > metrics-server-deployment.yaml
+
+
+#### patch yaml file by adding after  imagePullPolicy: Always
+<pre>
+  command:
+    - /metrics-server
+    - --kubelet-insecure-tls
+    - --cert-dir=/tmp
+    - --secure-port=4443
+    - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+</pre>
+
+#### Save the file and deploy on cluster in kube-system namespace
+```console
+kubectl apply -n kube-system -f metrics-server-deployment.yaml
+```
+<pre>
+serviceaccount/metrics-server configured
+deployment.apps/metrics-server configured
+</pre>
+```console
+kubectl get pod -n kube-system  -l k8s-app=metrics-server
+```
+<pre>
+NAME                              READY   STATUS    RESTARTS   AGE
+metrics-server-5f5dfdbd9c-mwb6k   1/1     Running   0          5m18s
+</pre>
+
+
+METRICS_POD=$(kubectl get pod -n kube-system  -l k8s-app=metrics-server -o jsonpath={.items[0].metadata.name})
+
+echo $METRICS_POD
+
+```console
+kubectl logs $METRICS_POD  -n kube-system
+```
+<pre>
+I1222 22:06:38.041311       1 serving.go:312] Generated self-signed cert (/tmp/apiserver.crt, /tmp/apiserver.key)
+I1222 22:06:39.019465       1 manager.go:95] Scraping metrics from 0 sources
+I1222 22:06:39.019657       1 manager.go:148] ScrapeMetrics: time: 2µs, nodes: 0, pods: 0        
+I1222 22:06:39.031001       1 secure_serving.go:116] Serving securely on [::]:4443
+I1222 22:07:39.020001       1 manager.go:95] Scraping metrics from 1 sources
+I1222 22:07:39.027658       1 manager.go:120] Querying source: kubelet_summary:docker-desktop    
+I1222 22:07:39.088902       1 manager.go:148] ScrapeMetrics: time: 68.8058ms, nodes: 1, pods: 23 
+I1222 22:08:39.019769       1 manager.go:95] Scraping metrics from 1 sources
+I1222 22:08:39.023063       1 manager.go:120] Querying source: kubelet_summary:docker-desktop    
+I1222 22:08:39.057139       1 manager.go:148] ScrapeMetrics: time: 37.2889ms, nodes: 1, pods: 23 
+</pre>
+
+```console
+kubectl top nodes
+```
+<pre>
+Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
+</pre>
+```console
+kubectl to pods
+```
+<pre>
+Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
+</pre>
+
+
+#### TODO ....
+
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/influxdb.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/grafana.yaml
+
+
+------- TRASH
