@@ -240,8 +240,10 @@ Use monitor namespace to see deployment of kubeview application
 helm install myprometheus  stable/prometheus --version=7.0.0 --namespace=monitor
 ```
 <pre>
+...
 
 </pre>
+
 ```console
 kubectl get pod --namespace monitor -l release=myprometheus -l component=server  
 ```
@@ -289,9 +291,41 @@ helm install myingress stable/nginx-ingress \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
 ```    
 
-# CALICO not working yet. Do not instal !!!!
+## 8. Test our first deployment in default namespace
 
-## 8. Adding Calico
+```console
+kubectl run hello-nginx --image=nginx --port=8089 --namespace  default 
+```
+<pre>
+kubectl run --generator=deployment/apps.v1 is DEPRECATED and will be removed in a future version. Use kubectl run --generator=run-pod/v1 or kubectl create instead.
+deployment.apps/hello-nginx created
+</pre>
+
+```console
+kubectl scale --replicas=3 deployment/hello-nginx --namespace default
+```
+<pre>
+deployment.extensions/hello-nginx scaled
+</pre>
+
+```console
+kubectl expose deployment hello-nginx --type=LoadBalancer --port=8889 --namespace default
+```
+<pre>
+service/hello-nginx exposed
+</pre>
+
+### Look what is inside
+```console
+kubectl get all --namespace default
+```
+<pre>
+Happy investigating .....
+</pre>
+
+# CALICO not working yet. Do not install !!!!
+
+## 9. Adding Calico
 
 In calico.yaml replace
 etcd_endpoints: "http://127.0.0.1:2379"
