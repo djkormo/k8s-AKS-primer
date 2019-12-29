@@ -1,7 +1,7 @@
-## Using local kubernetes (k8s) cluster in Docker Desktop
+# Using local kubernetes (k8s) cluster in Docker Desktop
 
 
-### Installing Docker Desktop
+## 1. Installing Docker Desktop
 
 Instalator pobieramy ze strony
 
@@ -15,7 +15,7 @@ Po zalogowanie się na konto Docker Huba pobierami plik w wersji stabilnej
 ![Docker Desktop](docker-desktop.png)
 
 
-### Enabling Kubernetes
+## 2. Enabling Kubernetes
 
 
 
@@ -43,7 +43,7 @@ kubectl cluster-info
 
 For new k8s users: lets try to control the cluster from GUI instead of cli (kubectl)
 
-### Adding dashboard
+## 3. Adding dashboard
 
 ```console
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
@@ -90,7 +90,7 @@ Paste the token value
 
 Unfortunately  the metrics server is absent
 
-### Adding metrics server
+## 4. Adding metrics server
 
 
 
@@ -122,7 +122,7 @@ version.BuildInfo{Version:"v3.0.2", GitCommit:"19e47ee3283ae98139d98460de796c1be
 </pre>
 
 
-##### Adding standard repo of helm charts
+#### Adding standard repo of helm charts
 
 ```console
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
@@ -173,7 +173,7 @@ apache-php-api-f6c45cd64-sqjw5   1m           8Mi
 </pre>
 
 
-### Adding  cluster visualizator  
+##  5. Adding cluster visualizator (kubeview)  
 
 #### Let's use the kubeview application 
 ```console
@@ -185,17 +185,30 @@ namespace/monitor created
 
 ```console
 kubectl apply -f kubeview-deployment.yaml -n monitor
+
+# or directly from github 
+
+kubectl apply -f https://raw.githubusercontent.com/djkormo/k8s-AKS-primer/master/docker/k8s-in-docker-desktop/kubeview-deployment.yaml -n monitor
+
+
 ```
+ 
 <pre>
 deployment.extensions/kubeview created
 </pre>
 
 ```console
 kubectl apply -f kubeview-service.yaml -n monitor
+
+# or directly from github 
+
+kubectl apply -f https://raw.githubusercontent.com/djkormo/k8s-AKS-primer/master/docker/k8s-in-docker-desktop/kubeview-service.yaml -n monitor
+
 ```
 <pre>
 service/kubeview created
 </pre>
+#### Checking our deployment in monitor namespace
 ```console
 kubectl get svc,deploy,rs,po -n monitor
 ```
@@ -217,18 +230,17 @@ pod/kubeview-564df48b54-gsks2   1/1     Running   0          2m4s
 Open the browser at:
 http://localhost:3030/
 
-Use monitor namespace see deployment of kubeview application
+Use monitor namespace to see deployment of kubeview application
 
 ![Kubeview monitor](kubeview-monitor.png)
 
 
-
-
-#### Adding prometheus and grafana
+## 6. Adding prometheus and grafana
 ```console
 helm install myprometheus  stable/prometheus --version=7.0.0 --namespace=monitor
 ```
 <pre>
+
 </pre>
 ```console
 kubectl get pod --namespace monitor -l release=myprometheus -l component=server  
@@ -268,7 +280,7 @@ Forwarding from [::1]:3000 -> 3000
 </pre>
 
 
-#### Adding ingress
+## 7. Adding ingress
 ```console
 helm install myingress stable/nginx-ingress \
     --namespace ingress-basic \
@@ -277,9 +289,9 @@ helm install myingress stable/nginx-ingress \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
 ```    
 
-### CALICO not working yet. Work under progress
+# CALICO not working yet. Do not instal !!!!
 
-#### Adding Calico
+## 8. Adding Calico
 
 In calico.yaml replace
 etcd_endpoints: "http://127.0.0.1:2379"
@@ -298,7 +310,9 @@ deployment.extensions/calico-policy-controller created
 serviceaccount/calico-kube-controllers created
 serviceaccount/calico-node created
 </pre>
-Literature:
+
+
+## Literature:
 
 https://docs.docker.com/docker-for-windows/#kubernetes
 
