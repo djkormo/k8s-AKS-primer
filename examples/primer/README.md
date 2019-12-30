@@ -88,7 +88,7 @@ spec:
 status: {}
 ```
 
-###### Let's stop at this moment
+### Let's stop at this moment (!)
 
 #### See what we have inside k8s cluster
 ```
@@ -189,8 +189,9 @@ spec:
   restartPolicy: Never
 status: {}
 </pre>
+
 ```console
-kubectl run my-app --image=djkormo/primer --restart="Never"  --dry-run -o yaml
+kubectl run my-app --image=djkormo/primer --restart="Never"  --dry-run -o json
 ```
 <pre>
 {
@@ -261,7 +262,7 @@ status: {}
 
 #### Now we have new objects deployment -> replicaset -> pod. Lets remove --dry-run mode
 
-##### Lets create our objects as deloyment
+##### Lets create our objects in deployment mode
 
 ```console
 kubectl run my-app --image=djkormo/primer --replicas=2 --restart="Always"
@@ -272,7 +273,7 @@ deployment.apps/my-app created
 </pre>
 
 ```console
-kubectl get deployment # or deploy
+kubectl get deployment # or kubectl get deploy
 ```
 <pre>
 NAME     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
@@ -281,7 +282,7 @@ my-app   2         2         2            0           66s
 
 
 ```console
-kubectl get replicaset # or rs
+kubectl get replicaset # or kubectl get rs
 ```
 
 <pre>
@@ -290,7 +291,7 @@ my-app-6b7855d554   2         2         2       78s
 </pre>
 
 ```console
-kubectl get pods # or po
+kubectl get pods # or kubectl get po
 ```
 <pre>
 NAME                      READY   STATUS    RESTARTS   AGE
