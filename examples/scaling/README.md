@@ -56,12 +56,14 @@ A part of  file apache-php-api-deployment.yaml
           httpGet:
             path: /health
             port: 80
-          initialDelaySeconds: 60
-          periodSeconds: 20
+          initialDelaySeconds: 30
+          periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /health
             port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
 ```
 
 

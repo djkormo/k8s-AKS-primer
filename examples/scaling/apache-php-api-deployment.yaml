@@ -33,14 +33,11 @@ spec:
           httpGet:
             path: /health
             port: 80
-          initialDelaySeconds: 60
-          periodSeconds: 20
+          initialDelaySeconds: 30
+          periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /health
             port: 80
-
-          # Intial delay is set to a high value to have a better
-          # visibility of the ramped deployment
-          initialDelaySeconds: 60
-          periodSeconds: 20
+          initialDelaySeconds: 30
+          periodSeconds: 10
