@@ -1,3 +1,24 @@
+## Simple overview  of main Kubernetes objects
+
+#### Create first namespace
+
+```console
+kubectl create ns my-app
+```
+<pre>
+namespace/my-app created
+</pre>
+
+#### Switch connection context to my-app namespace
+
+```console
+kubectl config set-context --current --namespace=my-app
+```
+<pre>
+Context "***" modified.
+</pre>
+
+
 #### Let's run the first object
 
 ```console
