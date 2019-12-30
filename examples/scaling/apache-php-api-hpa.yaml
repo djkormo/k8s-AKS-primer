@@ -8,7 +8,7 @@ spec:
     kind: Deployment
     name: apache-php-api
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 6
   metrics:
   - type: Resource
     resource:

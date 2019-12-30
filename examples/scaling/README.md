@@ -39,7 +39,7 @@ pod/apache-php-api-f6c45cd64-gp55f   0/1     Running   0          85s
 pod/apache-php-api-f6c45cd64-p8v79   0/1     Running   0          85s
 
 NAME                     TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
-service/apache-php-api   LoadBalancer   10.106.237.12   localhost     80:32590/TCP   103s
+service/apache-php-api   LoadBalancer   10.106.237.12   localhost     2020:32590/TCP   103s
 
 NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/apache-php-api   0/3     3            0           85s
@@ -111,17 +111,35 @@ pod/apache-php-api-f6c45cd64-wskvn   1/1     Running   0          84s
 
 
 ### Turning on autoscaling based on CPU utilisation
+
 ```console
-apiVersion: autoscaling/v2beta2
-kind: HorizontalPodAutoscaler
+kubectl apply -f apache-php-api-hpa.yaml 
 ```
+
 <pre>
 horizontalpodautoscaler.autoscaling/apache-php-api created
 </pre>
 
 ```console
+kubectl get hpa apache-php-api
+```
+<pre>
+NAME             REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+apache-php-api   Deployment/apache-php-api   1%/20%    1         6         5          2m32s
+</pre>
+
+
+```console
+kubectl delete hpa/apache-php-api
+```
+<pre>
+horizontalpodautoscaler.autoscaling "apache-php-api" deleted
+</pre>
+
+```console
 kubectl autoscale deployment apache-php-api --cpu-percent=20 --min=1 --max=10
 ```
+
 <pre>
 horizontalpodautoscaler.autoscaling/apache-php-api autoscaled
 </pre>
@@ -131,8 +149,8 @@ kubectl get hpa apache-php-api
 ```
 
 <pre>
-NAME             REFERENCE                   TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
-apache-php-api   Deployment/apache-php-api   <unknown>/20%   1         10        5          70s
+NAME             REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+apache-php-api   Deployment/apache-php-api   1%/20%    1         10        5          23s
 </pre>
 
 
@@ -144,127 +162,55 @@ Name:                                                  apache-php-api
 Namespace:                                             scaling
 Labels:                                                <none>
 Annotations:                                           <none>
-CreationTimestamp:                                     Sun, 22 Dec 2019 21:00:38 +0100
+CreationTimestamp:                                     Mon, 30 Dec 2019 10:01:58 +0100
 Reference:                                             Deployment/apache-php-api
 Metrics:                                               ( current / target )
-  resource cpu on pods  (as a percentage of request):  <unknown> / 20%
+  resource cpu on pods  (as a percentage of request):  1% (1m) / 20%
 Min replicas:                                          1
 Max replicas:                                          10
-Deployment pods:                                       5 current / 0 desired
+Deployment pods:                                       5 current / 5 desired
 Conditions:
-  Type           Status  Reason                   Message
-  ----           ------  ------                   -------
-  AbleToScale    True    SucceededGetScale        the HPA controller was able to get the target's current scale
-  ScalingActive  False   FailedGetResourceMetric  the HPA was unable to compute the replica count: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server could not find 
-the requested resource (get pods.metrics.k8s.io)
-Events:
-  Type     Reason                        Age               From                       Message
-  ----     ------                        ----              ----                       -------
-  Warning  FailedGetResourceMetric       7s (x2 over 22s)  horizontal-pod-autoscaler  unable to get metrics 
-for resource cpu: unable to fetch metrics from resource metrics API: the server could not find the requested resource (get pods.metrics.k8s.io)
-  Warning  FailedComputeMetricsReplicas  7s (x2 over 22s)  horizontal-pod-autoscaler  failed to get cpu utilization: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server could not find the requested resource (get pods.metrics.k8s.io)
+  Type            Status  Reason               Message
+  ----            ------  ------               -------
+  AbleToScale     True    ScaleDownStabilized  recent recommendations were higher than current one, applying the highest recent recommendation
+  ScalingActive   True    ValidMetricFound     the HPA was able to successfully calculate a replica count from cpu resource utilization (percentage of request)
+  ScalingLimited  False   DesiredWithinRange   the desired count is within the acceptable range
+Events:           <none>
+
 </pre>
 
 
-### Metrics server is lossing on my local k8s cluster.
-
-Cookbook to install metric server
-
-curl  https://raw.githubusercontent.com/kubernetes-sigs/metrics-server/master/deploy/1.8%2B/metrics-server-deployment.yaml > metrics-server-deployment.yaml
-
-
-#### patch yaml file by adding after  imagePullPolicy: Always
-<pre>
-  command:
-    - /metrics-server
-    - --kubelet-insecure-tls
-    - --cert-dir=/tmp
-    - --secure-port=4443
-    - --kubelet-preferred-address-types=InternalIP
-</pre>
-
-#### Save the file and deploy on cluster in kube-system namespace
-```console
-kubectl apply -n kube-system -f metrics-server-deployment.yaml
-```
-<pre>
-serviceaccount/metrics-server unchanged
-deployment.apps/metrics-server configured
-</pre>
-```console
-kubectl get pods -n kube-system |grep metrics
-```
-<pre>
-metrics-server-564fbf75b5-dtr2v          1/1     Running   0          98s
-</pre>
-```console
-kubectl logs metrics-server-564fbf75b5-dtr2v -n kube-system
-```
-<pre>
-I1222 22:06:38.041311       1 serving.go:312] Generated self-signed cert (/tmp/apiserver.crt, /tmp/apiserver.key)
-I1222 22:06:39.019465       1 manager.go:95] Scraping metrics from 0 sources
-I1222 22:06:39.019657       1 manager.go:148] ScrapeMetrics: time: 2µs, nodes: 0, pods: 0        
-I1222 22:06:39.031001       1 secure_serving.go:116] Serving securely on [::]:4443
-I1222 22:07:39.020001       1 manager.go:95] Scraping metrics from 1 sources
-I1222 22:07:39.027658       1 manager.go:120] Querying source: kubelet_summary:docker-desktop    
-I1222 22:07:39.088902       1 manager.go:148] ScrapeMetrics: time: 68.8058ms, nodes: 1, pods: 23 
-I1222 22:08:39.019769       1 manager.go:95] Scraping metrics from 1 sources
-I1222 22:08:39.023063       1 manager.go:120] Querying source: kubelet_summary:docker-desktop    
-I1222 22:08:39.057139       1 manager.go:148] ScrapeMetrics: time: 37.2889ms, nodes: 1, pods: 23 
-</pre>
-
-```console
-kubectl top nodes
-```
-<pre>
-Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
-</pre>
-```console
-kubectl to pods
-```
-<pre>
-Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
-</pre>
-
-
-The final solution was to install metrics server via helm 
+### IF metrics server is absent on  local k8s cluster.
 
 ```console
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 helm install metrics stable/metrics-server  --namespace kube-system --set args={--kubelet-insecure-tls}
 ```
 
-After all we have
+
 ```console
-kubectl get hpa
+kubectl top nodes
 ```
 <pre>
-NAME             REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-apache-php-api   Deployment/apache-php-api   1%/30%    1         10        1          38h
+NAME             CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
+docker-desktop   324m         16%    2345Mi          60%
+</pre>
+```console
+kubectl top pods
+```
+<pre>
+NAME                              CPU(cores)   MEMORY(bytes)   
+apache-php-api-7cbb5654cb-gt964   1m           13Mi
+apache-php-api-7cbb5654cb-khmtl   2m           13Mi
+apache-php-api-7cbb5654cb-sdl8q   1m           15Mi
+apache-php-api-7cbb5654cb-smp8f   1m           14Mi
+apache-php-api-7cbb5654cb-txx9j   1m           13Mi
 </pre>
 
 #### Lets try to stress our deployment
 
 
-service=13.79.164.182
-while true; do curl -X Get $service; done
-
-#### start 
-> $ kubectl get hpa apache-php-api
-> NAME             REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-> apache-php-api   Deployment/apache-php-api   70%/30%   1         10        3          7h39m
-
-$ kubectl get hpa apache-php-api
-NAME             REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-apache-php-api   Deployment/apache-php-api   43%/30%   1         10        6          7h46m
-
-#### stop
-
-
-service=13.79.164.182
-curl -s "http://$service/?[1-1000]"
-
-### using dedicated  load test 
+### 1. Using dedicated  load test 
 
 HPA_SERVICE=apache-php-api:2020
 
@@ -285,7 +231,7 @@ History of pod instances number
 ```console
 kubectl get hpa -w
 ```
-
+<pre>
 NAME             REFERENCE                   TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
 apache-php-api   Deployment/apache-php-api   141%/20%   1         10        4          18m
 apache-php-api   Deployment/apache-php-api   141%/20%   1         10        8          18m
@@ -308,14 +254,33 @@ apache-php-api   Deployment/apache-php-api   1%/20%     1         10        8   
 apache-php-api   Deployment/apache-php-api   2%/20%     1         10        1          34m
 apache-php-api   Deployment/apache-php-api   1%/20%     1         10        1          37m
 apache-php-api   Deployment/apache-php-api   2%/20%     1         10        1          38m
+</pre>
 
-Instead of using on time run pod, we can experiment with kubernetes job objects.
+```console
+kubectl logs -f pod/loadtest-app|tail; kubectl get pod/loadtest-app; kubectl get hpa/apache-php-api
+```
+<pre>
+Error distribution:
+  [16]  Get http://apache-php-api:2020: dial tcp 10.100.182.13:2020: connect: connection refused
+  [1600]        Get http://apache-php-api:2020: net/http: request canceled (Client.Timeout exceeded while awaiting headers)
+  [1599]        Get http://apache-php-api:2020: net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)
+
+Waiting 15 seconds for the cluster to stabilize
+***************************************************************************************
+*----------------------------------END LOAD TEST--------------------------------------*
+***************************************************************************************
+NAME           READY   STATUS      RESTARTS   AGE
+loadtest-app   0/1     Completed   0          9m16s
+NAME             REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+apache-php-api   Deployment/apache-php-api   1%/20%    1         10        8          23m
+</pre>
+
+##### Instead of using on time run pod, we can experiment with kubernetes job objects.
+###### TODO 
 
 
+### 2. Using pod inside and wget
 
-
-
-### using pod inside
 ```console
 
 kubectl run load-generator --generator=run-pod/v1 \
@@ -329,22 +294,79 @@ kubectl run load-generator --generator=run-pod/v1 \
 while true; do wget -O- http://apache-php-api:2020; done
 </pre>
 <pre>
-Connecting to apache-php-api:2020 (10.96.213.227:2020)
+Connecting to apache-php-api:2020 (10.100.182.13:2020)
+</pre>
+
+Break after 2-3 minutes
+
+```console
+exit
+```
+<pre>
+Session ended, resume using 'kubectl attach load-generator -c load-generator -i -t' command when the pod is running 
+pod "load-generator" deleted
 </pre>
 
 
+### 3. Using pod inside and curl 
+
+##### Using radial/busyboxplus:curl image instead of busybox (with missing curl)
 
 
-#### Based on  https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
+```console
 
-##### https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/support-for-cooldown-delay
+kubectl run load-generator --generator=run-pod/v1 \
+  --limits="cpu=200m,memory=100Mi" \
+  --requests="cpu=100m,memory=50Mi" \
+  --rm -i --tty --image radial/busyboxplus:curl -- sh
 
-##### https://github.com/kubernetes-sigs/metrics-server/issues/317
+```
 
-##### https://aws.amazon.com/premiumsupport/knowledge-center/eks-metrics-server-pod-autoscaler/?nc1=h_ls
+<pre>
+while true; do curl -v -X Get http://apache-php-api:2020; done
+</pre>
 
+<pre>
+> Get / HTTP/1.1
+> User-Agent: curl/7.35.0
+> Host: apache-php-api:2020
+> Accept: */*
+....
+< HTTP/1.1 200 OK
+< Date: Mon, 30 Dec 2019 09:34:37 GMT
+< Server: Apache/2.4.25 (Debian)
+< X-Powered-By: PHP/5.6.40
+< Vary: Accept-Encoding
+< Content-Length: 73
+< Content-Type: text/html; charset=UTF-8
+<
 
-##### https://blog.codewithdan.com/enabling-metrics-server-for-kubernetes-on-docker-desktop/
+Pi ~=: 3.1415936535888 OK! Computed at: apache-php-api-7cbb5654cb-6gkrj> Get / HTTP/1.1
+....
+Pi ~=: 3.1415936535888 OK! Computed at: apache-php-api-7cbb5654cb-kj458> Get / HTTP/1.1
+</pre>
 
-##### https://github.com/kubernetes-sigs/metrics-server/issues/167
+Break after 2-3 minutes
+
+```console
+exit
+```
+<pre>
+Session ended, resume using 'kubectl attach load-generator -c load-generator -i -t' command when the pod is running 
+pod "load-generator" deleted
+</pre>
+
+Literature:
+
+https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
+
+https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/support-for-cooldown-delay
+
+https://github.com/kubernetes-sigs/metrics-server/issues/317
+
+https://aws.amazon.com/premiumsupport/knowledge-center/eks-metrics-server-pod-autoscaler/?nc1=h_ls
+
+https://blog.codewithdan.com/enabling-metrics-server-for-kubernetes-on-docker-desktop/
+
+https://github.com/kubernetes-sigs/metrics-server/issues/167
 
