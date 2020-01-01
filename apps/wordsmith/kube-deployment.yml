@@ -27,10 +27,17 @@ spec:
     spec:
       containers:
       - name: db
-        image: djkormo/k8s-wordsmith-db
+        image: djkormo/k8s-wordsmith-db:v1
         ports:
         - containerPort: 5432
           name: db
+        resources:
+          limits:
+            cpu: "0.2"
+            memory: "50Mi"
+          requests:
+            cpu: "0.1"
+            memory: "10Mi"  
 ---
 apiVersion: v1
 kind: Service
@@ -62,10 +69,17 @@ spec:
     spec:
       containers:
       - name: words
-        image: djkormo/k8s-wordsmith-api
+        image: djkormo/k8s-wordsmith-api:v1
         ports:
         - containerPort: 8080
           name: api
+        resources:
+          limits:
+            cpu: "0.2"
+            memory: "50Mi"
+          requests:
+            cpu: "0.1"
+            memory: "25Mi"   
 ---
 apiVersion: v1
 kind: Service
@@ -96,7 +110,14 @@ spec:
     spec:
       containers:
       - name: web
-        image: djkormo/k8s-wordsmith-web
+        image: djkormo/k8s-wordsmith-web:v1
         ports:
         - containerPort: 80
           name: words-web
+        resources:
+          limits:
+            cpu: "0.2"
+            memory: "50Mi"
+          requests:
+            cpu: "0.1"
+            memory: "25Mi"  

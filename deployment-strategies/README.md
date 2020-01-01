@@ -94,8 +94,9 @@ https://grafana.com/grafana/dashboards?dataSource=prometheus&search=kubernetes
 ![kubernetes monitoring deployment](monitoring.png)
 
 
-#### based on https://itnext.io/using-prometheus-in-azure-kubernetes-service-aks-ae22cada8dd9
+https://itnext.io/using-prometheus-in-azure-kubernetes-service-aks-ae22cada8dd9
 
+https://winderresearch.com/introduction-to-monitoring-microservices-with-prometheus/#prometheus-vs
 
 ## Create namespace for application
 
@@ -190,6 +191,9 @@ Annotations on pods allow a fine control of the scraping process:
 
 
 
+Literature:
 
+https://itnext.io/using-prometheus-in-azure-kubernetes-service-aks-ae22cada8dd9
 
+https://winderresearch.com/introduction-to-monitoring-microservices-with-prometheus/#prometheus-vs
 
