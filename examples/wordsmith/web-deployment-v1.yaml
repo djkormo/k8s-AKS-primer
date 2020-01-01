@@ -13,14 +13,23 @@ spec:
     app: words-web
   type: LoadBalancer
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: web
   labels:
     app: words-web
-    version: v1
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: words-web
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+     maxUnavailable: 25%
+     maxSurge: 1
+
   template:
     metadata:
       labels:
@@ -30,6 +39,7 @@ spec:
       containers:
       - name: web
         image: djkormo/k8s-wordsmith-web:v1
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
           name: words-web
