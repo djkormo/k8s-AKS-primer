@@ -16,7 +16,7 @@ INSERT INTO nouns(word) VALUES
   ('sloneczko'),
   ('cacuszko'),
   ('lusterko'),
-  ('koteczek'),
+  ('urzadzonko'),
   ('lustereczko');
 
 INSERT INTO verbs(word) VALUES
