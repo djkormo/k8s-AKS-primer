@@ -6,11 +6,11 @@ Wordsmith is the demo project shown at DockerCon EU 2017, where Docker announced
 
 The demo app runs across three containers:
 
-- [db](db/Dockerfile) - a Postgres database which stores words
+- [db](https://github.com/djkormo/k8s-AKS-primer/tree/master/apps/wordsmith/db/Dockerfile) - a Postgres database which stores words
 
-- [words](words/Dockerfile) - a Java REST API which serves words read from the database
+- [words](https://github.com/djkormo/k8s-AKS-primer/tree/master/apps/wordsmith/words/Dockerfile) - a Java REST API which serves words read from the database
 
-- [web](web/Dockerfile) - a Go web application which calls the API and builds words into sentences:
+- [web](https://github.com/djkormo/k8s-AKS-primer/tree/master/apps/wordsmith/web/Dockerfile) - a Go web application which calls the API and builds words into sentences:
 
 ![The Wordsmith app running in Kubernetes on Docker for Mac](img/dockercon-barcelona-logo.svg)
 
