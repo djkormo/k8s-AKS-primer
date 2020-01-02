@@ -37,6 +37,8 @@ kubectl get all
 No resources found.
 </pre>
 
+### DB part
+
 ```console
 kubectl apply -f db-service.yaml
 ```
@@ -50,6 +52,8 @@ kubectl apply -f db-deployment-v1.yaml
 <pre>
 deployment.apps/db created
 </pre>
+
+### Words part
 
 ```console
 kubectl apply -f api-service.yaml 
@@ -65,6 +69,8 @@ kubectl apply -f api-deployment-v1.yaml
 deployment.apps/words created
 </pre>
 
+### Web part
+
 ```console
 kubectl apply -f web-service.yaml
 ```
@@ -77,6 +83,9 @@ kubectl apply -f web-deployment-v1.yaml
 <pre>
 deployment.apps/web created
 </pre>
+
+### Deployed services
+
 ```console
 kubectl get svc
 ```
@@ -89,12 +98,12 @@ words   ClusterIP      None           <none>        8080/TCP         2m41s
 
 In kubeview dashboard
 
-[kubeview](kubeview-wordsmith-v1.png)
+![kubeview](kubeview-wordsmith-v1.png)
 
 
 Now browse to http://localhost:8081 and you will see
 
-[wordsmith](wordsmith-v1.png)
+![wordsmith](wordsmith-v1.png)
 
 Based on:
 https://github.com/dockersamples/k8s-wordsmith-demo
