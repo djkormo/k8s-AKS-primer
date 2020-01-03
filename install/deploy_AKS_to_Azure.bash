@@ -14,6 +14,10 @@
 display_usage() { 
 	echo "Example of usage:" 
 	echo -e "bash deploy_AKS_to_Azure.bash -n aks-simple2020 -g rg-aks-simple -l northeurope -o create" 
+	echo -e "bash deploy_AKS_to_Azure.bash -n aks-simple2020 -g rg-aks-simple -l northeurope -o stop" 
+	echo -e "bash deploy_AKS_to_Azure.bash -n aks-simple2020 -g rg-aks-simple -l northeurope -o start" 
+	echo -e "bash deploy_AKS_to_Azure.bash -n aks-simple2020 -g rg-aks-simple -l northeurope -o status" 
+	echo -e "bash deploy_AKS_to_Azure.bash -n aks-simple2020 -g rg-aks-simple -l northeurope -o delete" 
 	} 
 
 while getopts n:g:o:l: option
@@ -140,8 +144,8 @@ echo "Creating AKS cluster...";
 
 	az aks create --resource-group $AKS_RG \
 		--name  $AKS_NAME \
-		--vm-set-type AvailabilitySet 
-		#--enable-addons monitoring \
+		--vm-set-type AvailabilitySet \
+		--enable-addons monitoring \
 		--kubernetes-version $AKS_VERSION \
 		--generate-ssh-keys \
 		--node-count $AKS_NODES \
