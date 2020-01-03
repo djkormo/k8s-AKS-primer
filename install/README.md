@@ -18,7 +18,7 @@ az aks install-cli
 ```
 ### getting credentials from k8s server. Use --overwrite-existing if you have a new cluster with the same name and resource group as an old one.
 ```console
-az aks get-credentials --resource-group myAKSCluster --name myAKSCluster #--overwrite-existing
+az aks get-credentials --resource-group myAKSCluster --name myAKSCluster --overwrite-existing
 ```
 
 ### checking context
@@ -37,13 +37,14 @@ kubectl config set-context myAKSCluster --namespace=default
 ##### myAKSCluster
 
 ### see all nodes
+
 ```console
 kubectl get nodes
 ```
-
+<pre>
 ##### NAME                       STATUS   ROLES   AGE   VERSION
 ##### aks-nodepool1-27090461-0   Ready    agent   15m   v1.9.11
-
+</pre>
 
 ### opening dashboard
 
@@ -63,76 +64,80 @@ kubectl create -f https://raw.githubusercontent.com/djkormo/ContainersSamples/ma
 ```console
 kubectl apply -f https://raw.githubusercontent.com/Azure-Samples/azure-voting-app-redis/master/azure-vote-all-in-one-redis.yaml
 ```
-##### deployment.apps/azure-vote-back created
-##### service/azure-vote-back created
-##### deployment.apps/azure-vote-front created
-##### service/azure-vote-front created
-
+<pre>
+deployment.apps/azure-vote-back created
+service/azure-vote-back created
+deployment.apps/azure-vote-front created
+service/azure-vote-front created
+</pre>
 ### see all pods
 
 ```console
 kubectl get pods
 ```
-##### NAME                                READY   STATUS              RESTARTS   AGE
-##### azure-vote-back-655476c7f7-hbg86    1/1     Running             0          2m49s
-##### azure-vote-front-764cff8457-74v7g   0/1     ContainerCreating   0          2m49s
-
+<pre>
+NAME                                READY   STATUS              RESTARTS   AGE
+azure-vote-back-655476c7f7-hbg86    1/1     Running             0          2m49s
+azure-vote-front-764cff8457-74v7g   0/1     ContainerCreating   0          2m49s
+</pre>
 
 ### see all deployments
 
 ```console
 kubectl get deployments
 ```
-
-##### NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-##### azure-vote-back    1         1         1            1           3m59s
-##### azure-vote-front   1         1         1            0           3m59s
-
+<pre>
+NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+azure-vote-back    1         1         1            1           3m59s
+azure-vote-front   1         1         1            0           3m59s
+</pre>
 
 ### see all services 
 
 ```console
 kubectl get services 
 ```
-
-##### NAME               TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)        AGE
-##### azure-vote-back    ClusterIP      10.0.79.19     <none>            6379/TCP       3m16s
-##### azure-vote-front   LoadBalancer   10.0.124.211   137.116.230.107   80:30102/TCP   3m15s
-##### kubernetes         ClusterIP      10.0.0.1       <none>            443/TCP        18m
-
+<pre>
+NAME               TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)        AGE
+azure-vote-back    ClusterIP      10.0.79.19     <none>            6379/TCP       3m16s
+azure-vote-front   LoadBalancer   10.0.124.211   137.116.230.107   80:30102/TCP   3m15s
+kubernetes         ClusterIP      10.0.0.1       <none>            443/TCP        18m
+</pre>
 
 ### Show service details for  frontend
 ```console
 kubectl describe services azure-vote-front
 ```
+<pre>
+Name:                     azure-vote-front
+Namespace:                default
+Labels:                   <none>
+Annotations:              kubectl.kubernetes.io/last-applied-configuration:
+                            {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"azure-vote-front","namespace":"default"},"spec":{"ports":[{
+"port"...
+Selector:                 app=azure-vote-front
+Type:                     LoadBalancer
+IP:                       10.0.124.211
+LoadBalancer Ingress:     137.116.230.107
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  30102/TCP
+ Endpoints:                10.244.0.10:80
+ Session Affinity:         None 
+ External Traffic Policy:  Cluster
+ Events:
+  Type    Reason                Age   From                Message
+  ----    ------                ----  ----                -------
+  Normal  EnsuringLoadBalancer  20m   service-controller  Ensuring load balancer
 
-##### Name:                     azure-vote-front
-##### Namespace:                default
-##### Labels:                   <none>
-##### Annotations:              kubectl.kubernetes.io/last-applied-configuration:
-#####                            {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"azure-vote-front","namespace":"default"},"spec":{"ports":[{
-##### "port"...
-##### Selector:                 app=azure-vote-front
-##### Type:                     LoadBalancer
-##### IP:                       10.0.124.211
-##### LoadBalancer Ingress:     137.116.230.107
-##### Port:                     <unset>  80/TCP
-##### TargetPort:               80/TCP
-##### NodePort:                 <unset>  30102/TCP
-##### Endpoints:                10.244.0.10:80
-##### Session Affinity:         None
-##### External Traffic Policy:  Cluster
-##### Events:
-#####  Type    Reason                Age   From                Message
-#####  ----    ------                ----  ----                -------
-#####  Normal  EnsuringLoadBalancer  20m   service-controller  Ensuring load balancer
-#####
-#####  Normal  EnsuredLoadBalancer   19m   service-controller  Ensured load balancer
-  
+  Normal  EnsuredLoadBalancer   19m   service-controller  Ensured load balancer
+ <pre> 
   
 ### Run your application at 137.116.230.107
   
 http://137.116.230.107:80
+
+
 
 
 
