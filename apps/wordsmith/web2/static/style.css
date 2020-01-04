@@ -97,11 +97,11 @@ body {
 }
 
 .noun {
-	background-image: url('images/lego_blue.png') !important;
+	background-image: url('images/lego_red.png') !important;
 }
 
 .verb {
-	background-image: url('images/lego_yellow.png') !important;
+	background-image: url('images/lego_green.png') !important;
 }
 
 .adjective {
