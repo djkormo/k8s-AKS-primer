@@ -131,7 +131,7 @@ NodePort:                 <unset>  30102/TCP
   Normal  EnsuringLoadBalancer  20m   service-controller  Ensuring load balancer
 
   Normal  EnsuredLoadBalancer   19m   service-controller  Ensured load balancer
- <pre> 
+ </pre> 
   
 ### Run your application at 137.116.230.107
   
