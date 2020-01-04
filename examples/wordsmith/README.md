@@ -117,6 +117,10 @@ Now browse to http://localhost:8081 (or to http://externalIP:8081) and you will 
 
 Let's look ahat we have inside of our namespace
 
+
+![Three tier example application](three-tier-app-with-np.png)
+
+
 ```console
 kubectl run curl-$RANDOM --image=radial/busyboxplus:curl --rm -it --generator=run-pod/v1
 ```
@@ -218,6 +222,7 @@ testing connections
 ```console
 kubectl run curl-$RANDOM --image=radial/busyboxplus:curl --labels app=words-api --rm -it --generator=run-pod/v1
 ```
+
 <pre>
 curl kubernetes.io
 
@@ -280,6 +285,7 @@ Spec:
   Allowing egress traffic:
     <none> (Selected pods are isolated for egress connectivity)
   Policy Types: Ingress, Egress
+
 </pre>
 
 
