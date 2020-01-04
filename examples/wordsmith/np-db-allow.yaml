@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-netpol
+spec:
+  podSelector:
+    matchLabels:
+      app: words-db
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: words-api
+    ports:
+     - port: 5432
+       protocol: TCP
