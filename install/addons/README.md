@@ -145,7 +145,8 @@ helm install mygrafana stable/grafana --namespace=monitor \
     --set=adminUser=admin \
     --set=adminPassword=admin \
     --set=service.type=ClusterIP  \
-    --set=service.port=4444
+    --set=service.port=4444 \
+    --set grafana\.ini.server.root_url=https://ingress-ops.nd-int-ops-paas.itn/grafana
 ```
 
 ```console
@@ -209,7 +210,6 @@ myprometheus-server               ClusterIP   10.0.61.232    <none>        80/TC
 
 
 
-
 ## 3. Adding ingress
 
 ```console 
@@ -242,6 +242,25 @@ myingress-nginx-ingress-default-backend   ClusterIP      10.0.232.54   <none>   
 </pre>
 
 
+
+
+Literature:
+
+https://docs.microsoft.com/bs-cyrl-ba/azure/aks/ingress-basic
+
+Rbac for kubeview
+https://sre.ink/kubernetes%E9%83%A8%E7%BD%B2kubeview%E9%9B%86%E7%BE%A4%E7%BB%93%E6%9E%84%E9%A2%84%E8%A7%88%E5%B7%A5%E5%85%B7/
+
+Rewriting problems with grafana
+https://stackoverflow.com/questions/57170106/trying-to-rewrite-url-for-grafana-with-ingress
+
+https://stackoverflow.com/questions/48410293/kubernetes-ingress-not-adding-the-application-url-for-grafana-dashboard
+
+
+
+
+----- TRASH
+
 ### Using ingress to expose kubeview, grafana and prometheus
 
 kubectl apply -f monitor-ingress.yaml -n monitor
@@ -260,15 +279,9 @@ monitor-ingress   *                 80      24s
 
 
 
+curl -v -L  http://40.127.233.36/alertmanager/
+curl -v -L  http://40.127.233.36/prometheus/
+curl -v -L  http://40.127.233.36/grafana/
 
 
-
-Literature:
-
-https://docs.microsoft.com/bs-cyrl-ba/azure/aks/ingress-basic
-
-Rbac for kubeview
-https://sre.ink/kubernetes%E9%83%A8%E7%BD%B2kubeview%E9%9B%86%E7%BE%A4%E7%BB%93%E6%9E%84%E9%A2%84%E8%A7%88%E5%B7%A5%E5%85%B7/
-
-Rewriting problems with grafana
-https://stackoverflow.com/questions/57170106/trying-to-rewrite-url-for-grafana-with-ingress
+----- TRASH

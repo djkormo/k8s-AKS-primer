@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: prometheus-monitoring
+  #path: /grafana(/|$)(.*)
+  annotations:
+    #ingress.kubernetes.io/whitelist-source-range: 10.0.0.0/16 # change this range to admin IPs
+    #ingress.kubernetes.io/rewrite-target: /$1  
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    #ingress.kubernetes.io/rewrite-target: "/"
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: myprometheus-server
+          servicePort: 80
+        path: /prometheus/
+
+      - backend:
+          serviceName: myprometheus-alertmanager
+          servicePort: 80
+        path: /alertmanager/
+
+      - backend:
+          serviceName: mygrafana
+          servicePort: 4444
+        path: /grafana/
