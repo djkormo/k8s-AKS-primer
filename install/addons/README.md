@@ -19,9 +19,9 @@ Context "aks-simple2020" modified.
 kubectl get nodes
 ```
 <pre>
-NAME                       STATUS   ROLES   AGE   VERSION
-aks-nodepool1-36820653-0   Ready    agent   29m   v1.14.8
-aks-nodepool1-36820653-1   Ready    agent   29m   v1.14.8
+NAME                       STATUS   ROLES   AGE     VERSION
+aks-nodepool1-36820653-0   Ready    agent   7m50s   v1.15.5
+aks-nodepool1-36820653-1   Ready    agent   7m37s   v1.15.5
 </pre>
 
 ```console
@@ -29,8 +29,8 @@ kubectl top nodes
 ```
 <pre>
 NAME                       CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
-aks-nodepool1-36820653-0   42m          2%     314Mi           20%
-aks-nodepool1-36820653-1   138m         7%     456Mi           29%       
+aks-nodepool1-36820653-0   337m         17%    977Mi           45%       
+aks-nodepool1-36820653-1   91m          4%     901Mi           41%      
 </pre>
 
 ## 1. Using dashboard 
@@ -67,10 +67,6 @@ namespace/monitor created
 
 ```console
 kubectl apply -f kubeview-deployment.yaml -n monitor
-
-# or directly from github 
-
-kubectl apply -f https://raw.githubusercontent.com/djkormo/k8s-AKS-primer/master/docker/k8s-in-docker-desktop/kubeview-deployment.yaml -n monitor
 
 
 ```
@@ -119,7 +115,7 @@ kubectl get pod --namespace monitor -l release=myprometheus -l component=server
 ```
 <pre>
 NAME                                   READY   STATUS    RESTARTS   AGE
-myprometheus-server-574487798c-s4n7n   2/2     Running   0          5h54m
+myprometheus-server-7f597fd7b4-shh44   2/2     Running   0          2m41s
 </pre>
 
 
@@ -137,16 +133,14 @@ http://localhost:9090/
 
 ![Prometheus dashboard](prometheus_at_9090.png)
 
-
-
+## 4. Adding grafana
 
 ```console
 helm install mygrafana stable/grafana --namespace=monitor \
     --set=adminUser=admin \
     --set=adminPassword=admin \
     --set=service.type=ClusterIP  \
-    --set=service.port=4444 \
-    --set grafana\.ini.server.root_url=https://ingress-ops.nd-int-ops-paas.itn/grafana
+    --set=service.port=4444 
 ```
 
 ```console
@@ -154,15 +148,15 @@ kubectl get pod --namespace monitor  -l release=mygrafana -l app=grafana
 ```
 <pre>
 NAME                         READY   STATUS    RESTARTS   AGE
-mygrafana-77989f79f9-rw7c5   1/1     Running   0          5h54m
+mygrafana-6bb4ffdcb4-rgvdx   1/1     Running   0          40s
 </pre>
 
 ```console
 kubectl get svc --namespace monitor -l app=grafana
 ```
 <pre>
-NAME        TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
-mygrafana   ClusterIP   10.0.84.116   <none>        4444/TCP   5h54m
+NAME        TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
+mygrafana   ClusterIP   10.0.0.192   <none>        4444/TCP   52s
 </pre>
 
 Forwarding service to port 3000
@@ -198,19 +192,18 @@ kubectl get svc -n monitor
 ```
 <pre>
 NAME                              TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
-kubeview                          ClusterIP   10.0.110.83    <none>        3030/TCP   8m13s
-mygrafana                         ClusterIP   10.0.84.116    <none>        4444/TCP   98s
-myprometheus-alertmanager         ClusterIP   10.0.138.206   <none>        80/TCP     6m34s
-myprometheus-kube-state-metrics   ClusterIP   None           <none>        80/TCP     6m34s
-myprometheus-node-exporter        ClusterIP   None           <none>        9100/TCP   6m34s
-myprometheus-pushgateway          ClusterIP   10.0.125.156   <none>        9091/TCP   6m34s
-myprometheus-server               ClusterIP   10.0.61.232    <none>        80/TCP     6m34s
+kubeview                          ClusterIP   10.0.133.137   <none>        3030/TCP   8m5s
+mygrafana                         ClusterIP   10.0.0.192     <none>        4444/TCP   3m23s
+myprometheus-alertmanager         ClusterIP   10.0.35.215    <none>        80/TCP     7m46s
+myprometheus-kube-state-metrics   ClusterIP   None           <none>        80/TCP     7m46s
+myprometheus-node-exporter        ClusterIP   None           <none>        9100/TCP   7m46s
+myprometheus-pushgateway          ClusterIP   10.0.23.110    <none>        9091/TCP   7m46s
+myprometheus-server               ClusterIP   10.0.253.196   <none>        80/TCP     7m46s
 </pre>
 
 
 
-
-## 3. Adding ingress
+## 5. Adding ingress
 
 ```console 
 kubectl create ns ingress
@@ -236,11 +229,10 @@ kubectl get service -l app=nginx-ingress --namespace ingress
 <pre>
 NAME                                      TYPE           CLUSTER-IP    EXTERNAL-IP     PORT(S)
    AGE
-myingress-nginx-ingress-controller        LoadBalancer   10.0.147.79   40.127.233.36   80:31253/TCP,443:30893/TCP   4h28m
-myingress-nginx-ingress-default-backend   ClusterIP      10.0.232.54   <none>          80/TCP
-   4h28m
+myingress-nginx-ingress-controller        LoadBalancer   10.0.121.3    40.127.224.23   80:32347/TCP,443:32189/TCP   25s
+myingress-nginx-ingress-default-backend   ClusterIP      10.0.211.89   <none>          80/TCP
+   25s
 </pre>
-
 
 
 
