@@ -64,10 +64,23 @@ kubectl create ns monitor
 namespace/monitor created
 </pre>
 
+namespace/monitor created
+</pre>
+
+
+```console
+kubectl apply -f kubeview-rbac.yaml -n monitor
+
+```
+<pre>
+serviceaccount/kubeview created
+clusterrole.rbac.authorization.k8s.io/kubeview created
+clusterrolebinding.rbac.authorization.k8s.io/kubeview created
+</pre>
+
 
 ```console
 kubectl apply -f kubeview-deployment.yaml -n monitor
-
 
 ```
  
@@ -90,7 +103,15 @@ NAME       TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
 kubeview   ClusterIP   10.0.110.83   <none>        3030/TCP   37s
 </pre>
 
-## 3. Adding prometheus and grafana
+```console
+kubectl port-forward svc/kubeview -n monitor 3030:3030 
+```
+
+<pre>
+
+</pre>
+
+## 3. Adding prometheus
 
 ```console
 helm install myprometheus  stable/prometheus --version=7.0.0 --namespace=monitor
