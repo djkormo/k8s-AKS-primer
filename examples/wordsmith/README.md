@@ -143,9 +143,12 @@ pod "curl-3601" deleted
 ### Adding network policy for our application 
 
 #### Deny all in namespace
-
+```console
 kubectl apply -f np-deny-all.yaml 
+```
+<pre>
 networkpolicy.networking.k8s.io/deny-all created
+</pre>
 
 testing connections
 
