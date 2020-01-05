@@ -409,6 +409,8 @@ No resources found.
 Literature:
 
 http://blog.madhukaraphatak.com/understanding-k8s-api-part-1/
+
 http://blog.madhukaraphatak.com/understanding-k8s-api-part-2/
+
 http://blog.madhukaraphatak.com/understanding-k8s-api-part-3/
 
