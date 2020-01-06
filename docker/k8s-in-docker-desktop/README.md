@@ -236,15 +236,15 @@ namespace/monitor created
 </pre>
 
 ```console
+kubectl apply -f kubeview-rbac.yaml -n kube-system
+
+``` 
+
+```console
 kubectl apply -f kubeview-deployment.yaml -n monitor
 
-# or directly from github 
+``` 
 
-kubectl apply -f https://raw.githubusercontent.com/djkormo/k8s-AKS-primer/master/docker/k8s-in-docker-desktop/kubeview-deployment.yaml -n monitor
-
-
-```
- 
 <pre>
 deployment.extensions/kubeview created
 </pre>
