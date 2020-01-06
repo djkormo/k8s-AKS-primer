@@ -9,8 +9,12 @@ echo "<br>";
 echo "Application version : ";
 echo $_ENV["VERSION"] . '     !';
 echo "<br>";
+$debug=false;
 
+$debug = ($_ENV["DEBUG"] === 'true');
 
-phpinfo(INFO_ENVIRONMENT);
-
+if ($debug)
+{
+  phpinfo(INFO_ENVIRONMENT);
+}
 ?>

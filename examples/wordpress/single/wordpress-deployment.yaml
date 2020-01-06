@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wordpress-single
+spec:
+  template:
+    metadata:
+      labels:
+        app: wordpress-single
+    spec:
+      containers:
+      - name: wordpress
+        image: wordpress:4.9.2-apache
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: 127.0.0.1
+        - name: WORDPRESS_DB_USER
+          value: "root"
+        - name: WORDPRESS_DB_PASSWORD
+          value: "example"
+        ports:
+        - containerPort: 80
+      - name: mysql
+        image: mysql:5.7.21
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "example"
+        - name: MYSQL_DATABASE
+          value: "wordpress"

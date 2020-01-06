@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress-multi-mysql-service
+spec:
+  ports:
+  - port: 3306
+  type: ClusterIP  
+  selector:
+    app: wordpress-multi-mysql

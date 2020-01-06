@@ -7,8 +7,10 @@ kubectl proxy --port 8080
 Starting to serve on 127.0.0.1:8080
 </pre>
 List all namespaces
+```console
 curl --request GET \
   --url http://localhost:8080/api/v1/namespaces/
+```
 
 <pre>
 {
@@ -40,13 +42,16 @@ curl --request GET \
 </pre>
 
 List all pods in kube-system namespace
+```console
 curl --request GET \
   --url http://localhost:8080/api/v1/namespaces/kube-system/pods
+```
 
 Get a single pod in kube-system
-
+```console
 curl --request GET \
   --url http://localhost:8080/api/v1/namespaces/kube-system/pods/calico-node-2nskn/
+```
 
 Creating pod
 
@@ -63,7 +68,9 @@ spec:
      - containerPort: 80
 ```
 
+```console
 kubectl run ngnix-pod  --generator=run-pod/v1 --port=80 --image=nginx:1.7.9 --dry-run -o yaml
+```
 
 ```yaml
 apiVersion: v1
@@ -85,7 +92,9 @@ spec:
 status: {}
 ```
 
+```console
 kubectl run nginx-pod  --generator=run-pod/v1 --port=80 --image=nginx:1.7.9 --dry-run -o json
+```
 
 ```json
 {
@@ -119,6 +128,7 @@ kubectl run nginx-pod  --generator=run-pod/v1 --port=80 --image=nginx:1.7.9 --dr
 ```
 
 Creating pod in default namespace
+
 ```console
 curl --request POST \
   --url http://localhost:8080/api/v1/namespaces/default/pods \
@@ -153,6 +163,7 @@ curl --request POST \
 }'
 
 '''
+
 ```console
 kubectl get pods -n default
 ```
@@ -167,6 +178,7 @@ Deleting pod from default namespace
 curl --request DELETE \
   --url http://localhost:8080/api/v1/namespaces/default/pods/nginx-pod
 ```
+
 <pre>
 
 </pre>
@@ -248,10 +260,12 @@ curl --request GET \
 ```
 
 Creating ddeployment in default namespace
+
 ```console
 kubectl run nginx-deployment  --port=80 \
   --image=nginx:1.7.9 --dry-run -o yaml
 ```
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -334,6 +348,7 @@ kubectl run nginx-deployment  --port=80   \
 }
 
 ```
+
 ```console
 curl --request POST \
   --url http://localhost:8080/apis/apps/v1/namespaces/default/deployments \
@@ -403,9 +418,11 @@ curl --request DELETE \
 ```console
 kubectl get deploy -n default
 ```
+
 <pre>
 No resources found.
 </pre>
+
 Literature:
 
 http://blog.madhukaraphatak.com/understanding-k8s-api-part-1/

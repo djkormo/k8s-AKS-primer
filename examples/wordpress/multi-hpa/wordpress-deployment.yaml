@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wordpress-multi-hpa
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wordpress-multi-hpa
+    spec:
+      containers:
+      - name: wordpress
+        image: wordpress:php7.4-apache
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: "wordpress-multi-hpa-mysql-service"
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: wordpress-multi-hpa-config
+              key: db_user
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: wordpress-multi-hpa-config
+              key: db_password
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 200m
+
