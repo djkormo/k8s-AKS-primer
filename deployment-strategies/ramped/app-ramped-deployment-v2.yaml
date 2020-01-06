@@ -40,7 +40,8 @@ spec:
     spec:
       containers:
       - name: my-app-ram
-        image: containersol/k8s-deployment-strategies
+        image: djkormo/php-hello
+        imagePullPolicy: Always
         resources:
           limits:
             cpu: "0.2"
@@ -50,21 +51,23 @@ spec:
             memory: "50Mi"
         ports:
         - name: http
-          containerPort: 8080
+          containerPort: 80
         - name: probe
-          containerPort: 8086
+          containerPort: 80
         env:
         - name: VERSION
           value: v2.0.0
+        - name: DEBUG
+          value: "false"    
         livenessProbe:
           httpGet:
-            path: /live
+            path: /health
             port: probe
           initialDelaySeconds: 120
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /ready
+            path: /health
             port: probe
 
           # Intial delay is set to a high value to have a better

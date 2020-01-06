@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-re
+  labels:
+    app: my-app-re
+spec:
+  replicas: 8
+  strategy:
+    type: Recreate
+
+  # The selector field tell the deployment which pod to update with
+  # the new version. This field is optional, but if you have labels
+  # uniquely defined for the pod, in this case the "version" label,
+  # then we need to redefine the matchLabels and eliminate the version
+  # field from there.
+  selector:
+    matchLabels:
+      app: my-app-re
+  template:
+    metadata:
+      labels:
+        app: my-app-re
+        version: v2.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9101"
+    spec:
+      containers:
+      - name: my-app-re
+        image: djkormo/php-hello
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "0.2"
+            memory: "100Mi"
+          requests:
+            cpu: "0.1"
+            memory: "50Mi" 
+        ports:
+        - name: http
+          containerPort: 80
+        - name: probe
+          containerPort: 80
+        env:
+        - name: VERSION
+          value: v2.0.0
+        livenessProbe:
+          httpGet:
+            path: /
+            port: probe
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: probe
+          initialDelaySeconds: 30  
+          periodSeconds: 10
