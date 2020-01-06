@@ -5,12 +5,12 @@ metadata:
   labels:
     app: my-app
   annotations:
-    kubernetes.io/ingress.class: traefik
+    kubernetes.io/ingress.class: nginx
 spec:
   rules:
   - host: a.domain.com
     http:
-      paths:
+      paths: 
       - backend:
           serviceName: my-app-a-v1
           servicePort: 80

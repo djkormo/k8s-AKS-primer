@@ -18,34 +18,92 @@ blue/green deployment strategy.
 
 ### Deploy the first application
 
-```cosnsole
-$ kubectl apply -f app-v1.yaml --name-space=my-app
+Service part
+
+```console
+
 ```
+<pre>
+service/my-app-bg created
+</pre>
+
+Deployment part
+
+```cosnsole
+ kubectl apply -f app-bluegreen-deployment-v1.yaml --namespace=my-app
+
+```
+<pre>
+deployment.apps/my-app-bg-v1 created
+</pre>
+
 
 ### Test if the deployment was successful
 ```console
 kubectl get all --namespace=my-app
 ```
+<pre>
+NAME                TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+service/my-app-bg   NodePort   10.0.215.117   <none>        80:30750/TCP   15s
+
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/my-app-bg-v1   5/5     5            5           103s
+
+NAME                                      DESIRED   CURRENT   READY   AGE
+replicaset.apps/my-app-bg-v1-6966fcdbcc   5         5         5       103s
+</pre>
+
+```console
+kubectl get pods -L app,version -n my-app
+```
+<pre>
+NAME                            READY   STATUS    RESTARTS   AGE     APP         VERSION  
+my-app-bg-v1-6966fcdbcc-2plj8   1/1     Running   0          2m54s   my-app-bg   v1.0.0
+my-app-bg-v1-6966fcdbcc-4t4qk   1/1     Running   0          2m54s   my-app-bg   v1.0.0
+my-app-bg-v1-6966fcdbcc-k5fz4   1/1     Running   0          2m54s   my-app-bg   v1.0.0
+my-app-bg-v1-6966fcdbcc-th2bg   1/1     Running   0          2m54s   my-app-bg   v1.0.0
+my-app-bg-v1-6966fcdbcc-tk8kz   1/1     Running   0          2m54s   my-app-bg   v1.0.0
+</pre>
 
 ### To see the deployment in action, open a new terminal and run the following
 ### command:
 
 ```console
-watch kubectl get po  --namespace=my-app
+kubectl get po  --namespace=my-app -w
 ```
+
+```
+kubectl port-forward svc/kubeview -n monitor 3030:3030
+```
+<pre>
+Forwarding from 127.0.0.1:3030 -> 8000
+Forwarding from [::1]:3030 -> 8000
+Handling connection for 3030
+</pre>
+
 
 ### Then deploy version 2 of the application
 
 ```console
-kubectl apply -f app-v2.yaml --namespace=my-app
+kubectl apply -f app-bluegreen-deployment-v2.yaml --namespace=my-app
 ```
+<pre>
+deployment.apps/my-app-bg-v2 created
+</pre>
 
 ### Wait for all the version 2 pods to be running
 
 ```console
 kubectl rollout status deploy my-app-bg-v2 --namespace=my-app
-> deployment "my-app-bg-v2" successfully rolled out
 ```
+<pre>
+Waiting for deployment "my-app-bg-v2" rollout to finish: 1 of 5 updated replicas are available...
+Waiting for deployment "my-app-bg-v2" rollout to finish: 2 of 5 updated replicas are available...
+Waiting for deployment "my-app-bg-v2" rollout to finish: 3 of 5 updated replicas are available...
+Waiting for deployment "my-app-bg-v2" rollout to finish: 4 of 5 updated replicas are available...
+deployment "my-app-bg-v2" successfully rolled out
+</pre>
+
 
 ### Side by side, x pods are running with version 2 but the service still send
 ### traffic to the first deployment.
@@ -70,11 +128,14 @@ the service to send traffic to all pods with label version=v2.0.0
 ```console
 kubectl patch service my-app-bg -p '{"spec":{"selector":{"version":"v2.0.0"}}}'
 ```
+<pre>
+service/my-app-bg patched
+</pre>
 
 ### Test if the second deployment was successful
 
 ```console
-service=http://localhost:9999
+service=http://localhost:9999/
 while sleep 0.1; do curl "$service"; done
 ```
 
@@ -83,6 +144,18 @@ while sleep 0.1; do curl "$service"; done
 ```console
 kubectl patch service my-app-bg -p '{"spec":{"selector":{"version":"v1.0.0"}}}'
 ```
+<pre>
+service/my-app-bg patched
+</pre>
+
+We can also change service selector from yaml file
+```console
+kubectl apply -f app-bluegreen-service-v2.yaml  -n my-app
+```
+<pre>
+service/my-app-bg configured
+</pre>
+
 
 You can also check the same inside the temporary pod
 ```console
@@ -95,7 +168,7 @@ kubectl run myubuntu --image ubuntu:16.04 --rm -ti --generator=run-pod/v1 \
 >
 > apt-get install curl
 >
-> service=http://my-app-bg:80
+> service=http://my-app-bg:80/
 >
 > while sleep 0.1; do curl "$service"; done
 

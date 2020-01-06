@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app-bg-v2
+  name: my-app-b-v1
   labels:
-    app: my-app-bg
+    app: my-app
 spec:
-  replicas: 5
+  replicas: 3
   selector:
     matchLabels:
-      app: my-app-bg
-      version: v2.0.0
+      app: my-app-b
+      version: v1.0.0
   template:
     metadata:
       labels:
-        app: my-app-bg
-        version: v2.0.0
+        app: my-app-b
+        version: v1.0.0
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9101"
     spec:
       containers:
-      - name: my-app-bg
-        image: containersol/k8s-deployment-strategies
+      - name: my-app-b
+        image: djkormo/php-hello
         resources:
           limits:
             cpu: "0.2"
@@ -31,20 +31,22 @@ spec:
             memory: "50Mi"
         ports:
         - name: http
-          containerPort: 8080
+          containerPort: 80
         - name: probe
-          containerPort: 8086
+          containerPort: 80
         env:
         - name: VERSION
-          value: v2.0.0
+          value: v1.0.0
+        - name: DEBUG
+          value: "false"   
         livenessProbe:
           httpGet:
-            path: /live
+            path: /health
             port: probe
-          initialDelaySeconds: 120
+          initialDelaySeconds: 60
           periodSeconds: 5
         readinessProbe:
           httpGet:
-            path: /ready
+            path: /health
             port: probe
           periodSeconds: 5

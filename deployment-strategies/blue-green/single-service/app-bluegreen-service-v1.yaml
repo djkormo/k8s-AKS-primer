@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-bg
+  labels:
+    app: my-app-bg
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+
+  # Note here that we match both the app and the version
+  selector:
+    app: my-app-bg
+    version: v1.0.0
