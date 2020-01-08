@@ -379,3 +379,8 @@ https://medium.com/@nieldw/kubernetes-probes-for-postgresql-pods-a66d707df6b4
 https://cloudblogs.microsoft.com/opensource/2019/10/17/tutorial-calico-network-policies-with-azure-kubernetes-service/
 
 https://docs.microsoft.com/en-us/azure/aks/use-network-policies
+
+
+https://static.sched.com/hosted_files/kccncna17/46/ahmetb%20KubeCon%202017%20NA%20%E2%80%93%20Network%20Policies.pdf
+
+

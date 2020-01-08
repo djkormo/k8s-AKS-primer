@@ -1,0 +1,20 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: middle
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: middle
+            image: busybox
+            args:
+            - /bin/sh
+            - -c
+            - echo It is the top of thee minute
+          restartPolicy: OnFailure
+
+
