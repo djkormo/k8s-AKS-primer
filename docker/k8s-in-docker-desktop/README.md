@@ -564,13 +564,21 @@ serviceaccount/calico-kube-controllers created
 serviceaccount/calico-node created
 </pre>
 
-
+```console
 curl -O -L https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yamlsed -i -e ‘/nodeSelector/d’ calico.yamlsed -i -e ‘/node-role.kubernetes.io/master: “”/d’ calico.yamlkubectl apply -f calico.yaml
+```
+
+How to test in practise network policy
+
 
 ### Testing network policy
-```
+
+```console
 kubectl apply -f np-deny-all.yaml
 ```
+<pre>
+</pre>
+
 ```console
 kubectl describe networkpolicy default-deny-all-egress
 ```
