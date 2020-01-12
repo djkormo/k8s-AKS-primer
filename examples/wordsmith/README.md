@@ -124,10 +124,11 @@ Let's look ahat we have inside of our namespace
 ```console
 kubectl run curl-$RANDOM --image=radial/busyboxplus:curl --rm -it --generator=run-pod/v1
 ```
+
 Run inside 
 <pre>
 curl https://kubernetes.io
-curl web:8081
+curl web:8080
 curl words:8080/nouns
 curl words:8080/verbs
 ping db

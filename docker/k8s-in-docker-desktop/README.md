@@ -567,6 +567,45 @@ serviceaccount/calico-node created
 
 curl -O -L https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yamlsed -i -e ‘/nodeSelector/d’ calico.yamlsed -i -e ‘/node-role.kubernetes.io/master: “”/d’ calico.yamlkubectl apply -f calico.yaml
 
+### Testing network policy
+```
+kubectl apply -f np-deny-all.yaml
+```
+```console
+kubectl describe networkpolicy default-deny-all-egress
+```
+<pre>
+...
+Spec:
+  PodSelector:     <none> (Allowing the specific traffic to all pods in this namespace)
+  Allowing ingress traffic:
+    <none> (Selected pods are isolated for ingress connectivity)
+  Allowing egress traffic:
+    <none> (Selected pods are isolated for egress connectivity)
+  Policy Types: Egress
+  ...
+</pre>
+
+```console
+kubectl run --rm --generator=run-pod/v1 -i --tty netshoot-$RANDOM \
+  --image=nicolaka/netshoot --  bash
+```
+<pre>
+
+# testing blocked egress
+curl http://wp.pl
+<html>
+<head><title>301 Moved Permanently</title></head>
+<body>
+<center><h1>301 Moved Permanently</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+exit
+
+</pre>
+
 
 ## Literature:
 
@@ -593,6 +632,10 @@ https://poweruser.blog/tweaking-docker-desktops-kubernetes-on-win-mac-7a20aa9b15
 
 https://hub.docker.com/r/meltwater/docker-cleanup/
 
+
+Problem with network policy in docker desktop (not resolved 12.01.2020) 
+
+https://github.com/docker/docker.github.io/issues/9535
 
 ------- TRASH
 
