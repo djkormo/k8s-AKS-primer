@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    project: k8spatterns
+    pattern: Sidecar
+  name: web-app
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 80
+  selector:
+    pattern: Sidecar
+    # Just for demo
+  type: NodePort
