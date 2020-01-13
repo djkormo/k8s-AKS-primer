@@ -542,9 +542,193 @@ Happy investigating .....
 Open the browser at:
 http://localhost:8889/
 
+
+
+## 10. Install ISTIO -  for heroes
+
+```console
+kubectl version --short
+```
+<pre>
+Client Version: v1.14.8
+Server Version: v1.14.8
+</pre>
+
+If you want to run Istio under Docker Desktop’s built-in Kubernetes, you need to increase Docker’s memory limit under the Advanced pane of Docker Desktop’s preferences. Set the resources to 8.0 GB of memory and 4 CPUs.
+
+![istio kubernetes](docker-desktop-settings-istion.png)
+
+Download newest version of istio
+
+```console
+curl -L https://git.io/getLatestIstio | sh -
+```
+<pre>
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100  3015  100  3015    0     0   2106      0  0:00:01  0:00:01 --:--:-- 41301
+Downloading istio-1.4.3 from https://github.com/istio/istio/releases/download/1.4.3/istio-1.4.3-linux.tar.gz ...  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   614    0   614    0     0   1448      0 --:--:-- --:--:-- --:--:--  1448
+100 32.7M  100 32.7M    0     0  2478k      0  0:00:13  0:00:13 --:--:-- 2709k
+Istio 1.4.3 Download Complete!
+
+Istio has been successfully downloaded into the istio-1.4.3 folder on your system.
+
+</pre>
+```console
+cd istio-1.4.3
+kubectl apply -f install/kubernetes/istio-demo.yaml
+```
+<pre>
+</pre>
+
+You can control resources for ISTIO by changing values in istio-demo.yaml
+
+```yaml 
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: istio-pilot
+  namespace: istio-system
+...
+          resources:
+            requests:
+              cpu: 500m
+              memory: 2048Mi
+```
+
+After few minutes....
+
+```console
+kubectl get pods -n istio-system
+```
+<pre>
+NAME                                      READY   STATUS      RESTARTS   AGE
+grafana-6bb6bcf99f-vmct7                  1/1     Running     0          7m23s
+istio-citadel-7d49f4cb9b-g4zml            1/1     Running     0          7m22s
+istio-egressgateway-86b777455-rhqhl       1/1     Running     0          7m23s
+istio-galley-54dffbcfb6-9gzfb             1/1     Running     0          7m23s
+istio-grafana-post-install-1.4.3-g7hl6    0/1     Completed   0          7m24s
+istio-ingressgateway-775b48b474-25gdk     1/1     Running     0          7m23s
+istio-pilot-547964d586-sx82k              2/2     Running     1          7m22s
+istio-policy-7585bffc57-wspvm             2/2     Running     3          7m22s
+istio-security-post-install-1.4.3-snscq   0/1     Completed   0          7m24s
+istio-sidecar-injector-7c8887877f-xf5xj   1/1     Running     0          7m22s
+istio-telemetry-78d6dfff5c-67f9j          2/2     Running     3          7m22s
+istio-tracing-56c7f85df7-n92th            1/1     Running     0          7m22s
+kiali-7b5c8f79d8-62bmd                    1/1     Running     0          7m23s
+prometheus-74d8b55f54-nj4z6               1/1     Running     0          7m22s
+</pre>
+
+Testing ISTIO in dedicated namespace (here:app-with-injection)
+
+```console
+kubectl create ns app-with-injection
+kubectl label namespace app-with-injection istio-injection=enabled
+```
+<pre>
+namespace/app-with-injection created
+namespace/app-with-injection labeled
+</pre>
+```console
+kubectl get ns -L istio-injection
+```
+<pre>
+NAME                 STATUS   AGE     ISTIO-INJECTION
+app-with-injection   Active   59s     enabled
+default              Active   5d
+istio-system         Active   11m     disabled
+kube-node-lease      Active   5d      
+kube-public          Active   5d
+kube-system          Active   5d
+</pre>
+
+First deployment with ISTIO
+```console
+kubectl run nginx -n app-with-injection --image nginx
+```
+<pre>
+kubectl run --generator=deployment/apps.v1 is DEPRECATED and will be removed in a future version. 
+Use kubectl run --generator=run-pod/v1 or kubectl create instead.
+deployment.apps/nginx created
+</pre>
+
+```console
+kubectl get pod -n app-with-injection -L run
+```
+<pre>
+NAME                     READY   STATUS    RESTARTS   AGE   RUN
+nginx-7db9fccd9b-8sz7z   2/2     Running   0          59s   nginx
+</pre>
+
+Deploying pod with one container we have additional sidecar container
+
+```console
+kubectl describe pod -n app-with-injection -l run=nginx |grep Containers: -A3
+```
+<pre>
+Init Containers:
+  istio-init:
+    Container ID:  docker://7fcb4b3635a6032f48e60e15593ab489deaaecfccc965caa6e4f6f8b9c3875b9      
+    Image:         docker.io/istio/proxyv2:1.4.3
+--
+Containers:
+  nginx:
+    Container ID:   docker://6015f56e508a118214691851a5d9687f48ef03115f9ebd2d6531ff8fc90be8e4     
+    Image:          nginx
+</pre>
+
+Accessing kiali dashboard
+```console
+kubectl get svc kiali -n istio-system
+```
+<pre>
+NAME    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)     AGE
+kiali   ClusterIP   10.110.18.96   <none>        20001/TCP   42m
+</pre>
+```console
+kubectl port-forward svc/kiali -n istio-system 20001:20001
+```
+<pre>
+Forwarding from 127.0.0.1:20001 -> 20001
+Forwarding from [::1]:20001 -> 20001
+</pre>
+
+Browse at http://localhost:20001
+
+
+Login with admin:admin 
+
+How to get it from kubernetes cluster ?
+
+```console
+kubectl get  secret kiali -n istio-system  -o yaml |grep passphrase:
+  passphrase: YWRtaW4=
+```
+
+```
+echo YWRtaW4= |base64 --decode
+```
+<pre>
+admin
+</pre>
+```console
+kubectl get  secret kiali -n istio-system  -o yaml |grep username:
+  username: YWRtaW4=
+```
+
+```
+echo YWRtaW4= |base64 --decode
+```
+<pre>
+admin
+</pre>
 # CALICO not working yet. Do not install !!!!
 
-## 10. Adding Calico
+## 11. Adding Calico
+
 
 In calico.yaml replace
 etcd_endpoints: "http://127.0.0.1:2379"
@@ -649,6 +833,8 @@ https://github.com/docker/docker.github.io/issues/9535
 https://istio.io/docs/setup/platform-setup/docker/
 
 https://dzone.com/articles/setup-of-a-local-kubernetes-and-istio-dev-environm-1
+
+https://www.virtualthoughts.co.uk/2019/06/23/step-by-step-istio-up-and-running/
 
 ------- TRASH
 
