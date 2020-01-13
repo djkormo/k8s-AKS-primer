@@ -645,6 +645,11 @@ Problem with network policy in docker desktop (not resolved 12.01.2020)
 
 https://github.com/docker/docker.github.io/issues/9535
 
+
+https://istio.io/docs/setup/platform-setup/docker/
+
+https://dzone.com/articles/setup-of-a-local-kubernetes-and-istio-dev-environm-1
+
 ------- TRASH
 
 
