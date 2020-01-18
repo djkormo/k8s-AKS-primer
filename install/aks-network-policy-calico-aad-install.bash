@@ -132,6 +132,74 @@ az aks create \
     --network-policy calico 
 
 
+RESOURCE_GROUP_NAME=rg-aks-simple
+CLUSTER_NAME=aks-simple2020
+LOCATION=northeurope
+
+
+
+### TODO Adding Azure Container Registry
+
+RND=$RANDOM
+
+ACR_LOCATION=$LOCATION
+ACR_GROUP=$RESOURCE_GROUP_NAME
+ACR_NAME=acr$RND
+AKV_NAME=keyvault$RND
+
+echo "ACR_LOCATION: $ACR_LOCATION"
+echo "ACR_GROUP: $ACR_GROUP"
+echo "ACR_NAME: $ACR_NAME"
+echo "AKV_NAME: $AKV_NAME"
+
+# domyslna nazwa grupy 
+az configure --defaults group=$ACR_GROUP
+
+# domyslna lokalizacja rejestru z obrazami 
+az configure --defaults location=$ACR_LOCATION
+
+
+az acr create --resource-group $ACR_GROUP --name $ACR_NAME --sku Basic --location $ACR_LOCATION 
+
+CLIENT_ID=$(az aks show -g $AKS_RG -n $AKS_NAME --query "servicePrincipalProfile.clientId" -o tsv)
+
+ACR_ID=$(az acr show -n $ACR_NAME -g $AKS_RG --query "id" -o tsv)
+
+az role assignment create --assignee $CLIENT_ID --role acrpull --scope $ACR_ID
+
+
+# Grant for Azure Devops to push to ACR 	
+registryPassword=$(az ad sp create-for-rbac -n $ACR_NAME-push --scopes $ACR_ID --role acrpush --query password -o tsv)
+
+registryName=$(az acr show -n $ACR_NAME -g $AKS_RG --query name)
+
+registryLogin=$(az ad sp show --id http://$ACR_NAME-push --query appId -o tsv)
+
+##  Adding Azure Key vault
+
+
+az keyvault create --resource-group $ACR_GROUP --name $AKV_NAME
+
+# Create Service Principal to access Azure Key Vault
+SP_KV=$(az ad sp create-for-rbac --name "http://$AKV_NAME-pull" --skip-assignment --output json )
+
+SP_KV_ID=$(echo $SP_KV | jq -r .appId)
+SP_KV_PASSWORD=$(echo $SP_KV | jq -r .password)
+
+echo "SP_KV: $SP_KV"
+echo "SP_KV_ID: $SP_KV_ID"
+echo "SP_KV_PASSWORD: $SP_KV_PASSWORD"
+
+
+KEYVAULT_ID=$(az keyvault show --name $AKV_NAME --query id --output tsv)
+
+echo "KEYVAULT_ID: $KEYVAULT_ID"
+
+az role assignment create --role Reader --assignee "http://$AKV_NAME-pull" --scope "$KEYVAULT_ID"
+
+az keyvault set-policy -n $AKV_NAME --secret-permissions get --spn $SP_KV_ID # how to get appId ?
+
 
 
     #https://docs.microsoft.com/en-us/azure/aks/azure-ad-integration-cli
+    # https://aksworkshop.io/
