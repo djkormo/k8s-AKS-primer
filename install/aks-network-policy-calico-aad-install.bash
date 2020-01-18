@@ -9,14 +9,18 @@ AKS_VERSION=$(az aks get-versions -l $LOCATION --query 'orchestrators[-1].orches
 AKS_NODES=2
 AKS_VM_SIZE=Standard_B2s
 
-
-
+echo "RESOURCE_GROUP_NAME :$RESOURCE_GROUP_NAME"
+echo "CLUSTER_NAME: $CLUSTER_NAME"
+echo "LOCATION: $LOCATION"
+echo "AKS_NODES: $AKS_NODES"
+echo "AKS_VM_SIZE: $AKS_VM_SIZE"
 
 # Create the Azure AD application
 serverApplicationId=$(az ad app create \
     --display-name "${CLUSTER_NAME}Server" \
     --identifier-uris "https://${CLUSTER_NAME}Server" \
     --query appId -o tsv)
+echo "serverApplicationId: $serverApplicationId"
 
 # Update the application group memebership claims
 az ad app update --id $serverApplicationId --set groupMembershipClaims=All
@@ -41,6 +45,8 @@ clientApplicationId=$(az ad app create \
     --native-app \
     --reply-urls "https://${CLUSTER_NAME}Client" \
     --query appId -o tsv)
+
+echo "clientApplicationId: $clientApplicationId"
 
 az ad sp create --id $clientApplicationId
 
@@ -67,21 +73,42 @@ SP=$(az ad sp create-for-rbac --output json)
 SP_ID=$(echo $SP | jq -r .appId)
 SP_PASSWORD=$(echo $SP | jq -r .password)
 
+echo "SP: $SP" 
+echo "SP_ID: $SP_ID" 
+echo "SP_PASSWORD: $SP_PASSWORD" 
+
 # Wait 15 seconds to make sure that service principal has propagated
 echo "Waiting for service principal to propagate..."
 sleep 15
 
 # Get the virtual network resource ID
 VNET_ID=$(az network vnet show --resource-group $RESOURCE_GROUP_NAME --name myVnet --query id -o tsv)
-
+echo "VNET_ID: $VNET_ID"
 # Assign the service principal Contributor permissions to the virtual network resource
 az role assignment create --assignee $SP_ID --scope $VNET_ID --role Contributor
 
 # Get the virtual network subnet resource ID
 SUBNET_ID=$(az network vnet subnet show --resource-group $RESOURCE_GROUP_NAME --vnet-name myVnet --name myAKSSubnet --query id -o tsv)
+echo "SUBNET_ID: $SUBNET_ID"
 
 # Create the AKS cluster and specify the virtual network and service principal information
 # Enable network policy by using the `--network-policy` parameter
+
+tenantId=$(az account show --query tenantId -o tsv)
+
+
+echo "RESOURCE_GROUP_NAME: $RESOURCE_GROUP_NAME"
+echo "CLUSTER_NAME: $CLUSTER_NAME"
+echo "AKS_VERSION: $AKS_VERSION"
+echo "AKS_VM_SIZE: $AKS_VM_SIZE"
+echo "SUBNET_ID: $SUBNET_ID"
+echo "SP_ID: $SP_ID"
+echo "SP_PASSWORD: $SP_PASSWORD"
+echo "serverApplicationId: $serverApplicationId"
+echo "serverApplicationSecret: $serverApplicationSecret"
+echo "clientApplicationId: $clientApplicationId"
+echo "tenantId: $tenantId"
+
 az aks create \
     --resource-group $RESOURCE_GROUP_NAME \
     --name $CLUSTER_NAME \
@@ -101,5 +128,10 @@ az aks create \
     --aad-server-app-id $serverApplicationId \
     --aad-server-app-secret $serverApplicationSecret \
     --aad-client-app-id $clientApplicationId \
-    --aad-tenant-id $tenantId
-    --network-policy calico \
+    --aad-tenant-id $tenantId \
+    --network-policy calico 
+
+
+
+
+    #https://docs.microsoft.com/en-us/azure/aks/azure-ad-integration-cli
