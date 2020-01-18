@@ -1,5 +1,43 @@
 Using kubernetes API
 
+
+There are three authentication and authorization stages  that take place when the server receives an API request:
+1.	Authentication
+2.	Authorization (RBAC, Node, ABAC or Webhook)
+3.	Admission Control
+
+!(Controlling Access to the Kubernetes API)[api-server-stages.png]
+
+
+Without kubectl proxy
+
+```console
+APISERVER=$(kubectl config view --minify | grep server | cut -f 2- -d ":" | tr -d " ")
+SECRET_NAME=$(kubectl get secrets | grep ^default | cut -f1 -d ' ')
+TOKEN=$(kubectl describe secret $SECRET_NAME | grep -E '^token' | cut -f2 -d':' | tr -d " ")
+```
+
+```console
+curl $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
+```
+
+```json
+{
+  "kind": "APIVersions",
+  "versions": [
+    "v1"
+  ],
+  "serverAddressByClientCIDRs": [
+    {
+      "clientCIDR": "0.0.0.0/0",
+      "serverAddress": "\"aks-simple-rg-aks-simple-d2f86b-8aecb1dd.hcp.northeurope.azmk8s.io\":443"
+    }
+  ]
+}
+```
+
+With kubectl proxy
+
 ```console
 kubectl proxy --port 8080
 ```
@@ -424,6 +462,9 @@ No resources found.
 </pre>
 
 Literature:
+
+https://kubernetes.io/docs/reference/access-authn-authz/controlling-access/
+
 
 http://blog.madhukaraphatak.com/understanding-k8s-api-part-1/
 
