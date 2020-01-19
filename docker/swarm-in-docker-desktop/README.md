@@ -36,7 +36,7 @@ NAME                SERVICES            ORCHESTRATOR
 
 Confirm by docker info existance of our cluster
 
-```
+```console
 docker info
 ```
 <pre>
@@ -79,6 +79,7 @@ List all services in our cluster
 ```console
 docker service ls
 ```
+
 <pre>
 ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
 qhrqnor2esdd        helloworld          replicated          1/1                 alpine:latest
