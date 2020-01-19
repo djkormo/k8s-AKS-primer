@@ -21,4 +21,21 @@ docker run -d -p 9000:9000 -v //var/run/docker.sock:/var/run/docker.sock -v port
  
  ```
  
+ Visualizer for docker swarm
+ 
+ On linux
+ 
+ ```console
+ docker service create -p 8080:8080 --constraint=node.role==manager --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock dockersamp
+les/visualizer
+ ```
+ 
+ on windows 
+ 
+``` console 
+docker service create -p 8080:8080 --constraint=node.role==manager --mount=type=bind,src=//var/run/docker.sock,dst=/var/run/docker.sock \
+  dockersamples/visualizer
+```
+
+ 
  
