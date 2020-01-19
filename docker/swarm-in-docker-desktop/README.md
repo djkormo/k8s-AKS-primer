@@ -76,7 +76,7 @@ verify: Service converged
 
 List all services in our cluster 
 
-```console`
+```console
 docker service ls
 ```
 <pre>
@@ -208,6 +208,9 @@ zt0vu1ow25tq        helloworld.1        alpine:latest       docker-desktop      
 
 
 ```console
+docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+zro8s57yzfj5        helloworld               replicated          1/1                alpine:latest
 ```
 
 <pre>
@@ -376,6 +379,35 @@ rrrb7xpsrijn         \_ redis.2         redis:3.0.6         docker-desktop      
 3igddospyyyo        redis.3             redis:3.0.7         docker-desktop      Running             Running 4 minutes ago
 zp9bix3p0n6w         \_ redis.3         redis:3.0.6         docker-desktop      Shutdown            Shutdown 4 minutes ago
 
+</pre>
+
+```console
+docker service scale redis=5
+```
+<pre>
+redis scaled to 5
+overall progress: 5 out of 5 tasks
+1/5: running   [==================================================>]
+2/5: running   [==================================================>]
+3/5: running   [==================================================>]
+4/5: running   [==================================================>]
+5/5: running   [==================================================>]
+verify: Service converged
+</pre>
+
+```console
+docker service ps redis
+```
+<pre>
+ID                  NAME                IMAGE               NODE                DESIRED STATE       CURRENT STATE             ERROR               PORTS
+us9086w3x37x        redis.1             redis:3.0.7         docker-desktop      Running             Running 15 minutes ago
+o91gvlser4rg         \_ redis.1         redis:3.0.6         docker-desktop      Shutdown            Shutdown 15 minutes ago
+f2rzzh54hlkl        redis.2             redis:3.0.7         docker-desktop      Running             Running 15 minutes ago
+rrrb7xpsrijn         \_ redis.2         redis:3.0.6         docker-desktop      Shutdown            Shutdown 15 minutes ago
+3igddospyyyo        redis.3             redis:3.0.7         docker-desktop      Running             Running 14 minutes ago
+zp9bix3p0n6w         \_ redis.3         redis:3.0.6         docker-desktop      Shutdown            Shutdown 14 minutes ago
+w60ob2ivrfgo        redis.4             redis:3.0.7         docker-desktop      Running             Running 41 seconds ago
+ktagbhx5h6k1        redis.5             redis:3.0.7         docker-desktop      Running             Running 41 seconds ago
 </pre>
 
 Literature:
