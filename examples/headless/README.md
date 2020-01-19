@@ -2,7 +2,7 @@
 
 
 ```console
-bectl create ns headless
+kubectl create ns headless
 ```
 <pre>
 namespace/headless created
