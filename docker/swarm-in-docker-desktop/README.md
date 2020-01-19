@@ -411,8 +411,243 @@ w60ob2ivrfgo        redis.4             redis:3.0.7         docker-desktop      
 ktagbhx5h6k1        redis.5             redis:3.0.7         docker-desktop      Running             Running 41 seconds ago
 </pre>
 
+Cleaning 
+```console 
+docker service rm redis
+```
+<pre>
+redis
+</pre>
+
+
+Using stack in Swarm cluster
+```console
+docker service create --name registry --publish published=5000,target=5000 registry:2
+```
+<pre>
+image registry:2 could not be accessed on a registry to record
+its digest. Each node will access registry:2 independently,
+possibly leading to different nodes running different
+versions of the image.
+
+k5mhcj07sii10vpund2rd0dbz
+overall progress: 1 out of 1 tasks
+1/1: running   [==================================================>]
+verify: Service converged
+</pre>
+
+
+
+docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+k5mhcj07sii1        registry            replicated          1/1                 registry:2          *:5000->5000/tcp
+
+
+curl http://localhost:5000/v2/
+{}
+
+```console
+mkdir stackdemo
+cd stackdemo
+```
+
+Inside stackdemo put several files
+
+app.py
+
+```python
+from flask import Flask
+from redis import Redis
+
+app = Flask(__name__)
+redis = Redis(host='redis', port=6379)
+
+@app.route('/')
+def hello():
+    count = redis.incr('hits')
+    return 'Hello World! I have been seen {} times.\n'.format(count)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000, debug=True)
+
+```
+
+requirements.txt
+
+```
+flask
+redis
+```
+
+Dockerfile
+
+```Dockerfile
+FROM python:3.4-alpine
+ADD . /code
+WORKDIR /code
+RUN pip install -r requirements.txt
+CMD ["python", "app.py"]
+```
+
+
+docker-compose.yaml
+
+```yaml
+version: '3'
+
+services:
+  web:
+    image: 127.0.0.1:5000/stackdemo
+    build: .
+    ports:
+      - "8000:8000"
+  redis:
+    image: redis:alpine
+
+```
+
+
+docker-compose up -d
+
+<pre>
+
+WARNING: The Docker Engine you're using is running in swarm mode.
+
+Compose does not use swarm mode to deploy services to multiple nodes in a swarm. All containers will be scheduled on the current node.
+
+To deploy your application across the swarm, use `docker stack deploy`.
+
+Creating network "stackdemo_default" with the default driver
+Building web
+Step 1/5 : FROM python:3.4-alpine
+3.4-alpine: Pulling from library/python
+8e402f1a9c57: Pulling fs layer
+cda9ba2397ef: Pulling fs layer
+aafecf9bbbfd: Pulling fs layer
+.....
+Status: Downloaded newer image for redis:alpine
+Creating stackdemo_redis_1 ... done
+Creating stackdemo_web_1   ... done
+</pre>
+
+```console 
+docker-compose  ps
+```
+<pre>
+Name                     Command               State           Ports
+-----------------------------------------------------------------------------------
+stackdemo_redis_1   docker-entrypoint.sh redis ...   Up      6379/tcp
+stackdemo_web_1     python app.py                    Up      0.0.0.0:8000->8000/tcp
+</pre>
+
+```console
+curl http://localhost:8000
+```
+<pre>
+Hello World! I have been seen 1 times.
+
+Hello World! I have been seen 2 times.
+
+Hello World! I have been seen 3 times.
+
+Hello World! I have been seen 4 times.
+</pre>
+
+
+```console
+docker-compose down --volumes
+```
+<pre>
+Stopping stackdemo_redis_1 ... done
+Stopping stackdemo_web_1   ... done
+Removing stackdemo_redis_1 ... done
+Removing stackdemo_web_1   ... done
+</pre>
+
+```console
+docker-compose push
+```
+<pre>
+Pushing web (127.0.0.1:5000/stackdemo:latest)...
+The push refers to repository [127.0.0.1:5000/stackdemo]
+f99a357b1d5b: Pushed
+70749f2bdfa0: Pushed
+62de8bcc470a: Pushed
+58026b9b6bf1: Pushed
+fbe16fc07f0d: Pushed
+aabe8fddede5: Pushed
+bcf2f368fe23: Pushed
+latest: digest: sha256:98df9a6978b4f1e1ba2b86943bc3dd6c2f2eab6493410679b294174945624540 size: 1786
+</pre>
+
+```console
+docker stack deploy --compose-file docker-compose.yaml stackdemo
+```
+<pre>
+Ignoring unsupported options: build
+
+Creating network stackdemo_default
+Creating service stackdemo_redis
+Creating service stackdemo_web
+</pre>
+```console
+docker stack services stackdemo
+```
+<pre>
+ID                  NAME                MODE                REPLICAS            IMAGE                             PORTS
+mhgogkj75lne        stackdemo_redis     replicated          1/1                 redis:alpine
+xkrkpbz1s4ma        stackdemo_web       replicated          1/1                 127.0.0.1:5000/stackdemo:latest   *:8000->8000/tcp
+</pre>
+
+```console
+curl http://localhost:8000
+
+```
+<pre>
+Hello World! I have been seen 1 times.
+
+Hello World! I have been seen 2 times.
+
+Hello World! I have been seen 3 times.
+
+Hello World! I have been seen 4 times.
+</pre>
+
+```console
+docker stack rm stackdemo
+```
+<pre>
+Removing service stackdemo_redis
+Removing service stackdemo_web
+Removing network stackdemo_default
+</pre>
+
+```console
+docker service rm registry
+```
+
+<pre>
+registry
+</pre>
+
+```console
+docker swarm leave --force
+```
+<pre>
+Node left the swarm.
+</pre>
+```console
+docker info
+```
+<pre>
+...
+Swarm: inactive
+...
+</pre>
 Literature:
 
 
 https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/
+
+https://docs.docker.com/engine/swarm/stack-deploy/
 
