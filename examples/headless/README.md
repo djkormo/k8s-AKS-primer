@@ -134,7 +134,9 @@ Literature:
 
 https://dev.to/kaoskater08/building-a-headless-service-in-kubernetes-3bk8
 
+
 https://medium.com/faun/kubernetes-headless-service-vs-clusterip-and-traffic-distribution-904b058f0dfd
 
 
+https://blog.markvincze.com/how-to-use-envoy-as-a-load-balancer-in-kubernetes/
 
