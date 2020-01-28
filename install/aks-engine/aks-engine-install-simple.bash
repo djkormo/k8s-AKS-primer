@@ -3,7 +3,7 @@
 az account list  --query '[].{subscriptionId: id,isDefault: isDefault}'  -o tsv  |grep Tru
 
 SUBSCRIPTION_ID=aaa-aaa-aaa-aaa
-RESOURCE_GROUP_NAME=rg-aks-simple
+RESOURCE_GROUP_NAME=rg-aks-engine-simple
 az account set --subscription="${SUBSCRIPTION_ID}"
 
 # Create a service principal and read in the application ID
