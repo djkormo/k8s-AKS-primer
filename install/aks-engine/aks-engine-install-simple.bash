@@ -26,3 +26,7 @@ aks-engine deploy --subscription-id $SUBSCRIPTION_ID  \
     --api-model examples/kubernetes.json
 
 	
+KUBECONFIG=_output/simple-aks-engine/kubeconfig/kubeconfig.northeurope.json
+
+	
+	
