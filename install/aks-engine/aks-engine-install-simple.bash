@@ -1,5 +1,13 @@
 #!/bin/bash
 
+
+curl https://raw.githubusercontent.com/Azure/aks-engine/master/scripts/get-akse.sh >get-akse.sh
+
+chmod u+x get-akse.sh
+
+./get-akse.sh
+
+
 az account list  --query '[].{subscriptionId: id,isDefault: isDefault}'  -o tsv  |grep Tru
 
 SUBSCRIPTION_ID=aaa-aaa-aaa-aaa
