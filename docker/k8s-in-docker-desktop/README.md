@@ -89,6 +89,22 @@ Allocated resources:
   ephemeral-storage  0 (0%)      0 (0%)
 </pre>
 
+Lets verify capacity on our local cluster
+
+```console
+get nodes -o json |jq ".items[] | {name:.metadata.name} + .status.capacity"
+```
+```json
+{
+  "name": "docker-desktop",
+  "cpu": "4",
+  "ephemeral-storage": "61255652Ki",
+  "hugepages-2Mi": "0",
+  "memory": "8164696Ki",
+  "pods": "110"
+}
+'''
+
 Kubernetes cluster is devided into namespaces
 
 ```console
@@ -102,8 +118,6 @@ kube-node-lease   Active   9m36s
 kube-public       Active   9m36s
 kube-system       Active   9m36s
 </pre>
-
-
 
 
 For new k8s users: lets try to control the cluster from GUI instead of cli (kubectl)
