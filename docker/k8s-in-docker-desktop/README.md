@@ -56,6 +56,56 @@ scheduler            Healthy   ok
 etcd-0               Healthy   {"health":"true"}   
 </pre>
 
+What we have inside our cluster
+
+```console
+kubectl get pods
+```
+<pre>
+No resources found.
+</pre>
+Nothing deployed onthe cluster yet ?
+
+
+```console
+kubectl get nodes
+```
+<pre>
+NAME             STATUS   ROLES    AGE     VERSION
+docker-desktop   Ready    master   5m30s   v1.14.8
+</pre>
+
+```console
+kubectl describe nodes |grep "Allocated resources:" -A6
+```
+
+<pre>
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource           Requests    Limits
+  --------           --------    ------
+  cpu                750m (18%)  0 (0%)
+  memory             140Mi (1%)  340Mi (4%)
+  ephemeral-storage  0 (0%)      0 (0%)
+</pre>
+
+Kubernetes cluster is devided into namespaces
+
+```console
+kubectl get ns
+```
+<pre>
+NAME              STATUS   AGE
+default           Active   9m34s
+docker            Active   8m32s
+kube-node-lease   Active   9m36s
+kube-public       Active   9m36s
+kube-system       Active   9m36s
+</pre>
+
+
+
+
 For new k8s users: lets try to control the cluster from GUI instead of cli (kubectl)
 
 ## 3. Adding dashboard
