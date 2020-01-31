@@ -103,9 +103,9 @@ get nodes -o json |jq ".items[] | {name:.metadata.name} + .status.capacity"
   "memory": "8164696Ki",
   "pods": "110"
 }
-'''
+```
 
-Kubernetes cluster is devided into namespaces
+Kubernetes cluster is divided into namespaces
 
 ```console
 kubectl get ns
