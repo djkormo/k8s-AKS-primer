@@ -14,6 +14,8 @@ SUBSCRIPTION_ID=aaa-aaa-aaa-aaa
 RESOURCE_GROUP_NAME=rg-aks-engine-simple
 az account set --subscription="${SUBSCRIPTION_ID}"
 
+az group create -n $RESOURCE_GROUP_NAME -l northeurope
+
 # Create a service principal and read in the application ID
 SP=$(az ad sp create-for-rbac  --role="Contributor" --name aks-engine-sp --scopes="/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP_NAME}" --output json)
 CLIENT_ID=$(echo $SP | jq -r .appId)
