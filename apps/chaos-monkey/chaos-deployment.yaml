@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: k8s-chaos-monkey
+spec:
+  selector:
+    matchLabels:
+      app: k8s-chaos-monkey
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: k8s-chaos-monkey
+    spec:
+      containers:
+      - name: k8-pod-chaos-monkey
+        image: djkormo/chaos-monkey
+        imagePullPolicy: Always
+        env:
+         - name: NAMESPACE
+           value: "default"
+         - name: DELAY
+           value: "10"
+         - name: EXLUDEDAPPS
+           value: "k8s-chaos-monkey"
+        resources:
+          limits:
+            cpu: "0.1"
+            memory: "50Mi"
+          requests:
+            cpu: "0.1"
+            memory: "50Mi"

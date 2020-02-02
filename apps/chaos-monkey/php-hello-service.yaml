@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name:  php-hello
+  labels:
+    app: php-hello
+spec:
+  selector:
+    app:  php-hello
+  type:  LoadBalancer
+  ports:
+  - name:  www
+    port:  8888
+    targetPort:  80

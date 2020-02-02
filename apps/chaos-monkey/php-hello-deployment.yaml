@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-hello
+spec:
+  selector:
+    matchLabels:
+      app: php-hello
+  replicas: 20
+  template:
+    metadata:
+      labels:
+        app: php-hello
+        version: v1.0.0  
+    spec:
+      containers:
+      - name: php-hello
+        image: djkormo/php-hello:latest
+        env:
+        - name: VERSION
+          value: v1.0.0
+        - name: DEBUG
+          value: "false"
+        resources:
+          limits:
+            cpu: "0.2"
+            memory: "100Mi"
+          requests:
+            cpu: "0.1"
+            memory: "50Mi"
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 60
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          periodSeconds: 5  
