@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: limit-mem-cpu-per-container
+spec:
+  limits:
+  - max:
+      cpu: "200m"
+      memory: "200Gi"
+    min:
+      cpu: "10m"
+      memory: "10Mi"
+    default:
+      cpu: "50m"
+      memory: "50Mi"
+    defaultRequest:
+      cpu: "20m"
+      memory: "20Mi"
+    type: Container

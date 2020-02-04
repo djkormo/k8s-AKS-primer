@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: words-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: words-web
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+     maxUnavailable: 25%
+     maxSurge: 1
+
+  template:
+    metadata:
+      labels:
+        app: words-web
+        version: v1
+    spec:
+      containers:
+      - name: web
+        image: djkormo/k8s-wordsmith-web:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: words-web
+        resources:
+          limits:
+            cpu: "0.2"
+            memory: "50Mi"
+          requests:
+            cpu: "0.1"
+            memory: "25Mi" 
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          timeoutSeconds: 2
+
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+          periodSeconds: 10
+          failureThreshold: 3      

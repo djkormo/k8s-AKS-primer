@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  labels:
+    app: words-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: words-db
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+     maxUnavailable: 25%
+     maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: words-db
+        version: v2
+    spec:
+      containers:
+      - name: db
+        image: djkormo/k8s-wordsmith-db:v2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5432
+          name: db
+        resources:
+          limits:
+            cpu: "0.2"
+            memory: "50Mi"
+          requests:
+            cpu: "0.1"
+            memory: "10Mi"  
+
+        readinessProbe:
+          exec:
+            command: ["psql", "-w", "-U", "postgres", "-d", "postgres", "-c", "SELECT 1"]
+          initialDelaySeconds: 15
+          timeoutSeconds: 2
+        livenessProbe:
+          exec:
+            command: ["psql", "-w", "-U", "postgres", "-d", "postgres", "-c", "SELECT 1"]
+          initialDelaySeconds: 30
+          timeoutSeconds: 2 
