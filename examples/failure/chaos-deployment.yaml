@@ -12,6 +12,7 @@ spec:
       labels:
         app: k8s-chaos-monkey
     spec:
+      serviceAccount: kube-chaos-delete
       containers:
       - name: k8-pod-chaos-monkey
         image: djkormo/chaos-monkey
@@ -20,7 +21,7 @@ spec:
          - name: NAMESPACE
            value: "failure"
          - name: DELAY
-           value: "10"
+           value: "5"
          - name: EXLUDEDAPPS
            value: "k8s-chaos-monkey"
         resources:

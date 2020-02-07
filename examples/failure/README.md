@@ -325,7 +325,10 @@ service/kube-ops-view-redis created
 service/kube-ops-view created
 </pre>
 
-kubectl port-forward svc/kube-ops-view 8080:80
+kubectl get pods -l application=kube-ops-view
+
+
+kubectl port-forward svc/kube-ops-view 8080:8080
 Forwarding from 127.0.0.1:8080 -> 8080
 Forwarding from [::1]:8080 -> 8080
 
