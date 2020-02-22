@@ -628,12 +628,13 @@ If TLS is enabled for the Ingress, a Secret containing the certificate and key m
   type: kubernetes.io/tls
 </pre>
 
-## 9. Installing docker-cleanup
+## 9. Installing docker-cleanup for deleting unused  images from cluster
 
 ```console
-kubectl apply -f  https://raw.githubusercontent.com/meltwater/docker-cleanup/master/contrib/k8s-daemonset.yml --namespace monitor
-</pre>
+kubectl apply -f  https://raw.githubusercontent.com/meltwater/docker-cleanup/master/contrib/k8s-daemonset.yml \
+  --namespace monitor
 ```
+
 <pre>
 daemonset.extensions/clean-up created
 </pre>
@@ -937,6 +938,9 @@ exit
 https://docs.docker.com/docker-for-windows/#kubernetes
 
 https://www.ntweekly.com/2019/10/27/install-kubernetes-kubectl-shell-autocomplete/
+
+https://github.com/jonmosco/kube-ps1
+
 
 https://github.com/kubernetes/dashboard
 
