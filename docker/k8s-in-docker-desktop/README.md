@@ -120,7 +120,7 @@ kube-system       Active   9m36s
 </pre>
 
 
-## 3. Configuring Windows worstation.
+## 3. Configuring Windows workstation.
 
 After installing Docker Desktop Community Edition we have already installed kubectl tool.
 
@@ -137,9 +137,9 @@ echo "source <(kubectl completion bash)" >> ~/.bashrc
 
 The main tool for interacting with kubernetes cluster is Visual Studio Code with the following extensions
 
-Kubernetes -> ms-kubernetes-tools.vscode-kubernetes-tools
-YAML -> redhat.vscode-yaml
-Docker -> ms-azuretools.vscode-docke
+*Kubernetes -> ms-kubernetes-tools.vscode-kubernetes-tools
+*YAML -> redhat.vscode-yaml
+*Docker -> ms-azuretools.vscode-docke
 
 
 
