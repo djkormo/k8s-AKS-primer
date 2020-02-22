@@ -120,9 +120,33 @@ kube-system       Active   9m36s
 </pre>
 
 
+## 3. Configuring Windows worstation.
+
+After installing Docker Desktop Community Edition we have already installed kubectl tool.
+
+
+The next steps will be done in git bash environment
+
+```bash
+source <(kubectl completion bash)
+```
+
+```bash
+echo "source <(kubectl completion bash)" >> ~/.bashrc
+```
+
+The main tool for interacting with kubernetes cluster is Visual Studio Code with the following extensions
+
+Kubernetes -> ms-kubernetes-tools.vscode-kubernetes-tools
+YAML -> redhat.vscode-yaml
+Docker -> ms-azuretools.vscode-docke
+
+
+
+
 For new k8s users: lets try to control the cluster from GUI instead of cli (kubectl)
 
-## 3. Adding dashboard
+## 4. Adding dashboard
 
 ```console
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
@@ -167,7 +191,7 @@ echo $TOKEN
 Paste the token value
 
 
-## 4. Adding metrics server
+## 5. Adding metrics server
 
 
 Unfortunately the metrics server is absent
@@ -289,7 +313,7 @@ kube-system   metrics-metrics-server-7665c546b6-7gmzn   3m           11Mi
 </pre>
 
 
-##  5. Adding cluster visualizator (kubeview)  
+##  6. Adding cluster visualizator (kubeview)  
 
 #### Let's use the kubeview application  in separate namespace (monitor)
 ```console
@@ -346,7 +370,7 @@ Use monitor namespace to see deployment of kubeview application
 ![Kubeview monitor](kubeview-monitor.png)
 
 
-## 6. Adding prometheus and grafana
+## 7. Adding prometheus and grafana
 ```console
 helm install myprometheus  stable/prometheus --version=7.0.0 --namespace=monitor
 ```
@@ -495,7 +519,7 @@ myprometheus-server   ClusterIP   10.104.197.16   <none>        80/TCP    14m
 
 ![Grafana datasource](grafana-datasource.png)
 
-## 7. Adding ingress
+## 8. Adding ingress
 
 ```console 
 kubectl create ns ingress
@@ -560,7 +584,7 @@ If TLS is enabled for the Ingress, a Secret containing the certificate and key m
   type: kubernetes.io/tls
 </pre>
 
-## 8. Installing docker-cleanup
+## 9. Installing docker-cleanup
 
 ```console
 kubectl apply -f  https://raw.githubusercontent.com/meltwater/docker-cleanup/master/contrib/k8s-daemonset.yml --namespace monitor
@@ -571,7 +595,7 @@ daemonset.extensions/clean-up created
 </pre>
 
 
-## 9. Test our first deployment in default namespace
+## 10. Test our first deployment in default namespace
 
 ```console
 kubectl run hello-nginx --image=nginx --port=80 --namespace  default 
@@ -608,7 +632,7 @@ http://localhost:8889/
 
 
 
-## 10. Install ISTIO -  for heroes
+## 11. Install ISTIO -  for heroes
 
 ```console
 kubectl version --short
@@ -789,6 +813,7 @@ echo YWRtaW4= |base64 --decode
 <pre>
 admin
 </pre>
+
 # CALICO not working yet. Do not install !!!!
 
 ## 11. Adding Calico
@@ -867,6 +892,8 @@ exit
 
 https://docs.docker.com/docker-for-windows/#kubernetes
 
+https://www.ntweekly.com/2019/10/27/install-kubernetes-kubectl-shell-autocomplete/
+
 https://github.com/kubernetes/dashboard
 
 https://collabnix.com/kubernetes-dashboard-on-docker-desktop-for-windows-2-0-0-3-in-2-minutes/
@@ -900,81 +927,10 @@ https://dzone.com/articles/setup-of-a-local-kubernetes-and-istio-dev-environm-1
 
 https://www.virtualthoughts.co.uk/2019/06/23/step-by-step-istio-up-and-running/
 
-------- TRASH
 
 
-curl https://raw.githubusercontent.com/kubernetes-sigs/metrics-server/master/deploy/1.8%2B/metrics-server-deployment.yaml > metrics-server-deployment.yaml
 
 
-#### patch yaml file by adding after  imagePullPolicy: Always
-<pre>
-  command:
-    - /metrics-server
-    - --kubelet-insecure-tls
-    - --cert-dir=/tmp
-    - --secure-port=4443
-    - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
-</pre>
-
-#### Save the file and deploy on cluster in kube-system namespace
-```console
-kubectl apply -n kube-system -f metrics-server-deployment.yaml
-```
-<pre>
-serviceaccount/metrics-server configured
-deployment.apps/metrics-server configured
-</pre>
-```console
-kubectl get pod -n kube-system  -l k8s-app=metrics-server
-```
-<pre>
-NAME                              READY   STATUS    RESTARTS   AGE
-metrics-server-5f5dfdbd9c-mwb6k   1/1     Running   0          5m18s
-</pre>
 
 
-METRICS_POD=$(kubectl get pod -n kube-system  -l k8s-app=metrics-server -o jsonpath={.items[0].metadata.name})
 
-echo $METRICS_POD
-
-```console
-kubectl logs $METRICS_POD  -n kube-system
-```
-<pre>
-I1222 22:06:38.041311       1 serving.go:312] Generated self-signed cert (/tmp/apiserver.crt, /tmp/apiserver.key)
-I1222 22:06:39.019465       1 manager.go:95] Scraping metrics from 0 sources
-I1222 22:06:39.019657       1 manager.go:148] ScrapeMetrics: time: 2µs, nodes: 0, pods: 0        
-I1222 22:06:39.031001       1 secure_serving.go:116] Serving securely on [::]:4443
-I1222 22:07:39.020001       1 manager.go:95] Scraping metrics from 1 sources
-I1222 22:07:39.027658       1 manager.go:120] Querying source: kubelet_summary:docker-desktop    
-I1222 22:07:39.088902       1 manager.go:148] ScrapeMetrics: time: 68.8058ms, nodes: 1, pods: 23 
-I1222 22:08:39.019769       1 manager.go:95] Scraping metrics from 1 sources
-I1222 22:08:39.023063       1 manager.go:120] Querying source: kubelet_summary:docker-desktop    
-I1222 22:08:39.057139       1 manager.go:148] ScrapeMetrics: time: 37.2889ms, nodes: 1, pods: 23 
-</pre>
-
-```console
-kubectl top nodes
-```
-<pre>
-Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
-</pre>
-```console
-kubectl to pods
-```
-<pre>
-Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
-</pre>
-
-
-#### TODO ....
-
-
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/influxdb.yaml
-
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster.yaml
-
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/grafana.yaml
-
-
-------- TRASH
