@@ -125,7 +125,7 @@ kube-system       Active   9m36s
 After installing Docker Desktop Community Edition we have already installed kubectl tool.
 
 
-The next steps will be done in git bash environment
+The next steps will be done in Git Bash environment.
 
 ```bash
 source <(kubectl completion bash)
@@ -135,12 +135,56 @@ source <(kubectl completion bash)
 echo "source <(kubectl completion bash)" >> ~/.bashrc
 ```
 
+```bash
+git clone https://github.com/jonmosco/kube-ps1.git 
+```
+<pre>
+Cloning into 'kube-ps1'...
+remote: Enumerating objects: 7, done.
+remote: Counting objects: 100% (7/7), done.
+remote: Compressing objects: 100% (6/6), done.
+remote: Total 551 (delta 1), reused 3 (delta 1), pack-reused 544 eceiving objects:  99% (546/551), 5.15 MiB | 3.35 MiB/s
+Receiving objects: 100% (551/551), 7.22 MiB | 3.54 MiB/s, done.
+Resolving deltas: 100% (283/283), done.
+</pre>
+
+Or by wget 
+```bash
+wget  https://raw.githubusercontent.com/jonmosco/kube-ps1/master/kube-ps1.sh -O ~/kube-sp1.sh
+```
+
+<pre>
+--2020-02-22 18:46:28--  https://raw.githubusercontent.com/jonmosco/kube-ps1/master/kube-ps1.sh
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.0.133, 151.101.64.133, 151.101.128.133, ...
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.0.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 10856 (11K) [text/plain]
+Saving to: 'C:/Users/***/kube-sp1.sh'
+
+C:/Users/djkor/kube-sp1.sh          100%[=================================================================>]  10,60K  --.-KB/s    in 0,02s   
+
+2020-02-22 18:46:28 (451 KB/s) - 'C:/Users/***/kube-sp1.sh' saved [10856/10856]
+</pre>
+
+Edit the file .bashrc
+
+code  ~/.bashrc
+
+And put two lines inside:
+
+```bash
+source ~/kube-sp1.sh
+PS1='[\u@\h \W $(kube_ps1)]\$ '
+```
+After restarting Git Bash we can see new prompt (⎈ |docker-desktop:default)]$.
+
+Now it is easy to determine to which k8s cluster we are connected (here docker-desktop) and in which namespace (here default)
+
 The main tool for interacting with kubernetes cluster is Visual Studio Code with the following extensions
 
-*Kubernetes -> ms-kubernetes-tools.vscode-kubernetes-tools
-*YAML -> redhat.vscode-yaml
-*Docker -> ms-azuretools.vscode-docke
-
+* Kubernetes -> ms-kubernetes-tools.vscode-kubernetes-tools
+* YAML -> redhat.vscode-yaml
+* Docker -> ms-azuretools.vscode-docke
 
 
 
