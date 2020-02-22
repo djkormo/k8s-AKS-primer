@@ -180,6 +180,18 @@ After restarting Git Bash we can see new prompt (⎈ |docker-desktop:default)]$.
 
 Now it is easy to determine to which k8s cluster we are connected (here docker-desktop) and in which namespace (here default)
 
+You can turn off the new prompt by 
+
+```bash
+kubeoff
+``` 
+and turn on by
+
+```bash
+kubeon
+```
+
+
 The main tool for interacting with kubernetes cluster is Visual Studio Code with the following extensions
 
 * Kubernetes -> ms-kubernetes-tools.vscode-kubernetes-tools
