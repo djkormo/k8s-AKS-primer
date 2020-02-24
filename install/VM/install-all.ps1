@@ -1,6 +1,6 @@
 # Installing docker desktop CE
 
-https://stackoverflow.com/questions/41471819/installing-docker-with-script-on-windows/54038523#54038523
+# https://stackoverflow.com/questions/41471819/installing-docker-with-script-on-windows/54038523#54038523
 
 # First Download the installer (wget is slow...)
 # wget https://download.docker.com/win/stable/Docker%20for%20Windows%20Installer.exe -OutFile docker-installer.exe
@@ -13,12 +13,12 @@ start-process -wait docker-installer.exe " install --quiet"
 rm docker-installer.exe
 
 # Run
-start-process "$env:ProgramFiles\docker\Docker\Docker for Windows.exe"
+start-process "$env:ProgramFiles\docker\Docker\Docker Desktop.exe"
 
 write-host "Done with Docker for windows."
 
 ## TODO problem with permission
-Add-LocalGroupMember -Group "docker-users" -Member "admink8s"
+# Add-LocalGroupMember -Group "docker-users" -Member "admink8s"
 #### net localgroup "docker-users" "admink8s" /add
 
 # installing azure CLI 
@@ -32,8 +32,8 @@ write-host "Done with Azure Cli."
 
 # https://social.technet.microsoft.com/wiki/contents/articles/35780.visual-studio-code-getting-started-with-powershell.aspx
 
-Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?LinkID=623230'  -OutFile 'C:\Temp\VSCodeSetup-stable.exe' ; 
-Start-Process -FilePath 'C:\Temp\VSCodeSetup-stable.exe' -ArgumentList '/SILENT /LOG=".\VSCodeSetup.log"' ; 
+Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?LinkID=623230'  -OutFile '.\VSCodeSetup-stable.exe' ; 
+Start-Process -FilePath '.\VSCodeSetup-stable.exe' -ArgumentList '/SILENT /LOG=".\VSCodeSetup.log"' ; 
 
 write-host "Done with Visual Studio Code."
 
