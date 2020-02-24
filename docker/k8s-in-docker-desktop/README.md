@@ -191,8 +191,10 @@ and turn on by
 kubeon
 ```
 
+https://code.visualstudio.com/
 
 The main tool for interacting with kubernetes cluster is Visual Studio Code with the following extensions
+
 
 * Kubernetes -> ms-kubernetes-tools.vscode-kubernetes-tools
 * YAML -> redhat.vscode-yaml
