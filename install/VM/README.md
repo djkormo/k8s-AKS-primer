@@ -23,8 +23,6 @@ az group deployment create \
 ## 2. Enable Hyper-V  and WSL -> restart needed several times 
 Enable-WindowsOptionalFeature -Online -FeatureName:Microsoft-Hyper-V -All
 #### restart 
-# Install-WindowsFeature -Name Hyper-V -IncludeManagementTools -Restart
-### restart 
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 #### restart 
 Invoke-WebRequest -Uri https://wsldownload.azureedge.net/Ubuntu_1604.2019.523.0_x64.appx -OutFile Ubuntu.appx -UseBasicParsing
@@ -32,5 +30,13 @@ Add-AppxPackage .\Ubuntu.appx
 
 ## 3. install git bash, Visual studio code 
 Add  install-all.ps1 as VM extention.
+
+
+
+
+Literature:
+
+https://www.windowscentral.com/install-windows-subsystem-linux-windows-10#install_linux_subsystem_powershell_windows10
+
 
 
