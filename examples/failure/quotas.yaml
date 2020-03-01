@@ -4,9 +4,9 @@ metadata:
   name: compute-resources
 spec:
   hard:
-    pods: "50"
+    pods: "60"
     requests.cpu: "4"
-    requests.memory: 2Gi
-    limits.cpu: "8"
+    requests.memory: 4Gi
+    limits.cpu: "5"
     limits.memory: 8Gi
     requests.nvidia.com/gpu: 0

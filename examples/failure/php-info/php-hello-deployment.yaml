@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: php-hello
-  replicas: 20
+  replicas: 10
   template:
     metadata:
       labels:
@@ -23,8 +23,8 @@ spec:
           value: "false"
         resources:
           limits:
-            cpu: "0.1"
-            memory: "50Mi"
+            cpu: "0.05"
+            memory: "20Mi"
           requests:
             cpu: "0.05"
             memory: "20Mi"

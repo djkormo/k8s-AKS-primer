@@ -11,4 +11,4 @@ spec:
       name: web
   selector:
     app: words-web
-  type: LoadBalancer
+  type: ClusterIP

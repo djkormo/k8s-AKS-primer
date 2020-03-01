@@ -7,7 +7,7 @@ metadata:
 spec:
   selector:
     app:  php-hello
-  type:  LoadBalancer
+  type:  ClusterIP
   ports:
   - name:  www
     port:  8888

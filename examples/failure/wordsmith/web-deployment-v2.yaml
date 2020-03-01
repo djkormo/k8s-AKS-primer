@@ -5,7 +5,7 @@ metadata:
   labels:
     app: words-web
 spec:
-  replicas: 1
+  replicas: 5
   selector:
     matchLabels:
       app: words-web
@@ -28,13 +28,13 @@ spec:
         ports:
         - containerPort: 80
           name: words-web
-        resources:
-          limits:
-            cpu: "0.2"
-            memory: "50Mi"
-          requests:
-            cpu: "0.1"
-            memory: "25Mi" 
+        #resources:
+        #  limits:
+        #    cpu: "0.1"
+        #    memory: "25Mi"
+        #  requests:
+        #    cpu: "0.1"
+        #    memory: "25Mi" 
         readinessProbe:
           httpGet:
             path: /
