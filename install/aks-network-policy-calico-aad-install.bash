@@ -117,6 +117,7 @@ az aks create \
 	--kubernetes-version $AKS_VERSION \
     --node-vm-size $AKS_VM_SIZE \
     --node-count $AKS_NODES \
+    --max-pods 110 \
     --generate-ssh-keys \
     --network-plugin azure \
     --service-cidr 10.0.0.0/16 \
