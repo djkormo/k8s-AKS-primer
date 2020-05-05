@@ -59,3 +59,23 @@ Kubernetes Infrastructure defines a resource for every purpose. Each resource is
 
 
 ![Kubernetes application deployment workflow](app_deploy_workflow.png)
+
+
+What is going inside of
+
+```console
+kubectl get nodes
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

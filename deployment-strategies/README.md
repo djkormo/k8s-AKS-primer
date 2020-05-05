@@ -9,15 +9,29 @@
 kubectl create namespace monitoring
 ```
 
-## Install Prometheus
+#### Adding repos for helm
 
 ```console
-helm install \
-    --namespace=monitoring \
-    --name=myprometheus \
-    --version=7.0.0 \
-    stable/prometheus
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 ```
+
+```console
+helm repo update
+```
+
+
+## Install Prometheus
+
+Installing from helm stable prometheus chart
+```console
+helm install --name-template myprometheus stable/prometheus  --namespace monitoring
+```
+Listing charts deployed in cluster
+
+```console
+helm list --namespace=monitoring
+```
+
 
 ### Prometheus pod 	
 
@@ -34,14 +48,11 @@ kubectl --namespace monitoring port-forward $(kubectl get pod --namespace monito
 ## Install Grafana
 
 ```console
-helm install \
-    --namespace=monitoring \
-    --name=mygrafana \
-    --version=1.12.0 \
+helm install mygrafana stable/grafana --namespace=monitoring \
     --set=adminUser=admin \
     --set=adminPassword=admin \
-	  --set=service.type=NodePort \
-    stable/grafana 
+    --set=service.type=LoadBalancer  \
+    --set=service.port=4444
 ```
 
 ```console
