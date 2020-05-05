@@ -17,7 +17,7 @@ spec:
       serviceAccountName: kubeview
       containers:
       - name: kubeview-containers
-        image: bencuk/kubeview:0.1.11
+        image: bencuk/kubeview:0.1.8
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
