@@ -26,6 +26,7 @@ Enable-WindowsOptionalFeature -Online -FeatureName:Microsoft-Hyper-V -All
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 #### restart 
 Invoke-WebRequest -Uri https://wsldownload.azureedge.net/Ubuntu_1604.2019.523.0_x64.appx -OutFile Ubuntu.appx -UseBasicParsing
+
 Add-AppxPackage .\Ubuntu.appx
 
 ## 3. install git bash, Visual studio code 
