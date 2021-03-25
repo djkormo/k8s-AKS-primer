@@ -11,7 +11,7 @@ Markdown==2.6.11
 MarkupSafe==1.0
 numpy==1.14.1
 protobuf==3.5.1
-PyYAML==5.1
+PyYAML==5.4
 scipy==1.0.0
 six==1.11.0
 tensorflow==2.4.0
