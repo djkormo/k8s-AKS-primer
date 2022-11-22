@@ -1,5 +1,5 @@
 tensorflow>=1.12.1
-pillow==9.0.1
+pillow==9.3.0
 numpy==1.22.0
 flask==1.0
 flask-restplus==0.12.1
