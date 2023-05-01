@@ -1,4 +1,4 @@
-Flask==1.0
+Flask==2.3.2
 textblob==0.15.0
 flask-restplus==0.12.1
 flask_cors
