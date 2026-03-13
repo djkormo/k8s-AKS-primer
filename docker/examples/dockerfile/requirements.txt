@@ -7,7 +7,7 @@ html5lib==0.999999999
 itsdangerous==0.24
 Jinja2==2.11.3
 Keras==2.1.4
-Markdown==2.6.11
+Markdown==3.8.1
 MarkupSafe==1.0
 numpy==1.22.0
 protobuf==5.29.6
